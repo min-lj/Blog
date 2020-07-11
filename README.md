@@ -1,10 +1,12 @@
+## 在线地址
+
 **项目链接：** [www.talkxj.com](https://www.talkxj.com)
 
 **后台链接：** [www.admin.talkxj.com](https://www.admin.talkxj.com)
 
 测试账号：test@qq.com，密码：1234567，可登入后台查看
 
-**关于本地开发**
+## 目录结构
 
 前端项目位于blog-vue下，blog为前台，admin为后台。
 
@@ -78,7 +80,7 @@ SQL文件位于根目录下。
 
 ![QQ截图20200711095250.png](https://www.static.talkxj.com/articles/1594432395374.png)
 
-## 项目运行环境安装
+## 项目环境安装
 
 详见文章[Docker安装运行环境](https://www.talkxj.com/articles/2)
 
