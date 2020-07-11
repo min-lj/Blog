@@ -80,11 +80,11 @@ SQL文件位于根目录下。
 
 ## 项目运行环境
 
-详见文章[Docker安装运行环境](https://www.talkxj.com/articles/13)
+详见文章[Docker安装运行环境](https://www.talkxj.com/articles/2)
 
 ## 项目配置
 
-详见文章[项目配置教程](https://www.talkxj.com/articles/13)
+详见文章[项目配置教程](https://www.talkxj.com/articles/3)
 
 ## docker部署教程
 
