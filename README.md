@@ -78,7 +78,7 @@ SQL文件位于根目录下。
 
 ![QQ截图20200711095250.png](https://www.static.talkxj.com/articles/1594432395374.png)
 
-## 项目运行环境
+## 项目运行环境安装
 
 详见文章[Docker安装运行环境](https://www.talkxj.com/articles/2)
 
