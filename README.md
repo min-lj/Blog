@@ -88,7 +88,7 @@ SQL文件位于根目录下。
 
 详见文章[项目配置教程](https://www.talkxj.com/articles/3)
 
-## docker部署教程
+## docker部署项目
 
 详见文章[项目部署教程](https://www.talkxj.com/articles/13)
 
