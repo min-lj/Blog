@@ -1,0 +1,55 @@
+<template>
+  <el-menu
+    class="side-nav-bar"
+    router
+    :collapse="this.$store.state.collapse"
+    :default-active="this.$route.path"
+    background-color="#304156"
+    text-color="#BFCBD9"
+    active-text-color="#409EFF"
+  >
+    <template v-for="route of this.$router.options.routes">
+      <!-- 二级菜单 -->
+      <template v-if="route.name && route.children">
+        <el-submenu :key="route.path" :index="route.path">
+          <!-- 二级菜单标题 -->
+          <template slot="title">
+            <i :class="route.icon" />
+            <span>{{ route.name }}</span>
+          </template>
+          <!-- 二级菜单选项 -->
+          <el-menu-item
+            v-for="(item, index) of route.children"
+            :key="index"
+            :index="item.path"
+          >
+            <i :class="item.icon" />
+            <span slot="title">{{ item.name }}</span>
+          </el-menu-item>
+        </el-submenu>
+      </template>
+      <!-- 一级菜单 -->
+      <template v-else-if="!route.hidden">
+        <el-menu-item :index="route.path" :key="route.path">
+          <i :class="route.children[0].icon" />
+          <span slot="title">{{ route.children[0].name }}</span>
+        </el-menu-item>
+      </template>
+    </template>
+  </el-menu>
+</template>
+
+<style scoped>
+.side-nav-bar:not(.el-menu--collapse) {
+  width: 210px;
+}
+.side-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.side-nav-bar i {
+  margin-right: 1rem;
+}
+</style>

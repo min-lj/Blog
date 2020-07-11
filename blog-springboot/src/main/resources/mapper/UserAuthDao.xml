@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minzheng.blog.dao.UserAuthDao">
+
+    <select id="listUsers" resultType="com.minzheng.blog.dto.UserBackDTO">
+        SELECT
+        ua.id,
+        user_info_id,
+        avatar,
+        nickname,
+        login_type,
+        user_role,
+        ip_addr,
+        ip_source,
+        ua.create_time,
+        last_login_time,
+        is_silence
+        FROM
+        tb_user_auth ua
+        LEFT JOIN tb_user_info ui ON ua.user_info_id = ui.id
+        <where>
+            <if test="condition.keywords != null">
+                 nickname like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+        LIMIT #{condition.current},#{condition.size}
+    </select>
+
+    <select id="countUser" resultType="java.lang.Integer">
+        SELECT
+        count( 1 )
+        FROM
+        tb_user_auth ua
+        LEFT JOIN tb_user_info ui ON ua.user_info_id = ui.id
+        <where>
+            <if test="condition.keywords != null">
+                 nickname like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

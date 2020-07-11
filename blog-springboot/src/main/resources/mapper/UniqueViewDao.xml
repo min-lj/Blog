@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minzheng.blog.dao.UniqueViewDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.minzheng.blog.entity.UniqueView">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="views_count" property="viewsCount" />
+    </resultMap>
+    <select id="listUniqueViews" resultType="java.lang.Integer">
+     SELECT
+	 views_count
+     FROM
+	 tb_unique_view
+     WHERE
+	 YEARWEEK( date_format( create_time, '%Y-%m-%d' ), 1 ) = YEARWEEK( now() ,1)
+     ORDER BY
+	 create_time;
+    </select>
+
+</mapper>

@@ -1,0 +1,29 @@
+body{
+  padding: 0;
+  margin: 0;
+}
+.main-card{
+  min-height: calc(100vh - 126px);
+}
+.operation-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+.pagination-container {
+  float: right;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.dialog-title-container {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+.dialog-title-container i {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+.v-note-wrapper.fullscreen {
+  height: 100vh !important;
+}
