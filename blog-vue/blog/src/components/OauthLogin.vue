@@ -19,7 +19,7 @@ export default {
     that.$store.state.loginFlag = false;
     //通过路径判断是微博登录还是qq登录
     if (that.$route.path == "/oauth/login/qq") {
-      // 拿到openId，accessToken传后台
+      // 拿到openId，accessToken传入后台
       if (QC.Login.check()) {
         QC.Login.getMe(function(openId, accessToken) {
           let param = new URLSearchParams();
