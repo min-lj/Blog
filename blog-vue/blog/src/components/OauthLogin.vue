@@ -20,22 +20,26 @@ export default {
     //通过路径判断是微博登录还是qq登录
     if (that.$route.path == "/oauth/login/qq") {
       // 拿到openId，accessToken传后台
-      QC.Login.getMe(function(openId, accessToken) {
-        let param = new URLSearchParams();
-        param.append("openId", openId);
-        param.append("accessToken", accessToken);
-        that.axios.post("/api/users/oauth/qq", param).then(({ data }) => {
-          if (data.flag) {
-            //保存登录状态
-            that.$store.commit("login", data.data);
-            that.$toast({ type: "success", message: data.message });
-          } else {
-            that.$toast({ type: "error", message: data.message });
-          }
-          //跳转回原页面
-          that.$router.push({ path: that.$store.state.loginUrl });
+      if (QC.Login.check()) {
+        QC.Login.getMe(function(openId, accessToken) {
+          let param = new URLSearchParams();
+          param.append("openId", openId);
+          param.append("accessToken", accessToken);
+          that.axios.post("/api/users/oauth/qq", param).then(({ data }) => {
+            if (data.flag) {
+              //保存登录状态
+              that.$store.commit("login", data.data);
+              that.$toast({ type: "success", message: data.message });
+            } else {
+              that.$toast({ type: "error", message: data.message });
+            }
+          });
         });
-      });
+      } else {
+        that.$toast({ type: "error", message: "登录失败" });
+      }
+      //跳转回原页面
+      that.$router.push({ path: that.$store.state.loginUrl });
     } else {
       //微博登录
       let param = new URLSearchParams();
