@@ -275,10 +275,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
 
     /**
      * 获取本地第三方登录信息
-     *
-     * @param openId
-     * @param userInfoId
-     * @return
+     * @param user 用户对象
+     * @return 用户登录信息
      */
     private UserInfoDTO getUserInfoDTO(UserAuth user) {
         //更新登录时间，ip
@@ -328,13 +326,14 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
      * 校验用户数据是否合法
      *
      * @param user 用户数据
+     * @return 合法状态
      */
     private Boolean checkUser(UserVO user) {
         if (!user.getCode().equals(redisTemplate.boundValueOps("code_" + user.getUsername()).get())) {
             throw new ServeException("验证码错误！");
         }
         //查询用户名是否存在
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<UserAuth> queryWrapper = new QueryWrapper();
         queryWrapper.select("username").eq("username", user.getUsername());
         //存在返回true
         if (userAuthDao.selectOne(queryWrapper) != null) {
