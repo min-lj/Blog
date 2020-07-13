@@ -59,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //管理员页面需要权限
                 .antMatchers("/admin/**").hasRole("admin")
                 //用户操作，发表评论需要登录
+                .antMatchers(HttpMethod.GET,"/comments").permitAll()
                 .antMatchers("/users/info","/users/avatar","/comments").authenticated()
                 .anyRequest().permitAll()
                 .and()

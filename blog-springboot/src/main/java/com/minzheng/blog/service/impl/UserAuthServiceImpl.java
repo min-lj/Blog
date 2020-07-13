@@ -168,7 +168,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
         queryWrapper.select("password").eq("id", UserUtil.getLoginUser().getId()).eq("password", passwordVO.getOldPassword());
         if (userAuthDao.selectOne(queryWrapper) != null) {
             userAuthDao.updateById(new UserAuth(passwordVO.getNewPassword()));
-        }else {
+        } else {
             throw new ServeException("旧密码不正确");
         }
     }
@@ -275,6 +275,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
 
     /**
      * 获取本地第三方登录信息
+     *
      * @param user 用户对象
      * @return 用户登录信息
      */
