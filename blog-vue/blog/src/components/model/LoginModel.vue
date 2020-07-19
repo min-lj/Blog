@@ -102,7 +102,7 @@ export default {
       }
       const that = this;
       // eslint-disable-next-line no-undef
-      var captcha = new TencentCaptcha("2088053498", function(res) {
+      var captcha = new TencentCaptcha(this.config.TENCENT_CAPTCHA, function(res) {
         if (res.ret === 0) {
           //发送登录请求
           let param = new URLSearchParams();
@@ -129,15 +129,15 @@ export default {
       this.$store.commit("saveLoginUrl", this.$route.path);
       // eslint-disable-next-line no-undef
       QC.Login.showPopup({
-        appId: "101878726",
-        redirectURI: "https://www.talkxj.com/oauth/login/qq"
+        appId: this.config.QQ_APP_ID,
+        redirectURI: this.config.QQ_REDIRECT_URI
       });
     },
     weiboLogin() {
       //保留当前路径
       this.$store.commit("saveLoginUrl", this.$route.path);
       window.open(
-        "https://api.weibo.com/oauth2/authorize?client_id=4039197195&response_type=code&redirect_uri=https://www.talkxj.com/oauth/login/weibo",
+        "https://api.weibo.com/oauth2/authorize?client_id="+this.config.WEIBO_APP_ID+"&response_type=code&redirect_uri="+this.config.WEIBO_REDIRECT_URI,
         "_blank"
       );
     }

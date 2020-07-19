@@ -6,6 +6,7 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "./assets/css/index.css";
 import "./assets/css/iconfont.css";
+import config from "./assets/js/config";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import ECharts from "vue-echarts";
@@ -19,6 +20,7 @@ import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 import moment from "moment";
 
+Vue.prototype.config = config;
 Vue.use(mavonEditor);
 Vue.component("v-chart", ECharts);
 Vue.use(VueAxios, axios);
