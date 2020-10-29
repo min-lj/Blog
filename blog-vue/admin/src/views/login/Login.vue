@@ -58,23 +58,26 @@ export default {
         if (valid) {
           const that = this;
           // eslint-disable-next-line no-undef
-          var captcha = new TencentCaptcha(this.config.TENCENT_CAPTCHA, function(res) {
-            if (res.ret === 0) {
-              //发送登录请求
-              let param = new URLSearchParams();
-              param.append("username", that.loginForm.username);
-              param.append("password", that.loginForm.password);
-              that.axios.post("/api/login", param).then(({ data }) => {
-                if (data.flag) {
-                  that.$store.commit("login", data.data);
-                  that.$message.success(data.message);
-                  that.$router.push({ path: "/" });
-                } else {
-                  that.$message.error(data.message);
-                }
-              });
+          var captcha = new TencentCaptcha(
+            this.config.TENCENT_CAPTCHA,
+            function(res) {
+              if (res.ret === 0) {
+                //发送登录请求
+                let param = new URLSearchParams();
+                param.append("username", that.loginForm.username);
+                param.append("password", that.loginForm.password);
+                that.axios.post("/api/login", param).then(({ data }) => {
+                  if (data.flag) {
+                    that.$store.commit("login", data.data);
+                    that.$message.success(data.message);
+                    that.$router.push({ path: "/" });
+                  } else {
+                    that.$message.error(data.message);
+                  }
+                });
+              }
             }
-          });
+          );
           // 显示验证码
           captcha.show();
         } else {

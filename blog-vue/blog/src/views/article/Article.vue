@@ -183,8 +183,8 @@ export default {
         this.$nextTick(() => {
           //统计文章字数
           this.wordNum = this.deleteHTMLTag(this.article.articleContent).length;
-          this.readTime = Math.round(this.wordNum / 400) + "分钟";
           //计算阅读时间
+          this.readTime = Math.round(this.wordNum / 400) + "分钟";
           //添加代码复制功能
           this.clipboard = new Clipboard(".copy-btn");
           this.clipboard.on("success", () => {
