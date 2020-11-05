@@ -17,9 +17,9 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`blog` /*!40100 DEFAULT CHARACTER SET ut
 
 USE `blog`;
 
--- -----------------------------
+-- ----------------------------
 -- Table structure for tb_article
--- -----------------------------
+-- ----------------------------
 DROP TABLE IF EXISTS `tb_article`;
 CREATE TABLE `tb_article`  (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
