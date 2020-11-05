@@ -21,7 +21,7 @@
             <v-avatar size="65" class="link-avatar">
               <img :src="item.linkAvatar" />
             </v-avatar>
-            <div style="width:100%">
+            <div style="width:100%;z-index:10;">
               <div class="link-name">{{ item.linkName }}</div>
               <div class="link-intro">{{ item.linkIntro }}</div>
             </div>
@@ -126,6 +126,7 @@ blockquote {
   text-align: center;
   font-size: 1.25rem;
   font-weight: bold;
+  z-index: 1000;
 }
 .link-intro {
   text-align: center;
@@ -164,7 +165,6 @@ blockquote {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: -1;
   background: #49b1f5 !important;
   content: "";
   transition-timing-function: ease-out;
