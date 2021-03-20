@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.ResourceDao;
+import com.minzheng.blog.dao.RoleResourceDao;
 import com.minzheng.blog.dto.ResourceDTO;
 import com.minzheng.blog.dto.labelOptionDTO;
 import com.minzheng.blog.entity.Resource;
@@ -30,6 +31,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
+    private RoleResourceDao roleResourceDao;
+    @Autowired
     private FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource;
 
     @Transactional(rollbackFor = Exception.class)
@@ -37,6 +40,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
     public void importSwagger() {
         // 删除所有资源
         this.remove(null);
+        roleResourceDao.delete(null);
         List<Resource> resourceList = new ArrayList<>();
         Map<String, Object> data = restTemplate.getForObject("http://localhost:8080/v2/api-docs", Map.class);
         // 获取所有模块
