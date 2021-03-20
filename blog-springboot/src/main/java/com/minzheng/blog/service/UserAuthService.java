@@ -45,7 +45,7 @@ public interface UserAuthService extends IService<UserAuth> {
      * @param code 微博code
      * @return 用户登录信息
      */
-    UserInfoDTO weiboLogin(String code);
+    UserInfoDTO weiBoLogin(String code);
 
     /**
      * 修改密码

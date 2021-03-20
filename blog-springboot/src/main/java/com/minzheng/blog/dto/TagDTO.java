@@ -1,7 +1,10 @@
 package com.minzheng.blog.dto;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -9,6 +12,9 @@ import lombok.Data;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TagDTO {
 
     /**

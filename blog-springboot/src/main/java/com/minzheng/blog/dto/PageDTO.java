@@ -1,6 +1,8 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -9,6 +11,8 @@ import java.util.List;
  * @author 11921
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageDTO<T> {
 
     /**
@@ -20,13 +24,5 @@ public class PageDTO<T> {
      * 总数
      */
     private Integer count;
-
-    public PageDTO(List<T> recordList, Integer count) {
-        this.recordList = recordList;
-        this.count = count;
-    }
-
-    public PageDTO() {
-    }
 
 }

@@ -7,7 +7,10 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.vo.FriendLinkVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 友链列表
@@ -16,6 +19,9 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_friend_link")
 public class FriendLink {
 
@@ -50,21 +56,5 @@ public class FriendLink {
      */
     private Date createTime;
 
-
-    public FriendLink(FriendLinkVO friendLinkVO) {
-        this.id = friendLinkVO.getId();
-        this.linkName = friendLinkVO.getLinkName();
-        this.linkAvatar = friendLinkVO.getLinkAvatar();
-        this.linkAddress = friendLinkVO.getLinkAddress();
-        this.linkIntro = friendLinkVO.getLinkIntro();
-        this.createTime = this.id == null ? new Date() : null;
-    }
-
-    public FriendLink(Integer friendLinkId, Integer isDelete) {
-        this.id = friendLinkId;
-    }
-
-    public FriendLink() {
-    }
 
 }

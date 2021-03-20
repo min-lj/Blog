@@ -7,7 +7,10 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.vo.TagVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 标签
@@ -16,6 +19,9 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_tag")
 public class Tag {
 
@@ -35,13 +41,5 @@ public class Tag {
      */
     private Date createTime;
 
-    public Tag(TagVO tagVO) {
-        this.id = tagVO.getId();
-        this.tagName = tagVO.getTagName();
-        this.createTime = this.id == null ? new Date() : null;
-    }
-
-    public Tag() {
-    }
 
 }

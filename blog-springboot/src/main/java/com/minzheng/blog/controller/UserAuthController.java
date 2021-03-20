@@ -3,6 +3,7 @@ package com.minzheng.blog.controller;
 
 import com.minzheng.blog.constant.StatusConst;
 import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.dto.UserBackDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.service.UserAuthService;
 import com.minzheng.blog.vo.*;
@@ -28,43 +29,43 @@ public class UserAuthController {
     @ApiOperation(value = "发送邮箱验证码")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String")
     @GetMapping("/users/code")
-    private Result sendCode(String username) {
+    public Result sendCode(String username) {
         userAuthService.sendCode(username);
-        return new Result(true, StatusConst.OK, "发送成功！");
+        return new Result<>(true, StatusConst.OK, "发送成功！");
     }
 
     @ApiOperation(value = "查看后台用户列表")
     @GetMapping("/admin/users")
-    private Result<PageDTO> listUsers(ConditionVO condition) {
-        return new Result(true, StatusConst.OK, "查询成功！", userAuthService.listUserBackDTO(condition));
+    public Result<PageDTO<UserBackDTO>> listUsers(ConditionVO condition) {
+        return new Result<>(true, StatusConst.OK, "查询成功！", userAuthService.listUserBackDTO(condition));
     }
 
     @ApiOperation(value = "用户注册")
     @PostMapping("/users")
-    private Result saveUser(@Valid @RequestBody UserVO user) {
+    public Result saveUser(@Valid @RequestBody UserVO user) {
         userAuthService.saveUser(user);
-        return new Result(true, StatusConst.OK, "注册成功！");
+        return new Result<>(true, StatusConst.OK, "注册成功！");
     }
 
     @ApiOperation(value = "修改密码")
     @PutMapping("/users/password")
-    private Result updatePassword(@Valid @RequestBody UserVO user) {
+    public Result updatePassword(@Valid @RequestBody UserVO user) {
         userAuthService.updatePassword(user);
-        return new Result(true, StatusConst.OK, "修改成功！");
+        return new Result<>(true, StatusConst.OK, "修改成功！");
     }
 
     @ApiOperation(value = "修改管理员密码")
     @PutMapping("/admin/users/password")
-    private Result updateAdminPassword(@Valid @RequestBody PasswordVO passwordVO) {
+    public Result updateAdminPassword(@Valid @RequestBody PasswordVO passwordVO) {
         userAuthService.updateAdminPassword(passwordVO);
-        return new Result(true, StatusConst.OK, "修改成功！");
+        return new Result<>(true, StatusConst.OK, "修改成功！");
     }
 
     @ApiOperation(value = "微博登录")
     @ApiImplicitParam(name = "code", value = "code", required = true, dataType = "String")
     @PostMapping("/users/oauth/weibo")
-    private Result<UserInfoDTO> qqLogin(String code) {
-        return new Result(true, StatusConst.OK, "登录成功！", userAuthService.weiboLogin(code));
+    public Result<UserInfoDTO> weiBoLogin(String code) {
+        return new Result<>(true, StatusConst.OK, "登录成功！", userAuthService.weiBoLogin(code));
     }
 
     @ApiOperation(value = "qq登录")
@@ -73,8 +74,8 @@ public class UserAuthController {
             @ApiImplicitParam(name = "accessToken", value = "accessToken", required = true, dataType = "String")
     })
     @PostMapping("/users/oauth/qq")
-    private Result<UserInfoDTO> qqLogin(String openId, String accessToken) {
-        return new Result(true, StatusConst.OK, "登录成功！", userAuthService.qqLogin(openId, accessToken));
+    public Result<UserInfoDTO> qqLogin(String openId, String accessToken) {
+        return new Result<>(true, StatusConst.OK, "登录成功！", userAuthService.qqLogin(openId, accessToken));
     }
 
 }

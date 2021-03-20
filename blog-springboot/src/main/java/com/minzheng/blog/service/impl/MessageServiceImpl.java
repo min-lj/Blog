@@ -1,8 +1,9 @@
 package com.minzheng.blog.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.minzheng.blog.constant.DeleteConst;
 import com.minzheng.blog.dto.MessageBackDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.exception.ServeException;
@@ -15,13 +16,13 @@ import com.minzheng.blog.service.MessageService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.utils.BeanCopyUtil;
 import com.minzheng.blog.utils.IpUtil;
-import com.minzheng.blog.vo.DeleteVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,35 +33,47 @@ import java.util.List;
 public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> implements MessageService {
     @Autowired
     private MessageDao messageDao;
-    @Autowired
+    @Resource
     private HttpServletRequest request;
 
-    @Transactional(rollbackFor = ServeException.class)
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveMessage(MessageVO messageVO) {
+        // 获取用户ip
         String ipAddr = IpUtil.getIpAddr(request);
         String ipSource = IpUtil.getIpSource(ipAddr);
-        messageDao.insert(new Message(messageVO, ipAddr, ipSource));
+        Message message = Message.builder()
+                .nickname(messageVO.getNickname())
+                .avatar(messageVO.getAvatar())
+                .messageContent(messageVO.getMessageContent())
+                .time(messageVO.getTime())
+                .createTime(new Date())
+                .ipAddress(IpUtil.getIpAddr(request))
+                .ipSource(ipSource).build();
+        messageDao.insert(message);
     }
 
     @Override
     public List<MessageDTO> listMessages() {
-        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "nickname", "avatar", "message_content", "time");
-        return BeanCopyUtil.copyList(messageDao.selectList(queryWrapper), MessageDTO.class);
+        // 查询留言列表
+        List<Message> messageList = messageDao.selectList(new LambdaQueryWrapper<Message>()
+                .select(Message::getId, Message::getNickname, Message::getAvatar, Message::getMessageContent, Message::getTime));
+        return BeanCopyUtil.copyList(messageList, MessageDTO.class);
     }
 
     @Override
-    public PageDTO listMessageBackDTO(ConditionVO condition) {
+    public PageDTO<MessageBackDTO> listMessageBackDTO(ConditionVO condition) {
+        // 分页查询留言列表
         Page<Message> page = new Page<>(condition.getCurrent(), condition.getSize());
-        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "nickname", "avatar", "ip_address", "ip_source", "message_content", "create_time")
-                .like(condition.getKeywords() != null, "nickname", condition.getKeywords())
-                .orderByDesc("create_time");
-        Page<Message> messagePage = messageDao.selectPage(page, queryWrapper);
-        //转换DTO
+        LambdaQueryWrapper<Message> messageLambdaQueryWrapper = new LambdaQueryWrapper<Message>()
+                .select(Message::getId, Message::getNickname, Message::getAvatar, Message::getIpAddress, Message::getIpSource, Message::getMessageContent, Message::getCreateTime)
+                .like(StringUtils.isNotBlank(condition.getKeywords()), Message::getNickname, condition.getKeywords())
+                .orderByDesc(Message::getCreateTime);
+        Page<Message> messagePage = messageDao.selectPage(page, messageLambdaQueryWrapper);
+        // 转换DTO
         List<MessageBackDTO> messageBackDTOList = BeanCopyUtil.copyList(messagePage.getRecords(), MessageBackDTO.class);
-        return new PageDTO(messageBackDTOList, (int) messagePage.getTotal());
+        return new PageDTO<>(messageBackDTOList, (int) messagePage.getTotal());
     }
 
 }

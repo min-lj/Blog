@@ -17,13 +17,15 @@ export default {
   },
   watch: {
     type(value) {
-      if (value == "error") {
-        this.color = "#F56C6C";
-        this.icon = "iconfont iconcuowu";
-      }
-      if (value == "success") {
-        this.color = "#52C41A";
-        this.icon = "iconfont iconchenggong";
+      switch (value) {
+        case "error":
+          this.color = "#F56C6C";
+          this.icon = "iconfont iconcuowu";
+          break;
+        case "success":
+          this.color = "#52C41A";
+          this.icon = "iconfont iconchenggong";
+          break;
       }
     }
   }

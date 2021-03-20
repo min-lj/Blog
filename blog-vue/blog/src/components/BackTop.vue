@@ -65,7 +65,7 @@ export default {
   z-index: 4;
   position: fixed;
   right: -38px;
-  bottom: 40px;
+  bottom: 85px;
   transition: all 0.5s;
 }
 .rightside-config-hide {

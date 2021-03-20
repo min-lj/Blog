@@ -91,6 +91,7 @@ export default {
 .search-wrapper {
   padding: 1.25rem;
   height: 100%;
+  background: #fff !important;
 }
 .search-title {
   color: #49b1f5;

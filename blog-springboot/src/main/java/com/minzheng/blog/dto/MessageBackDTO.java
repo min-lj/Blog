@@ -1,6 +1,9 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -9,6 +12,9 @@ import java.util.Date;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessageBackDTO {
 
     /**

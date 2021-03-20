@@ -65,4 +65,11 @@ public interface ArticleDao extends BaseMapper<Article> {
      */
     List<Article> listArticleRank(@Param("articleIdList") List<Integer> articleIdList);
 
+    /**
+     * 查看文章的推荐文章
+     * @param articleId 文章id
+     * @return 推荐文章
+     */
+    List<ArticleRecommendDTO> listArticleRecommends(@Param("articleId") Integer articleId);
+
 }

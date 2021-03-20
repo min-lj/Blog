@@ -22,7 +22,7 @@
       </div>
       <!-- 弹幕列表 -->
       <div class="barrage-container">
-        <vue-baberrage :barrageList="barrageList" :loop="true">
+        <vue-baberrage :barrageList="barrageList">
           <template v-slot:default="slotProps">
             <span class="barrage-items">
               <img
@@ -69,7 +69,7 @@ export default {
         avatar: userAvatar,
         nickname: userNickname,
         messageContent: this.messageContent,
-        time: Math.floor(Math.random() * 10 + 3)
+        time: Math.floor(Math.random() * (10 - 7)) + 7
       };
       this.barrageList.push(message);
       this.messageContent = "";
@@ -89,7 +89,7 @@ export default {
 <style scoped>
 .message-banner {
   position: absolute;
-  top: -58px;
+  top: -60px;
   left: 0;
   right: 0;
   height: 100vh;

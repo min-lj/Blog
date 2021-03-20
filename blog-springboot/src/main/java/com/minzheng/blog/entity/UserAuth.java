@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.utils.UserUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
@@ -16,6 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_user_auth")
 public class UserAuth {
 
@@ -64,40 +70,5 @@ public class UserAuth {
      * 最近登录时间
      */
     private Date lastLoginTime;
-
-    public UserAuth() {
-    }
-
-    public UserAuth(Integer userInfoId, String username, String password, Integer loginType) {
-        this.userInfoId = userInfoId;
-        this.username = username;
-        this.password = password;
-        this.loginType = loginType;
-        this.createTime = new Date();
-    }
-
-    public UserAuth(Integer userInfoId, String username, String password, Integer loginType, String ipAddr, String ipSource) {
-        this.userInfoId = userInfoId;
-        this.username = username;
-        this.password = password;
-        this.loginType = loginType;
-        this.ipAddr = ipAddr;
-        this.ipSource = ipSource;
-        this.createTime = new Date();
-        this.lastLoginTime = new Date();
-    }
-
-    public UserAuth(String ipAddr, String ipSource) {
-        this.id = UserUtil.getLoginUser().getId();
-        this.ipAddr = ipAddr;
-        this.ipSource = ipSource;
-        this.lastLoginTime = new Date();
-    }
-
-    public UserAuth(String password) {
-        this.id = UserUtil.getLoginUser().getId();
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
-    }
-
 
 }

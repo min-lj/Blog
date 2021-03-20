@@ -9,8 +9,7 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.vo.CategoryVO;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -20,6 +19,9 @@ import lombok.experimental.Accessors;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_category")
 public class Category {
 
@@ -39,13 +41,5 @@ public class Category {
      */
     private Date createTime;
 
-    public Category(CategoryVO categoryVO) {
-        this.id = categoryVO.getId();
-        this.categoryName = categoryVO.getCategoryName();
-        this.createTime = this.id == null ? new Date() : null;
-    }
-
-    public Category() {
-    }
 
 }

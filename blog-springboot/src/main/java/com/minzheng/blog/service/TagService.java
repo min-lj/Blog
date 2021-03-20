@@ -5,6 +5,7 @@ import com.minzheng.blog.dto.TagDTO;
 import com.minzheng.blog.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.TagVO;
 
 import java.util.List;
 
@@ -36,5 +37,11 @@ public interface TagService extends IService<Tag> {
      * @param tagIdList 标签id集合
      */
     void deleteTag(List<Integer> tagIdList);
+
+    /**
+     * 保存或更新标签
+     * @param tagVO 标签
+     */
+    void saveOrUpdateTag(TagVO tagVO);
 
 }

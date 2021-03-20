@@ -2,7 +2,10 @@ package com.minzheng.blog.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,6 +15,9 @@ import javax.validation.constraints.NotBlank;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "用户信息对象")
 public class UserInfoVO {
 

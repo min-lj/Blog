@@ -6,7 +6,7 @@
     <SideNavBar></SideNavBar>
     <!-- 内容 -->
     <v-content>
-      <router-view :key="$route.fullPath"></router-view>
+      <router-view :key="$route.fullPath" />
     </v-content>
     <!-- 页脚 -->
     <Footer></Footer>
@@ -20,6 +20,10 @@
     <RegisterModel></RegisterModel>
     <!-- 忘记密码模态框 -->
     <ForgetModel></ForgetModel>
+    <!-- 音乐播放器 -->
+    <Player></Player>
+    <!-- 聊天室 -->
+    <ChatRoom></ChatRoom>
   </v-app>
 </template>
 
@@ -32,16 +36,20 @@ import searchModel from "./components/model/SearchModel";
 import LoginModel from "./components/model/LoginModel";
 import RegisterModel from "./components/model/RegisterModel";
 import ForgetModel from "./components/model/ForgetModel";
+import Player from "zw-player";
+import ChatRoom from "./components/ChatRoom";
 export default {
   components: {
     TopNavBar,
+    Player,
     SideNavBar,
     Footer,
     BackTop,
     searchModel,
     LoginModel,
     RegisterModel,
-    ForgetModel
+    ForgetModel,
+    ChatRoom
   }
 };
 </script>

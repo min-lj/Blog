@@ -1,11 +1,17 @@
 package com.minzheng.blog.service;
 
+import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.DeleteVO;
 import com.minzheng.blog.vo.UserInfoVO;
 import com.minzheng.blog.vo.UserRoleVO;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @author xiaojie
@@ -36,11 +42,24 @@ public interface UserInfoService extends IService<UserInfo> {
     void updateUserRole(UserRoleVO userRoleVO);
 
     /**
-     * 修改用户禁言状态
+     * 修改用户禁用状态
      *
      * @param userInfoId 用户信息id
-     * @param isSilence  禁言状态
+     * @param isDisable  禁用状态
      */
-    void updateUserSilence(Integer userInfoId, Integer isSilence);
+    void updateUserDisable(Integer userInfoId, Integer isDisable);
+
+    /**
+     * 查看在线用户列表
+     * @param conditionVO 条件
+     * @return 在线用户列表
+     */
+    PageDTO<UserOnlineDTO> listOnlineUsers(ConditionVO conditionVO);
+
+    /**
+     * 下线用户
+     * @param userInfoId 用户信息id
+     */
+    void removeOnlineUser(Integer userInfoId);
 
 }

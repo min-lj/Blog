@@ -98,6 +98,7 @@ export default {
           if (data.data.articlePreviewDTOList.length) {
             this.current++;
             this.name = data.data.name;
+            document.title = this.title + " - " + this.name;
             this.articleList.push(...data.data.articlePreviewDTOList);
             $state.loaded();
           } else {

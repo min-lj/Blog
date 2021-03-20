@@ -8,8 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -19,6 +18,9 @@ import lombok.experimental.Accessors;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_unique_view")
 public class UniqueView {
 
@@ -37,13 +39,5 @@ public class UniqueView {
      * 访问量
      */
     private Integer viewsCount;
-
-    public UniqueView(Date createTime, Integer viewsCount) {
-        this.createTime = createTime;
-        this.viewsCount = viewsCount;
-    }
-
-    public UniqueView() {
-    }
 
 }

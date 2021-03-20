@@ -1,6 +1,9 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,6 +13,9 @@ import java.util.List;
  * @author 11921
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BlogBackInfoDTO {
     /**
      * 访问量
@@ -39,33 +45,13 @@ public class BlogBackInfoDTO {
     /**
      * 一周用户量集合
      */
-    private List<Integer> uniqueViewDTOList;
+    private List<UniqueViewDTO> uniqueViewDTOList;
 
     /**
      * 文章浏览量排行
      */
-    private List<ArticleRankDTO>articleRankDTOList;
+    private List<ArticleRankDTO> articleRankDTOList;
 
-    public BlogBackInfoDTO(Integer viewsCount, Integer messageCount, Integer userCount, Integer articleCount, List<CategoryDTO> categoryDTOList, List<Integer> uniqueViewDTOList, List<ArticleRankDTO> articleRankDTOList) {
-        this.viewsCount = viewsCount;
-        this.messageCount = messageCount;
-        this.userCount = userCount;
-        this.articleCount = articleCount;
-        this.categoryDTOList = categoryDTOList;
-        this.uniqueViewDTOList = uniqueViewDTOList;
-        this.articleRankDTOList = articleRankDTOList;
-    }
 
-    public BlogBackInfoDTO(Integer viewsCount, Integer messageCount, Integer userCount, Integer articleCount, List<CategoryDTO> categoryDTOList, List<Integer> uniqueViewDTOList) {
-        this.viewsCount = viewsCount;
-        this.messageCount = messageCount;
-        this.userCount = userCount;
-        this.articleCount = articleCount;
-        this.categoryDTOList = categoryDTOList;
-        this.uniqueViewDTOList = uniqueViewDTOList;
-    }
-
-    public BlogBackInfoDTO() {
-    }
 
 }

@@ -95,7 +95,7 @@ export default {
 
 <style scoped>
 .reply-input-wrapper {
-  border: 1px solid #f0f0f0;
+  border: 1px solid #90939950;
   border-radius: 4px;
   padding: 10px;
   margin: 0 0 10px;

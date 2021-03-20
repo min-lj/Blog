@@ -1,5 +1,6 @@
 <template>
   <el-card class="main-card">
+    <div class="title">{{ this.$route.name }}</div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <el-button
@@ -33,7 +34,12 @@
       </div>
     </div>
     <!-- 表格展示 -->
-    <el-table border :data="messageList" @selection-change="selectionChange">
+    <el-table
+      border
+      v-loading="loading"
+      :data="messageList"
+      @selection-change="selectionChange"
+    >
       <!-- 表格列 -->
       <el-table-column type="selection" width="55" />
       <el-table-column prop="avatar" label="头像" align="center" width="150">
@@ -120,6 +126,7 @@ export default {
   },
   data: function() {
     return {
+      loading: true,
       deleteFlag: false,
       messageIdList: [],
       messageList: [],
@@ -179,12 +186,8 @@ export default {
         .then(({ data }) => {
           this.messageList = data.data.recordList;
           this.count = data.data.count;
+          this.loading = false;
         });
-    }
-  },
-  watch: {
-    isDelete() {
-      this.listMessages();
     }
   }
 };

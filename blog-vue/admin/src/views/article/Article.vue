@@ -1,5 +1,6 @@
 <template>
   <el-card class="main-card">
+    <div class="title">{{ this.$route.name }}</div>
     <!-- 文章标题 -->
     <div class="article-title-container">
       <el-input
@@ -256,6 +257,7 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 1.25rem;
+  margin-top: 2.25rem;
 }
 .save-btn {
   margin-left: 0.75rem;

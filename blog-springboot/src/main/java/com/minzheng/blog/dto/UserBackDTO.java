@@ -1,8 +1,12 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 后台用户列表
@@ -10,6 +14,9 @@ import java.util.Date;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserBackDTO {
 
     /**
@@ -35,7 +42,7 @@ public class UserBackDTO {
     /**
      * 用户角色
      */
-    private String userRole;
+    private List<UserRoleDTO> roleList;
 
     /**
      * 登录类型
@@ -65,7 +72,7 @@ public class UserBackDTO {
     /**
      * 用户评论状态
      */
-    private Integer isSilence;
+    private Integer isDisable;
 
     /**
      * 状态

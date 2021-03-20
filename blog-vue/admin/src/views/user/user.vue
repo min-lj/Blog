@@ -1,5 +1,6 @@
 <template>
   <el-card class="main-card">
+    <div class="title">{{ this.$route.name }}</div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <!-- 条件筛选 -->
@@ -24,7 +25,7 @@
       </div>
     </div>
     <!-- 表格展示 -->
-    <el-table border :data="userList" @selection-change="selectionChange">
+    <el-table border :data="userList" v-loading="loading">
       <!-- 表格列 -->
       <el-table-column
         prop="linkAvatar"
@@ -46,7 +47,7 @@
         prop="loginType"
         label="登录方式"
         align="center"
-        width="120"
+        width="80"
       >
         <template slot-scope="scope">
           <el-tag type="success" v-if="scope.row.loginType == 0">邮箱</el-tag>
@@ -54,25 +55,26 @@
           <el-tag type="danger" v-if="scope.row.loginType == 2">微博</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="userRole"
-        label="用户角色"
-        align="center"
-        width="120"
-      >
+      <el-table-column prop="roleList" label="用户角色" align="center">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.userRole }}</el-tag>
+          <el-tag
+            v-for="(item, index) of scope.row.roleList"
+            :key="index"
+            style="margin-right:4px;margin-top:4px"
+          >
+            {{ item.roleName }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="isSilence" label="禁言" align="center" width="100">
+      <el-table-column prop="isDisable" label="禁用" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.isSilence"
+            v-model="scope.row.isDisable"
             active-color="#13ce66"
             inactive-color="#F4F4F5"
             :active-value="1"
             :inactive-value="0"
-            @change="changeComment(scope.row)"
+            @change="changeDisable(scope.row)"
           />
         </template>
       </el-table-column>
@@ -135,7 +137,7 @@
       :page-sizes="[10, 20]"
       layout="total, sizes, prev, pager, next, jumper"
     />
-    <!-- 添加对话框 -->
+    <!-- 修改对话框 -->
     <el-dialog :visible.sync="isEdit" width="30%">
       <div class="dialog-title-container" slot="title">
         修改用户
@@ -144,9 +146,16 @@
         <el-form-item label="昵称">
           <el-input v-model="userForm.nickname" style="width:220px" />
         </el-form-item>
-        <el-form-item label="权限">
-          <el-radio v-model="userForm.userRole" label="user">user</el-radio>
-          <el-radio v-model="userForm.userRole" label="admin">admin</el-radio>
+        <el-form-item label="角色">
+          <el-checkbox-group v-model="roleIdList">
+            <el-checkbox
+              v-for="item of userRoleList"
+              :key="item.id"
+              :label="item.id"
+            >
+              {{ item.roleName }}
+            </el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -166,13 +175,14 @@ export default {
   },
   data: function() {
     return {
+      loading: true,
       isEdit: false,
       userForm: {
         userInfoId: null,
-        nickname: "",
-        userRole: ""
+        nickname: ""
       },
-      userIdList: [],
+      userRoleList: [],
+      roleIdList: [],
       userList: [],
       keywords: null,
       current: 1,
@@ -181,12 +191,6 @@ export default {
     };
   },
   methods: {
-    selectionChange(userList) {
-      this.userIdList = [];
-      userList.forEach(item => {
-        this.userIdList.push(item.userInfoId);
-      });
-    },
     sizeChange(size) {
       this.size = size;
       this.listUsers();
@@ -195,40 +199,20 @@ export default {
       this.current = current;
       this.listUsers();
     },
-    changeComment(user) {
+    changeDisable(user) {
       let param = new URLSearchParams();
-      param.append("isSilence", user.isSilence);
-      this.axios.put("/api/admin/users/comment/" + user.userInfoId, param);
-    },
-    updateUserStatus(id) {
-      let param = new URLSearchParams();
-      if (id != null) {
-        param.append("idList", [id]);
-      } else {
-        param.append("idList", this.userIdList);
-      }
-      param.append("status", this.status == 0 ? 1 : 0);
-      this.axios.put("/api/admin/users", param).then(({ data }) => {
-        if (data.flag) {
-          this.$notify.success({
-            title: "成功",
-            message: data.message
-          });
-          this.listUsers();
-        } else {
-          this.$notify.error({
-            title: "失败",
-            message: data.message
-          });
-        }
-        this.updateIsDelete = false;
-      });
+      param.append("isDisable", user.isDisable);
+      this.axios.put("/api/admin/users/disable/" + user.userInfoId, param);
     },
     openEditModel(user) {
       this.userForm = JSON.parse(JSON.stringify(user));
+      this.userForm.roleList.forEach(item => {
+        this.roleIdList.push(item.id);
+      });
       this.isEdit = true;
     },
     editUserRole() {
+      this.userForm.roleIdList = this.roleIdList;
       this.axios
         .put("/api/admin/users/role", this.userForm)
         .then(({ data }) => {
@@ -259,7 +243,11 @@ export default {
         .then(({ data }) => {
           this.userList = data.data.recordList;
           this.count = data.data.count;
+          this.loading = false;
         });
+      this.axios.get("/api/admin/users/role").then(({ data }) => {
+        this.userRoleList = data.data;
+      });
     }
   }
 };

@@ -30,11 +30,6 @@ spring:
     host: 你的密码
     port: 6379
     password: Redis密码
-  #es配置
-  data:
-    elasticsearch:
-      cluster-name: elasticsearch
-      cluster-nodes: 服务器ip:9300
   #mq配置
   rabbitmq:
     host: 服务器ip
@@ -86,5 +81,3 @@ aliyun:
   accessKeyId: "阿里云accessKeyId"
   accessKeySecret: "阿里云accessKeySecret"
   bucketName: "阿里云bucket名"
-
-

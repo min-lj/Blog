@@ -1,15 +1,22 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
 /**
  * 文章
+ *
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArticleDTO {
 
     /**
@@ -66,5 +73,21 @@ public class ArticleDTO {
      * 文章标签
      */
     private List<TagDTO> tagDTOList;
+
+    /**
+     * 上一篇文章
+     */
+    private ArticlePaginationDTO lastArticle;
+
+    /**
+     * 下一篇文章
+     */
+    private ArticlePaginationDTO nextArticle;
+
+    /**
+     * 推荐文章
+     */
+    private List<ArticleRecommendDTO> articleRecommendList;
+
 
 }
