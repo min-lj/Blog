@@ -42,7 +42,7 @@ SQL文件位于根目录下。
 
 **后端：** "SpringBoot" + "nginx" + "docker" + "SpringSecurity" + "Swagger2" + "MyBatisPlus" + "Mysql" + "Redis" + "elasticsearch" + "rabbitMQ" + "MaxWell" + "websocket"
 
-**其他：** 接入QQ，微博第三方登录，接入腾讯云人机验证
+**其他：** 接入QQ，微博第三方登录，接入腾讯云人机验证、websocket
 
 ## 运行环境
 
@@ -79,7 +79,7 @@ SQL文件位于根目录下。
 
 ![QQ截图20210320171133.png](https://www.static.talkxj.com/articles/1616231666692.png)
 
-![QQ截图20200629122228.png](https://www.static.talkxj.com/articles/1593404582352.png)
+![QQ截图20210320235519 1.jpg](https://www.static.talkxj.com/articles/1616255938601.jpg)
 
 ![QQ截图20210320171338.png](https://www.static.talkxj.com/articles/1616231705373.png)
 
