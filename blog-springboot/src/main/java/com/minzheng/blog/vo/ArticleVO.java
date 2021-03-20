@@ -4,11 +4,11 @@ package com.minzheng.blog.vo;
 import com.minzheng.blog.entity.Article;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +19,9 @@ import java.util.List;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "文章")
 public class ArticleVO {
 
@@ -71,21 +74,6 @@ public class ArticleVO {
      */
     @ApiModelProperty(name = "isDraft", value = "是否为草稿", dataType = "Integer")
     private Integer isDraft;
-
-
-    public ArticleVO(Article article, List<Integer> tagIdList) {
-        this.id = article.getId();
-        this.articleTitle = article.getArticleTitle();
-        this.articleContent = article.getArticleContent();
-        this.articleCover = article.getArticleCover();
-        this.categoryId = article.getCategoryId();
-        this.isTop = article.getIsTop();
-        this.tagIdList = tagIdList;
-        this.isDraft = article.getIsDraft();
-    }
-
-    public ArticleVO() {
-    }
 
 
 }

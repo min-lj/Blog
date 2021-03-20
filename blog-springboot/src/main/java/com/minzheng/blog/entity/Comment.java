@@ -8,7 +8,10 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.CommentVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 评论
@@ -17,6 +20,9 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_comment")
 public class Comment {
 
@@ -60,19 +66,5 @@ public class Comment {
      * 状态码
      */
     private Integer isDelete;
-
-    public Comment(CommentVO commentVO) {
-        this.userId = UserUtil.getLoginUser().getUserInfoId();
-        this.replyId = commentVO.getReplyId();
-        this.articleId = commentVO.getArticleId();
-        this.commentContent = commentVO.getCommentContent();
-        this.parentId = commentVO.getParentId();
-        this.createTime = new Date();
-    }
-
-    public Comment(Integer commentId, Integer isDelete) {
-        this.id = commentId;
-        this.isDelete = isDelete;
-    }
 
 }

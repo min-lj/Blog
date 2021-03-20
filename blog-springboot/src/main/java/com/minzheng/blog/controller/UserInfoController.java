@@ -1,7 +1,11 @@
 package com.minzheng.blog.controller;
 
 
+import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.constant.StatusConst;
+import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.service.UserInfoService;
 import com.minzheng.blog.vo.*;
 import io.swagger.annotations.Api;
@@ -13,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.util.List;
+
+import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
 
 /**
  * 处理用户信息
@@ -28,30 +36,45 @@ public class UserInfoController {
 
     @ApiOperation(value = "修改用户资料")
     @PutMapping("/users/info")
-    private Result updateUserInfo(@Valid @RequestBody UserInfoVO userInfoVO) {
+    public Result updateUserInfo(@Valid @RequestBody UserInfoVO userInfoVO) {
         userInfoService.updateUserInfo(userInfoVO);
-        return new Result(true, StatusConst.OK, "修改成功！");
+        return new Result<>(true, StatusConst.OK, "修改成功！");
     }
 
     @ApiOperation(value = "修改用户头像")
     @ApiImplicitParam(name = "file", value = "用户头像", required = true, dataType = "MultipartFile")
     @PostMapping("/users/avatar")
-    private Result<String> updateUserInfo(MultipartFile file) {
-        return new Result(true, StatusConst.OK, "修改成功！", userInfoService.updateUserAvatar(file));
+    public Result<String> updateUserInfo(MultipartFile file) {
+        return new Result<>(true, StatusConst.OK, "修改成功！", userInfoService.updateUserAvatar(file));
     }
 
-    @ApiOperation(value = "修改用户权限")
+    @OptLog(optType = UPDATE)
+    @ApiOperation(value = "修改用户角色")
     @PutMapping("/admin/users/role")
-    private Result<String> updateUserRole(@Valid @RequestBody UserRoleVO userRoleVO) {
+    public Result<String> updateUserRole(@Valid @RequestBody UserRoleVO userRoleVO) {
         userInfoService.updateUserRole(userRoleVO);
-        return new Result(true, StatusConst.OK, "修改成功！");
+        return new Result<>(true, StatusConst.OK, "修改成功！");
     }
 
-    @ApiOperation(value = "修改用户禁言状态")
-    @PutMapping("/admin/users/comment/{userInfoId}")
-    private Result<String> updateUserSilence(@PathVariable("userInfoId") Integer userInfoId, Integer isSilence) {
-        userInfoService.updateUserSilence(userInfoId, isSilence);
-        return new Result(true, StatusConst.OK, "修改成功！");
+    @OptLog(optType = UPDATE)
+    @ApiOperation(value = "修改用户禁用状态")
+    @PutMapping("/admin/users/disable/{userInfoId}")
+    public Result updateUserSilence(@PathVariable("userInfoId") Integer userInfoId, Integer isDisable) {
+        userInfoService.updateUserDisable(userInfoId, isDisable);
+        return new Result<>(true, StatusConst.OK, "修改成功！");
+    }
+
+    @ApiOperation(value = "查看在线用户")
+    @GetMapping("/admin/users/online")
+    public Result<PageDTO<UserOnlineDTO>> listOnlineUsers(ConditionVO conditionVO) {
+        return new Result<>(true, StatusConst.OK, "查询成功！", userInfoService.listOnlineUsers(conditionVO));
+    }
+
+    @ApiOperation(value = "下线用户")
+    @DeleteMapping("/admin/users/online/{userInfoId}")
+    public Result removeOnlineUser(@PathVariable("userInfoId") Integer userInfoId) {
+        userInfoService.removeOnlineUser(userInfoId);
+        return new Result<>(true, StatusConst.OK, "操作成功！");
     }
 
 }

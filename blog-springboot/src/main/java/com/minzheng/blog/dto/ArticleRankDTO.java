@@ -1,6 +1,9 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 文章排行
@@ -8,6 +11,9 @@ import lombok.Data;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArticleRankDTO {
 
     /**
@@ -20,10 +26,5 @@ public class ArticleRankDTO {
      */
     private Integer viewsCount;
 
-
-    public ArticleRankDTO(String articleTitle, Integer viewsCount) {
-        this.articleTitle = articleTitle;
-        this.viewsCount = viewsCount;
-    }
 
 }

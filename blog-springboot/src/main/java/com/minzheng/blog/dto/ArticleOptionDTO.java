@@ -1,6 +1,9 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,7 +13,11 @@ import java.util.List;
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArticleOptionDTO {
+
     /**
      * 文章标签列表
      */
@@ -21,12 +28,6 @@ public class ArticleOptionDTO {
      */
     private List<CategoryBackDTO> categoryDTOList;
 
-    public ArticleOptionDTO(List<CategoryBackDTO> categoryDTOList, List<TagDTO> tagDTOList) {
-        this.categoryDTOList = categoryDTOList;
-        this.tagDTOList = tagDTOList;
-    }
 
-    public ArticleOptionDTO() {
-    }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * OSS工具类
@@ -64,7 +65,7 @@ public class OSSUtil {
         // 获取不重复的随机名
         String fileName = String.valueOf(System.currentTimeMillis());
         // 获取文件的扩展名如png,jpg等
-        String extension = getFileExtension(file.getOriginalFilename());
+        String extension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         // 获取文件存储的相对路径(带文件名)
         String relativeAddr = targetAddr + fileName + extension;
         try {

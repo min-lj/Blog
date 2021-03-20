@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { generaMenu } from "../../assets/js/menu";
 export default {
   data: function() {
     return {
@@ -68,8 +69,12 @@ export default {
                 param.append("password", that.loginForm.password);
                 that.axios.post("/api/login", param).then(({ data }) => {
                   if (data.flag) {
+                    // 登录后保存用户信息
                     that.$store.commit("login", data.data);
+                    // 跳转首页
                     that.$message.success(data.message);
+                    // 加载用户菜单
+                    generaMenu();
                     that.$router.push({ path: "/" });
                   } else {
                     that.$message.error(data.message);

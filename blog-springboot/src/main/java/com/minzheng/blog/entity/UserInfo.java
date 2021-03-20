@@ -9,7 +9,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.UserInfoVO;
 import com.minzheng.blog.vo.UserRoleVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户信息
@@ -18,6 +21,9 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_user_info")
 public class UserInfo {
 
@@ -26,11 +32,6 @@ public class UserInfo {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    /**
-     * 用户角色
-     */
-    private String userRole;
 
     /**
      * 用户昵称
@@ -55,45 +56,16 @@ public class UserInfo {
     /**
      * 是否禁言
      */
-    private Integer isSilence;
+    private Integer isDisable;
 
     /**
      * 创建时间
      */
     private Date createTime;
 
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
-    public UserInfo() {
-        this.nickname = "用户" + System.currentTimeMillis();
-        this.createTime = new Date();
-    }
-
-    public UserInfo(String nickname, String avatar) {
-        this.nickname = nickname;
-        this.avatar = avatar;
-        this.createTime = new Date();
-    }
-
-    public UserInfo(UserInfoVO userInfoVO) {
-        this.id = UserUtil.getLoginUser().getUserInfoId();
-        this.nickname = userInfoVO.getNickname();
-        this.intro = userInfoVO.getIntro();
-        this.webSite = userInfoVO.getWebSite();
-    }
-
-    public UserInfo(String avatar) {
-        this.id = UserUtil.getLoginUser().getUserInfoId();
-        this.avatar = avatar;
-    }
-
-    public UserInfo(UserRoleVO userRoleVO) {
-        this.id = userRoleVO.getUserInfoId();
-        this.nickname = userRoleVO.getNickname();
-        this.userRole = userRoleVO.getUserRole();
-    }
-
-    public UserInfo(Integer id, Integer isSilence) {
-        this.id = id;
-        this.isSilence = isSilence;
-    }
 }

@@ -29,12 +29,25 @@ public class ControllerAdvice {
 
     /**
      * 处理参数异常
+     *
      * @param e
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleValidException(MethodArgumentNotValidException e) {
         return new Result(false, StatusConst.ERROR, e.getBindingResult().getFieldError().getDefaultMessage());
+    }
+
+    /**
+     * 处理系统异常
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = Exception.class)
+    public Result errorHandler(Exception e) {
+        e.printStackTrace();
+        return new Result(false, StatusConst.SYSTEM_ERROR, "系统异常");
     }
 
 }

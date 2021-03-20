@@ -1,10 +1,15 @@
 package com.minzheng.blog;
 
+import com.minzheng.blog.dao.ChatRecordDao;
+import com.minzheng.blog.service.impl.WebSocketServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 public class BlogApplication {
 
     public static void main(String[] args) {
-        System.setProperty("es.set.netty.runtime.available.processors", "false");
         SpringApplication.run(BlogApplication.class, args);
     }
 

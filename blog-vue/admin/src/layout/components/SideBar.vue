@@ -8,9 +8,9 @@
     text-color="#BFCBD9"
     active-text-color="#409EFF"
   >
-    <template v-for="route of this.$router.options.routes">
+    <template v-for="route of this.$store.state.userMenuList">
       <!-- 二级菜单 -->
-      <template v-if="route.name && route.children">
+      <template v-if="route.name && route.children && !route.hidden">
         <el-submenu :key="route.path" :index="route.path">
           <!-- 二级菜单标题 -->
           <template slot="title">
@@ -18,14 +18,12 @@
             <span>{{ route.name }}</span>
           </template>
           <!-- 二级菜单选项 -->
-          <el-menu-item
-            v-for="(item, index) of route.children"
-            :key="index"
-            :index="item.path"
-          >
-            <i :class="item.icon" />
-            <span slot="title">{{ item.name }}</span>
-          </el-menu-item>
+          <template v-for="(item, index) of route.children">
+            <el-menu-item v-if="!item.hidden" :key="index" :index="item.path">
+              <i :class="item.icon" />
+              <span slot="title">{{ item.name }}</span>
+            </el-menu-item>
+          </template>
         </el-submenu>
       </template>
       <!-- 一级菜单 -->

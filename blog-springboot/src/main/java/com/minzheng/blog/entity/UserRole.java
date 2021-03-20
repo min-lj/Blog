@@ -2,39 +2,38 @@ package com.minzheng.blog.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
- * 文章点赞记录
- *
- * @author xiaojie
- * @since 2020-05-18
- */
+ * @author: yezhiqiu
+ * @date: 2020-12-27
+ **/
 @Data
-@TableName("tb_article_like")
-public class ArticleLike {
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName("tb_user_role")
+public class UserRole {
     /**
-     * id
+     * 主键id
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 点赞用户
+     * 用户id
      */
     private Integer userId;
 
     /**
-     * 点赞文章
+     * 角色id
      */
-    private Integer articleId;
-
+    private Integer roleId;
 
 }

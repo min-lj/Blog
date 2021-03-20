@@ -1,9 +1,10 @@
 <template>
   <el-card class="main-card">
+    <div class="title">{{ this.$route.name }}</div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <el-button
-        type="success"
+        type="primary"
         size="small"
         icon="el-icon-plus"
         @click="openModel(null)"
@@ -41,7 +42,12 @@
       </div>
     </div>
     <!-- 表格展示 -->
-    <el-table border :data="linkList" @selection-change="selectionChange">
+    <el-table
+      border
+      :data="linkList"
+      @selection-change="selectionChange"
+      v-loading="loading"
+    >
       <!-- 表格列 -->
       <el-table-column type="selection" width="55" />
       <el-table-column
@@ -145,6 +151,7 @@ export default {
   },
   data: function() {
     return {
+      loading: true,
       deleteFlag: false,
       addOrEdit: false,
       linkIdList: [],
@@ -259,6 +266,7 @@ export default {
         .then(({ data }) => {
           this.linkList = data.data.recordList;
           this.count = data.data.count;
+          this.loading = false;
         });
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <el-card class="main-card">
+    <div class="title">{{ this.$route.name }}</div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <el-button
@@ -57,7 +58,12 @@
       </div>
     </div>
     <!-- 表格展示 -->
-    <el-table border :data="articleList" @selection-change="selectionChange">
+    <el-table
+      border
+      :data="articleList"
+      @selection-change="selectionChange"
+      v-loading="loading"
+    >
       <!-- 表格列 -->
       <el-table-column type="selection" width="55" />
       <el-table-column prop="articleTitle" label="标题" align="center" />
@@ -79,7 +85,7 @@
           <el-tag
             v-for="item of scope.row.tagDTOList"
             :key="item.tagId"
-            style="margin-right:0.2rem"
+            style="margin-right:0.2rem;margin-top:0.2rem"
           >
             {{ item.tagName }}
           </el-tag>
@@ -245,6 +251,7 @@ export default {
   },
   data: function() {
     return {
+      loading: true,
       updateIsDelete: false,
       remove: false,
       options: [
@@ -309,7 +316,7 @@ export default {
     deleteArticles(id) {
       var param = {};
       if (id == null) {
-        param = { data: this.commentIdList };
+        param = { data: this.articleIdList };
       } else {
         param = { data: [id] };
       }
@@ -356,6 +363,7 @@ export default {
         .then(({ data }) => {
           this.articleList = data.data.recordList;
           this.count = data.data.count;
+          this.loading = false;
         });
     }
   },

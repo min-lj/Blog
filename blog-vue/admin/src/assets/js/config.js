@@ -1,3 +1,3 @@
 export default {
-  TENCENT_CAPTCHA:"2088053498"
-}
+  TENCENT_CAPTCHA: "2088053498"
+};

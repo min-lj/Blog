@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app :class="navClass" hide-on-scroll flat height="58">
+  <v-app-bar app :class="navClass" hide-on-scroll flat height="60">
     <!-- 手机端导航栏 -->
     <div class="d-md-none nav-mobile-container">
       <div style="font-size:18px;font-weight:bold">

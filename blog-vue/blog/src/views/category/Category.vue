@@ -58,7 +58,7 @@ export default {
 }
 @media (max-width: 759px) {
   .category-title {
-    font-size: 25px;
+    font-size: 28px;
   }
 }
 .category-list {

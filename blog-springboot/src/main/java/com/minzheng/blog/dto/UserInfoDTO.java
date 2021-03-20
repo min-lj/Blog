@@ -1,9 +1,13 @@
 package com.minzheng.blog.dto;
 
-import com.minzheng.blog.entity.UserInfo;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 用户登录信息
@@ -11,7 +15,8 @@ import java.util.Set;
  * @author 11921
  */
 @Data
-public class UserInfoDTO {
+@Builder
+public class UserInfoDTO implements UserDetails {
 
     /**
      * 用户账号id
@@ -24,9 +29,19 @@ public class UserInfoDTO {
     private Integer userInfoId;
 
     /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
      * 用户角色
      */
-    private String userRole;
+    private List<String> roleList;
 
     /**
      * 用户昵称
@@ -49,34 +64,75 @@ public class UserInfoDTO {
     private String webSite;
 
     /**
-     * 用户禁言状态
-     */
-    private Integer isSilence;
-
-    /**
      * 点赞文章集合
      */
-    private Set articleLikeSet;
+    private Set<Integer> articleLikeSet;
 
     /**
      * 点赞评论集合
      */
-    private Set commentLikeSet;
+    private Set<Integer> commentLikeSet;
 
-    public UserInfoDTO() {
+    /**
+     * 用户登录ip
+     */
+    private String ipAddr;
+
+    /**
+     * ip来源
+     */
+    private String ipSource;
+
+    /**
+     * 浏览器
+     */
+    private String browser;
+
+    /**
+     * 操作系统
+     */
+    private String os;
+
+    /**
+     * 最近登录时间
+     */
+    private Date lastLoginTime;
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roleList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
-    public UserInfoDTO(Integer id, UserInfo userInfo, Set articleLikeSet, Set commentLikeSet) {
-        this.id = id;
-        this.userInfoId = userInfo.getId();
-        this.userRole = userInfo.getUserRole();
-        this.nickname = userInfo.getNickname();
-        this.avatar = userInfo.getAvatar();
-        this.isSilence = userInfo.getIsSilence();
-        this.intro = userInfo.getIntro();
-        this.webSite = userInfo.getWebSite();
-        this.articleLikeSet = articleLikeSet;
-        this.commentLikeSet = commentLikeSet;
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

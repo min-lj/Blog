@@ -1,13 +1,20 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 友链列表
  * @author 11921
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FriendLinkDTO {
+
     /**
      * id
      */
@@ -32,4 +39,5 @@ public class FriendLinkDTO {
      * 介绍
      */
     private String linkIntro;
+
 }

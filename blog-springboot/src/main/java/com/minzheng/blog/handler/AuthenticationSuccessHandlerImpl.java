@@ -4,16 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.minzheng.blog.dao.UserAuthDao;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.entity.UserAuth;
-import com.minzheng.blog.utils.IpUtil;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.Result;
 import com.minzheng.blog.constant.StatusConst;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,17 +27,28 @@ import java.io.IOException;
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
     @Autowired
     private UserAuthDao userAuthDao;
-    @Autowired
-    private HttpServletRequest request;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
+        // 更新用户ip，最近登录时间
+        updateUserInfo();
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         httpServletResponse.getWriter().write(JSON.toJSONString(new Result<UserInfoDTO>(true, StatusConst.OK, "登录成功！", UserUtil.getLoginUser())));
-        //更新用户登录ip地址，最新登录时间
-        String ipAddr = IpUtil.getIpAddr(request);
-        String ipSource = IpUtil.getIpSource(ipAddr);
-        userAuthDao.updateById(new UserAuth(ipAddr, ipSource));
+    }
+
+    /**
+     * 更新用户信息
+     */
+    @Async
+    public void updateUserInfo() {
+        UserAuth userAuth = UserAuth.builder()
+                .id(UserUtil.getLoginUser().getId())
+                .ipAddr(UserUtil.getLoginUser().getIpAddr())
+                .ipSource(UserUtil.getLoginUser().getIpSource())
+                .lastLoginTime(UserUtil.getLoginUser().getLastLoginTime())
+                .build();
+        userAuthDao.updateById(userAuth);
     }
 
 }

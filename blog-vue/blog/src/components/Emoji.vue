@@ -49,7 +49,7 @@ export default {
   background: #dddddd;
 }
 .emoji-wrapper {
-  height: 108px;
-  overflow: auto;
+  max-height: 150px;
+  overflow-y: scroll;
 }
 </style>

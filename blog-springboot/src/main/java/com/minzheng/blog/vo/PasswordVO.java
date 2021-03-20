@@ -2,7 +2,10 @@ package com.minzheng.blog.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -12,8 +15,11 @@ import javax.validation.constraints.Size;
  *
  * @author 11921
  */
-@ApiModel(description = "密码")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(description = "密码")
 public class PasswordVO {
 
     /**

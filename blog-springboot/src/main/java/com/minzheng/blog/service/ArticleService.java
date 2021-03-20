@@ -72,6 +72,12 @@ public interface ArticleService extends IService<Article> {
     ArticleDTO getArticleById(Integer articleId);
 
     /**
+     * 查看最新文章
+     * @return 最新文章
+     */
+    List<ArticleRecommendDTO> listNewestArticles();
+
+    /**
      * 查看文章分类标签选项
      *
      * @return 文章分类标签选项

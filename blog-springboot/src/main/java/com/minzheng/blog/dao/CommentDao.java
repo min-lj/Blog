@@ -26,7 +26,7 @@ public interface CommentDao extends BaseMapper<Comment> {
      * @param current   当前页码
      * @return 评论集合
      */
-    List<CommentDTO> listComments(Integer articleId, Long current);
+    List<CommentDTO> listComments(@Param("articleId") Integer articleId, @Param("current") Long current);
 
     /**
      * 查看评论id集合下的回复
@@ -43,7 +43,7 @@ public interface CommentDao extends BaseMapper<Comment> {
      * @param current   当前页码
      * @return 回复集合
      */
-    List<ReplyDTO> listRepliesByCommentId(Integer commentId, Long current);
+    List<ReplyDTO> listRepliesByCommentId(@Param("commentId") Integer commentId, @Param("current") Long current);
 
     /**
      * 根据评论id查询回复总量

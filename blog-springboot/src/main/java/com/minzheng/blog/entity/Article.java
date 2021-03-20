@@ -8,7 +8,11 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.ArticleVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
  * 文章
@@ -17,8 +21,12 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_article")
 public class Article {
+
     /**
      * id
      */
@@ -75,30 +83,5 @@ public class Article {
      */
     private Integer isDelete;
 
-    public Article(ArticleVO articleVO) {
-        this.id = articleVO.getId();
-        this.userId = UserUtil.getLoginUser().getUserInfoId();
-        this.categoryId = articleVO.getCategoryId();
-        this.articleCover = articleVO.getArticleCover();
-        this.articleTitle = articleVO.getArticleTitle();
-        this.articleContent = articleVO.getArticleContent();
-        this.createTime = this.id == null ? new Date() : null;
-        this.updateTime = this.id != null ? new Date() : null;
-        this.isTop = articleVO.getIsTop();
-        this.isDraft = articleVO.getIsDraft();
-    }
-
-    public Article(Integer id) {
-        this.id = id;
-        this.isTop = 0;
-    }
-
-    public Article(Integer id, Integer isTop) {
-        this.id = id;
-        this.isTop = isTop;
-    }
-
-    public Article() {
-    }
 
 }

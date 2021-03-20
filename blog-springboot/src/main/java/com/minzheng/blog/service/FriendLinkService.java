@@ -6,6 +6,7 @@ import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.entity.FriendLink;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.FriendLinkVO;
 
 import java.util.List;
 
@@ -29,5 +30,11 @@ public interface FriendLinkService extends IService<FriendLink> {
      * @return 友链列表
      */
     PageDTO<FriendLinkBackDTO> listFriendLinkDTO(ConditionVO condition);
+
+    /**
+     * 保存或更新友链
+     * @param friendLinkVO 友链
+     */
+    void saveOrUpdateFriendLink(FriendLinkVO friendLinkVO);
 
 }

@@ -25,8 +25,8 @@ public class IpUtil {
     /**
      * 获取用户ip地址
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return ip地址
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ipAddress = null;
@@ -67,8 +67,8 @@ public class IpUtil {
     /**
      * 解析ip地址
      *
-     * @param ipAddress
-     * @return
+     * @param ipAddress ip地址
+     * @return 解析后的ip地址
      */
     public static String getIpSource(String ipAddress) {
         try {

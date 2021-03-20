@@ -235,6 +235,7 @@ export default {
   methods: {
     // 初始化
     init() {
+      document.title = this.$route.meta.title;
       // 一言Api进行打字机循环输出效果
       fetch("https://v1.hitokoto.cn?c=i")
         .then(res => {
@@ -275,6 +276,7 @@ export default {
       });
     },
     infiniteHandler($state) {
+      let md = require("markdown-it")();
       this.axios
         .get("/api/articles", {
           params: {
@@ -283,6 +285,14 @@ export default {
         })
         .then(({ data }) => {
           if (data.data.length) {
+            // 去除markdown标签
+            data.data.forEach(item => {
+              item.articleContent = md
+                .render(item.articleContent)
+                .replace(/<\/?[^>]*>/g, "")
+                .replace(/[|]*\n/, "")
+                .replace(/&npsp;/gi, "");
+            });
             this.articleList.push(...data.data);
             this.current++;
             $state.loaded();
@@ -321,7 +331,7 @@ export default {
 <style scoped>
 .home-banner {
   position: absolute;
-  top: -58px;
+  top: -60px;
   left: 0;
   right: 0;
   height: 100vh;
@@ -370,8 +380,8 @@ export default {
   }
   .home-container {
     max-width: 1200px;
-    margin: calc(100vh - 50px) auto 0 auto;
-    padding: 0 3px;
+    margin: calc(100vh - 48px) auto 28px auto;
+    padding: 0 7.5px;
   }
   .article-card {
     display: flex;

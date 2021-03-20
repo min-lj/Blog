@@ -9,11 +9,12 @@ export default new Vuex.Store({
     collapse: false,
     tabList: [{ name: "首页", path: "/" }],
     userId: null,
-    userRole: null,
+    roleList: null,
     avatar: null,
     nickname: null,
     intro: null,
-    webSite: null
+    webSite: null,
+    userMenuList: []
   },
   mutations: {
     saveTab(state, tab) {
@@ -33,19 +34,23 @@ export default new Vuex.Store({
     },
     login(state, user) {
       state.userId = user.userInfoId;
-      state.userRole = user.userRole;
+      state.roleList = user.roleList;
       state.avatar = user.avatar;
       state.nickname = user.nickname;
       state.intro = user.intro;
       state.webSite = user.webSite;
     },
+    saveUserMenuList(state, userMenuList) {
+      state.userMenuList = userMenuList;
+    },
     logout(state) {
       state.userId = null;
-      state.userRole = null;
+      state.roleList = null;
       state.avatar = null;
       state.nickname = null;
       state.intro = null;
       state.webSite = null;
+      state.userMenuList = [];
     },
     updateAvatar(state, avatar) {
       state.avatar = avatar;

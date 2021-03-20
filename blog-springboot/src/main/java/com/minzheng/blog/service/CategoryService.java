@@ -4,6 +4,7 @@ import com.minzheng.blog.dto.CategoryDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.minzheng.blog.vo.CategoryVO;
 import com.minzheng.blog.vo.ConditionVO;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public interface CategoryService extends IService<Category> {
      * @param categoryIdList 分类id集合
      */
     void deleteCategory(List<Integer> categoryIdList);
+
+    /**
+     * 保存或更新分类
+     * @param categoryVO 分类
+     */
+    void saveOrUpdateCategory(CategoryVO categoryVO);
 
 }

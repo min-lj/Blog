@@ -77,7 +77,9 @@ export default {
     sendCode() {
       const that = this;
       // eslint-disable-next-line no-undef
-      var captcha = new TencentCaptcha(this.config.TENCENT_CAPTCHA, function(res) {
+      var captcha = new TencentCaptcha(this.config.TENCENT_CAPTCHA, function(
+        res
+      ) {
         if (res.ret === 0) {
           //发送邮件
           that.countDown();

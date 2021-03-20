@@ -1,6 +1,10 @@
 <template>
   <el-card class="main-card">
-    <mavon-editor v-model="aboutContent" style="height:calc(100vh - 215px)" />
+    <div class="title">{{ this.$route.name }}</div>
+    <mavon-editor
+      v-model="aboutContent"
+      style="height:calc(100vh - 215px);margin-top:2.25rem"
+    />
     <el-button
       type="danger"
       size="medium"

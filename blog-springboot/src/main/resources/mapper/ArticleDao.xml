@@ -195,13 +195,13 @@
                 and article_title like concat('%',#{condition.keywords},'%')
             </if>
         </where>
-        ORDER BY is_top DESC
+        ORDER BY is_top DESC, id DESC
         LIMIT #{condition.current},#{condition.size}
         ) a
         LEFT JOIN tb_category c ON a.category_id = c.id
         LEFT JOIN tb_article_tag atg ON a.id = atg.article_id
         LEFT JOIN tb_tag t ON t.id = atg.tag_id
-        ORDER BY is_top DESC
+        ORDER BY is_top DESC, a.id DESC
     </select>
 
     <select id="countArticleBacks" resultType="java.lang.Integer">
@@ -235,6 +235,28 @@
         <foreach collection="articleIdList" item="item" open="(id," separator="," close=")">
             #{item}
         </foreach>
+    </select>
+
+    <select id="listArticleRecommends" resultType="com.minzheng.blog.dto.ArticleRecommendDTO">
+        SELECT
+            id,
+            article_title,
+            article_cover,
+            create_time
+        FROM
+            (
+              SELECT DISTINCT
+                article_id
+                FROM
+                 ( SELECT tag_id FROM tb_article_tag WHERE article_id = #{articleId} ) t
+                 JOIN tb_article_tag t1 ON t.tag_id = t1.tag_id
+                 WHERE
+                 article_id != #{articleId}
+            ) t2
+               JOIN tb_article a ON t2.article_id = a.id
+        ORDER BY
+            is_top DESC,id DESC
+            LIMIT 6
     </select>
 
 </mapper>

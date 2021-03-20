@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -16,6 +15,9 @@ import lombok.experimental.Accessors;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_article_tag")
 public class ArticleTag {
 
@@ -35,12 +37,5 @@ public class ArticleTag {
      */
     private Integer tagId;
 
-    public ArticleTag(Integer articleId, Integer tagId) {
-        this.articleId = articleId;
-        this.tagId = tagId;
-    }
-
-    public ArticleTag() {
-    }
 
 }

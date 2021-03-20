@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.minzheng.blog.vo.MessageVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 留言
@@ -15,6 +18,9 @@ import lombok.Data;
  * @since 2020-05-18
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_message")
 public class Message {
 
@@ -58,19 +64,5 @@ public class Message {
      * 留言时间
      */
     private Date createTime;
-
-
-    public Message(MessageVO messageVO, String ipAddress, String ipSource) {
-        this.ipAddress = ipAddress;
-        this.ipSource = ipSource;
-        this.nickname = messageVO.getNickname();
-        this.avatar = messageVO.getAvatar();
-        this.messageContent = messageVO.getMessageContent();
-        this.time = messageVO.getTime();
-        this.createTime = new Date();
-    }
-
-    public Message() {
-    }
 
 }

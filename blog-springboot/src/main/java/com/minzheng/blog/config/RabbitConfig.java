@@ -13,18 +13,19 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     @Bean
-    public Queue insertDirectQueue() {
+    public Queue articleQueue() {
         return new Queue("article", true);
     }
 
     @Bean
     FanoutExchange maxWellExchange() {
-        return new FanoutExchange("maxwell", false, false);
+        return new FanoutExchange("maxwell", true, false);
     }
 
     @Bean
     Binding bindingArticleDirect() {
-        return BindingBuilder.bind(insertDirectQueue()).to(maxWellExchange());
+        return BindingBuilder.bind(articleQueue()).to(maxWellExchange());
     }
+
 
 }
