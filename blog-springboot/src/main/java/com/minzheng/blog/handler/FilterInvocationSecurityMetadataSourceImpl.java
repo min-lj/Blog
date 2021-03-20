@@ -62,9 +62,6 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
         // 获取接口角色信息，若为匿名接口则放行，若无对应角色则禁止
         for (UrlRoleDTO urlRoleDTO : urlRoleList) {
             if (antPathMatcher.match(urlRoleDTO.getUrl(), url) && urlRoleDTO.getRequestMethod().equals(method)) {
-                if (urlRoleDTO.getIsAnonymous().equals(CommonConst.TURE)) {
-                    return null;
-                }
                 List<String> roleList = urlRoleDTO.getRoleList();
                 if (CollectionUtils.isEmpty(roleList)) {
                     return SecurityConfig.createList("disable");
