@@ -98,7 +98,6 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    console.log(this.$route.path);
     // 刷新页面查询用户菜单
     if (store.state.userId != null) {
       generaMenu();
