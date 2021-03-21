@@ -55,6 +55,11 @@ spring:
       max-file-size: 40MB
       max-request-size: 100MB
 
+#es配置
+elasticsearch:
+  host: 你的ip
+  port: 9200
+
 #配置MybatisPlus
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
