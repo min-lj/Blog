@@ -26,10 +26,11 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogDao, Operat
     @Override
     public PageDTO<OperationLogDTO> listOperationLogs(ConditionVO conditionVO) {
         Page<OperationLog> page = new Page<>(conditionVO.getCurrent(), conditionVO.getSize());
+        // 查询日志列表
         Page<OperationLog> operationLogPage = this.page(page, new LambdaQueryWrapper<OperationLog>()
                 .like(StringUtils.isNotBlank(conditionVO.getKeywords()), OperationLog::getOptModule, conditionVO.getKeywords())
                 .or()
-                .like(StringUtils.isNotBlank(conditionVO.getKeywords()), OperationLog::getOptModule, conditionVO.getKeywords())
+                .like(StringUtils.isNotBlank(conditionVO.getKeywords()), OperationLog::getOptDesc, conditionVO.getKeywords())
                 .gt(Objects.nonNull(conditionVO.getStartTime()), OperationLog::getCreateTime, conditionVO.getStartTime())
                 .lt(Objects.nonNull(conditionVO.getEndTime()), OperationLog::getCreateTime, conditionVO.getEndTime())
                 .orderByDesc(OperationLog::getId));

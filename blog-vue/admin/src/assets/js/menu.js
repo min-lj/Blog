@@ -30,9 +30,6 @@ export function generaMenu() {
       if (userMenuList.length == 0) {
         Vue.prototype.$message.error("没有访问权限");
         router.push({ path: "/login" });
-      } else {
-        Vue.prototype.$message.success("登录成功");
-        router.push({ path: "/" });
       }
     }
   });

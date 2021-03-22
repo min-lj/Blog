@@ -64,9 +64,9 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             if (antPathMatcher.match(urlRoleDTO.getUrl(), url) && urlRoleDTO.getRequestMethod().equals(method)) {
                 List<String> roleList = urlRoleDTO.getRoleList();
                 if (CollectionUtils.isEmpty(roleList)) {
-                    return SecurityConfig.createList("disable");
+                    return null;
                 }
-                return SecurityConfig.createList(roleList.toArray(new String[]{}));
+                return null;
             }
         }
         return null;
