@@ -3,7 +3,8 @@
 <mapper namespace="com.minzheng.blog.dao.RoleDao">
 
     <resultMap id="RolePermissionMap" type="com.minzheng.blog.dto.UrlRoleDTO">
-        <id column="url" property="url"/>
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
         <result column="request_method" property="requestMethod"/>
         <collection property="roleList" ofType="java.lang.String">
             <constructor>
@@ -32,6 +33,7 @@
 
     <select id="listUrlRoles" resultMap="RolePermissionMap">
         SELECT
+         re.id,
          url,
          request_method,
          role_label

@@ -107,19 +107,6 @@ public class OptLogAspect {
         operationLogDao.insert(operationLog);
     }
 
-//    @Around("optLogPointCut()")
-//    public void before(ProceedingJoinPoint joinPoint) {
-//        long startTime = System.currentTimeMillis();
-//        Object[] args = joinPoint.getArgs();
-//        try {
-//            Object proceed = joinPoint.proceed(args);
-//            System.out.println(proceed);
-//        } catch (Throwable throwable) {
-//            throwable.printStackTrace();
-//        }
-//        long endTime = System.currentTimeMillis();
-//        System.out.println(endTime - startTime + "ms");
-//    }
 
     /**
      * 转换request 请求参数

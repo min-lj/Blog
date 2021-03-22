@@ -1,6 +1,7 @@
 package com.minzheng.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
@@ -75,7 +76,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
         // 判断角色名重复
         Integer count = roleDao.selectCount(new LambdaQueryWrapper<Role>()
                 .eq(Role::getRoleName, roleVO.getRoleName()));
-        if (count > 0) {
+        if (Objects.isNull(roleVO.getId()) && count > 0) {
             throw new ServeException("角色名已存在");
         }
         // 保存或更新角色信息
@@ -89,7 +90,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
                 .build();
         this.saveOrUpdate(role);
         // 更新资源列表
-        if (Objects.nonNull(roleVO.getResourceIdList())) {
+        if (CollectionUtils.isNotEmpty(roleVO.getResourceIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleResourceService.remove(new LambdaQueryWrapper<RoleResource>().eq(RoleResource::getRoleId, roleVO.getId()));
             }
@@ -104,7 +105,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
             filterInvocationSecurityMetadataSource.clearDataSource();
         }
         // 更新菜单列表
-        if (Objects.nonNull(roleVO.getMenuIdList())) {
+        if (CollectionUtils.isNotEmpty(roleVO.getMenuIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleMenuService.remove(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleVO.getId()));
             }

@@ -42,7 +42,6 @@ public class WebSocketServiceImpl {
      */
     private static CopyOnWriteArraySet<WebSocketServiceImpl> webSocketSet = new CopyOnWriteArraySet<>();
 
-
     private static ChatRecordDao chatRecordDao;
 
     @Autowired
