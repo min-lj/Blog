@@ -10,8 +10,14 @@ import java.util.List;
  **/
 @Data
 public class UrlRoleDTO {
+
     /**
-     * 权限id
+     * 资源id
+     */
+    private Integer id;
+
+    /**
+     * 路径
      */
     private String url;
 
