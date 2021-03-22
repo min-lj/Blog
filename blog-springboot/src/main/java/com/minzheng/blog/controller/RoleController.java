@@ -11,10 +11,7 @@ import com.minzheng.blog.vo.RoleVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -49,6 +46,14 @@ public class RoleController {
     @PostMapping("/admin/role")
     public Result listRoles(@RequestBody @Valid RoleVO roleVO) {
         roleService.saveOrUpdateRole(roleVO);
+        return new Result<>(true, StatusConst.OK, "操作成功");
+    }
+
+    @OptLog(optType = REMOVE)
+    @ApiOperation(value = "删除角色")
+    @DeleteMapping("/admin/roles")
+    public Result deleteRoles(@RequestBody List<Integer> roleIdList) {
+        roleService.deleteRoles(roleIdList);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
 

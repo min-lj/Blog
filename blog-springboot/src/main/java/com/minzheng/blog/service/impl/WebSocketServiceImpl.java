@@ -28,7 +28,6 @@ import static com.minzheng.blog.enums.ChatTypeEnum.*;
  * @author: yezhiqiu
  * @date: 2021-02-19
  **/
-
 @ServerEndpoint(value = "/websocket", configurator = WebSocketServiceImpl.ChatConfigurator.class)
 @Service
 public class WebSocketServiceImpl {
@@ -83,8 +82,12 @@ public class WebSocketServiceImpl {
 
         @Override
         public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-            String firstFoundHeader = request.getHeaders().get(HEADER_NAME.toLowerCase()).get(0);
-            sec.getUserProperties().put(HEADER_NAME, firstFoundHeader);
+            try {
+                String firstFoundHeader = request.getHeaders().get(HEADER_NAME.toLowerCase()).get(0);
+                sec.getUserProperties().put(HEADER_NAME, firstFoundHeader);
+            } catch (Exception e) {
+                sec.getUserProperties().put(HEADER_NAME, "未知ip");
+            }
         }
     }
 

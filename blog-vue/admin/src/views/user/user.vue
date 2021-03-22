@@ -205,6 +205,7 @@ export default {
       this.axios.put("/api/admin/users/disable/" + user.userInfoId, param);
     },
     openEditModel(user) {
+      this.roleIdList = [];
       this.userForm = JSON.parse(JSON.stringify(user));
       this.userForm.roleList.forEach(item => {
         this.roleIdList.push(item.id);

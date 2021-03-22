@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.RoleDao;
 import com.minzheng.blog.dao.RoleResourceDao;
+import com.minzheng.blog.dao.UserRoleDao;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.dto.RoleDTO;
 import com.minzheng.blog.dto.UserRoleDTO;
 import com.minzheng.blog.entity.Role;
 import com.minzheng.blog.entity.RoleMenu;
 import com.minzheng.blog.entity.RoleResource;
+import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.handler.FilterInvocationSecurityMetadataSourceImpl;
 import com.minzheng.blog.service.RoleMenuService;
@@ -43,6 +45,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
     @Autowired
     private RoleMenuService roleMenuService;
     @Autowired
+    private UserRoleDao userRoleDao;
+    @Autowired
     private FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource;
 
     @Override
@@ -68,6 +72,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveOrUpdateRole(RoleVO roleVO) {
+        // 判断角色名重复
+        Integer count = roleDao.selectCount(new LambdaQueryWrapper<Role>()
+                .eq(Role::getRoleName, roleVO.getRoleName()));
+        if (count > 0) {
+            throw new ServeException("角色名已存在");
+        }
         // 保存或更新角色信息
         Role role = Role.builder()
                 .id(roleVO.getId())
@@ -106,6 +116,18 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
                     .collect(Collectors.toList());
             roleMenuService.saveBatch(roleMenuList);
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteRoles(List<Integer> roleIdList) {
+        // 判断角色下是否有用户
+        Integer count = userRoleDao.selectCount(new LambdaQueryWrapper<UserRole>()
+                .in(UserRole::getRoleId, roleIdList));
+        if (count > 0) {
+            throw new ServeException("该角色下存在用户");
+        }
+        roleDao.deleteBatchIds(roleIdList);
     }
 
 }
