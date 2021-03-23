@@ -27,10 +27,9 @@ export function generaMenu() {
       store.commit("saveUserMenuList", userMenuList);
       // 添加菜单到路由
       router.addRoutes(userMenuList);
-      if (userMenuList.length == 0) {
-        Vue.prototype.$message.error("没有访问权限");
-        router.push({ path: "/login" });
-      }
+    } else {
+      Vue.prototype.$message.error(data.message);
+      router.push({ path: "/login" });
     }
   });
 }
