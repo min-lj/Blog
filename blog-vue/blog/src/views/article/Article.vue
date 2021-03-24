@@ -297,7 +297,8 @@ export default {
       count: 0,
       wordNum: "",
       readTime: "",
-      articleHref: window.location.href
+      articleHref: window.location.href,
+      clipboard: null
     };
   },
   methods: {
@@ -397,7 +398,21 @@ export default {
         typographer: true,
         highlight: function(str, lang) {
           // 当前时间加随机数生成唯一的id标识
-          const codeIndex = parseInt(Date.now());
+          var d = new Date().getTime();
+          if (
+            window.performance &&
+            typeof window.performance.now === "function"
+          ) {
+            d += performance.now();
+          }
+          const codeIndex = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+            /[xy]/g,
+            function(c) {
+              var r = (d + Math.random() * 16) % 16 | 0;
+              d = Math.floor(d / 16);
+              return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+            }
+          );
           // 复制功能主要使用的是 clipboard.js
           let html = `<button class="copy-btn iconfont iconfuzhi" type="button" data-clipboard-action="copy" data-clipboard-target="#copy${codeIndex}"></button>`;
           const linesLength = str.split(/\n/).length - 1;

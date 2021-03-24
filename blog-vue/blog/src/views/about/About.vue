@@ -6,7 +6,15 @@
     </div>
     <!-- 关于我内容 -->
     <v-card class="blog-container">
-      <div class="about-content markdown-body" v-html="aboutContent"></div>
+      <div class="my-wrapper">
+        <v-avatar size="110">
+          <img
+            class="author-avatar"
+            src="https://www.static.talkxj.com/avatar/blogger.jpg"
+          />
+        </v-avatar>
+      </div>
+      <div class="about-content markdown-body" v-html="aboutContent" />
     </v-card>
   </div>
 </template>
@@ -41,7 +49,16 @@ export default {
 }
 .about-content {
   word-break: break-word;
-  font-size: 1rem;
   line-height: 1.8;
+  font-size: 14px;
+}
+.my-wrapper {
+  text-align: center;
+}
+.author-avatar {
+  transition: all 0.5s;
+}
+.author-avatar:hover {
+  transform: rotate(360deg);
 }
 </style>

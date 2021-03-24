@@ -147,24 +147,19 @@
             </a>
             <div class="card-info-social">
               <a
-                class="mr-5 iconfont iconqq"
+                class="iconfont iconqq"
                 target="_blank"
                 href="http://wpa.qq.com/msgrd?v=3&uin=1192176811&site=qq&menu=yes"
               />
               <a
                 target="_blank"
                 href="https://github.com/X1192176811"
-                class="mr-5 iconfont icongithub"
+                class="ml-5 mr-5 iconfont icongithub"
               />
               <a
                 target="_blank"
                 href="https://gitee.com/feng_meiyu"
-                class="mr-5 iconfont icongitee-fill-round"
-              />
-              <a
-                class=" iconfont iconweibo"
-                target="_blank"
-                href="https://gitee.com/feng_meiyu"
+                class="iconfont icongitee-fill-round"
               />
             </div>
           </v-card>
