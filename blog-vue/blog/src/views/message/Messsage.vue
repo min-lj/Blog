@@ -9,6 +9,7 @@
           <input
             v-model="messageContent"
             @click="show = true"
+            @keyup.enter="addToList"
             placeholder="说点什么吧"
           />
           <button
