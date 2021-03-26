@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author xiaojie
@@ -59,7 +60,7 @@ public class FriendLinkServiceImpl extends ServiceImpl<FriendLinkDao, FriendLink
                 .linkAvatar(friendLinkVO.getLinkAvatar())
                 .linkAddress(friendLinkVO.getLinkAddress())
                 .linkIntro(friendLinkVO.getLinkIntro())
-                .createTime(friendLinkVO.getId() == null ? new Date() : null)
+                .createTime(Objects.isNull(friendLinkVO.getId()) ? new Date() : null)
                 .build();
         this.saveOrUpdate(friendLink);
     }

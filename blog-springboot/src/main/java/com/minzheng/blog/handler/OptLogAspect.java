@@ -89,7 +89,7 @@ public class OptLogAspect {
         // 请求方法
         operationLog.setOptMethod(methodName);
         // 请求参数
-        operationLog.setRequestParam(JSON.toJSONString(convertMap(request.getParameterMap())));
+        operationLog.setRequestParam(JSON.toJSONString(joinPoint.getArgs()));
         // 返回结果
         operationLog.setResponseData(JSON.toJSONString(keys));
         // 请求用户ID
@@ -105,20 +105,6 @@ public class OptLogAspect {
         // 创建时间
         operationLog.setCreateTime(new Date());
         operationLogDao.insert(operationLog);
-    }
-
-
-    /**
-     * 转换request 请求参数
-     *
-     * @param paramMap request获取的参数数组
-     */
-    public Map<String, String> convertMap(Map<String, String[]> paramMap) {
-        Map<String, String> map = new HashMap(16);
-        for (String key : paramMap.keySet()) {
-            map.put(key, paramMap.get(key)[0]);
-        }
-        return map;
     }
 
 }
