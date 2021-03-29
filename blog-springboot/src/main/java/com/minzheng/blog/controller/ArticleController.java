@@ -73,7 +73,6 @@ public class ArticleController {
         return new Result<>(true, StatusConst.OK, "修改成功");
     }
 
-    @OptLog(optType = UPLOAD)
     @ApiOperation(value = "上传文章图片")
     @ApiImplicitParam(name = "file", value = "文章图片", required = true, dataType = "MultipartFile")
     @PostMapping("/admin/articles/images")

@@ -5,7 +5,6 @@ import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Comment;
 import com.minzheng.blog.dao.CommentDao;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.CommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.utils.HTMLUtil;
@@ -35,8 +34,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private CommentDao commentDao;
     @Autowired
     private RedisTemplate redisTemplate;
-    @Autowired
-    private CommentService commentService;
 
     @Override
     public PageDTO<CommentDTO> listComments(Integer articleId, Long current) {
@@ -136,7 +133,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         List<Comment> commentList = deleteVO.getIdList().stream()
                 .map(id -> Comment.builder().id(id).isDelete(deleteVO.getIsDelete()).build())
                 .collect(Collectors.toList());
-        commentService.updateBatchById(commentList);
+        this.updateBatchById(commentList);
     }
 
     @Override
