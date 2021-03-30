@@ -3,7 +3,7 @@
     <div class="title">{{ this.$route.name }}</div>
     <mavon-editor
       v-model="aboutContent"
-      style="height:calc(100vh - 215px);margin-top:2.25rem"
+      style="height:calc(100vh - 250px);margin-top:2.25rem"
     />
     <el-button
       type="danger"
