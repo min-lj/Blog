@@ -18,7 +18,6 @@ public class CommonConst {
      */
     public static final int TURE = 1;
 
-
     /**
      * 博主id
      */
