@@ -6,7 +6,6 @@ import com.minzheng.blog.dto.CommentBackDTO;
 import com.minzheng.blog.dto.CommentDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.dto.ReplyDTO;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.CommentService;
 import com.minzheng.blog.vo.*;
 import io.swagger.annotations.Api;
@@ -14,10 +13,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 

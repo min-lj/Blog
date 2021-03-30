@@ -92,7 +92,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         Map<String, Integer> viewsCountMap = redisTemplate.boundHashOps(ARTICLE_VIEWS_COUNT).entries();
         Map<String, Integer> likeCountMap = redisTemplate.boundHashOps(ARTICLE_LIKE_COUNT).entries();
         // 封装点赞量和浏览量
-        articleDao.listArticleBacks(condition).forEach(item -> {
+        articleBackDTOList.forEach(item -> {
             item.setViewsCount(Objects.requireNonNull(viewsCountMap).get(item.getId().toString()));
             item.setLikeCount(Objects.requireNonNull(likeCountMap).get(item.getId().toString()));
         });
@@ -140,15 +140,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         // 查询上一篇下一篇文章
         Article lastArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
-                .eq(Article::getIsDelete,FALSE)
-                .eq(Article::getIsDraft,FALSE)
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getIsDraft, FALSE)
                 .lt(Article::getId, articleId)
                 .orderByDesc(Article::getId)
                 .last("limit 1"));
         Article nextArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
-                .eq(Article::getIsDelete,FALSE)
-                .eq(Article::getIsDraft,FALSE)
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getIsDraft, FALSE)
                 .gt(Article::getId, articleId)
                 .orderByAsc(Article::getId)
                 .last("limit 1"));
@@ -249,7 +249,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 .createTime(Objects.isNull(articleVO.getId()) ? new Date() : null)
                 .updateTime(Objects.nonNull(articleVO.getId()) ? new Date() : null)
                 .isTop(articleVO.getIsTop())
-                .isDraft(articleVO.getIsDraft()).build();
+                .isDraft(articleVO.getIsDraft())
+                .build();
         articleService.saveOrUpdate(article);
         // 编辑文章则删除文章所有标签
         if (Objects.nonNull(articleVO.getId()) && articleVO.getIsDraft().equals(FALSE)) {
@@ -283,7 +284,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         List<Article> articleList = deleteVO.getIdList().stream().map(id -> Article.builder()
                 .id(id)
                 .isTop(FALSE)
-                .isDelete(deleteVO.getIsDelete()).build())
+                .isDelete(deleteVO.getIsDelete())
+                .build())
                 .collect(Collectors.toList());
         articleService.updateBatchById(articleList);
     }
@@ -337,7 +339,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         // 根据关键词搜索文章标题或内容
-        if (condition.getKeywords() != null) {
+        if (Objects.nonNull(condition.getKeywords())) {
             boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", condition.getKeywords()))
                     .should(QueryBuilders.matchQuery("articleContent", condition.getKeywords())))
                     .must(QueryBuilders.termQuery("isDelete", FALSE));

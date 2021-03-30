@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.minzheng.blog.constant.CommonConst.FALSE;
 import static com.minzheng.blog.constant.RedisPrefixConst.*;
 
 /**
@@ -50,7 +51,9 @@ public class BlogInfoServiceImpl implements BlogInfoService {
                 .select(UserInfo::getAvatar, UserInfo::getNickname, UserInfo::getIntro)
                 .eq(UserInfo::getId, CommonConst.BLOGGER_ID));
         // 查询文章数量
-        Integer articleCount = articleDao.selectCount(null);
+        Integer articleCount = articleDao.selectCount(new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDraft, FALSE)
+                .eq(Article::getIsDelete, FALSE));
         // 查询分类数量
         Integer categoryCount = categoryDao.selectCount(null);
         // 查询标签数量
