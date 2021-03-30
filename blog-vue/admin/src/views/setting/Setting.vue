@@ -161,6 +161,9 @@ export default {
         .put("/api/admin/users/password", this.passwordForm)
         .then(({ data }) => {
           if (data.flag) {
+            this.passwordForm.oldPassword = "";
+            this.passwordForm.newPassword = "";
+            this.passwordForm.confirmPassword = "";
             this.$message.success(data.message);
           } else {
             this.$message.error(data.message);

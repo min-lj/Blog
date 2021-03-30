@@ -78,8 +78,8 @@ export default {
 
 <style scoped>
 .archive-banner {
-  background: url(https://www.static.talkxj.com/5w6ro8.jpg) center center /
-    cover no-repeat;
+  background: url(https://www.static.talkxj.com/wallroom-1920x1080-bg-338d7bc.jpg)
+    center center / cover no-repeat;
   background-color: #49b1f5;
 }
 .time {

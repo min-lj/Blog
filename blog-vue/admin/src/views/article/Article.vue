@@ -31,7 +31,7 @@
       ref="md"
       v-model="article.articleContent"
       @imgAdd="uploadImg"
-      style="height:calc(100vh - 225px)"
+      style="height:calc(100vh - 260px)"
     />
     <!-- 添加文章对话框 -->
     <el-dialog :visible.sync="addOrEdit" width="40%" top="10vh">
