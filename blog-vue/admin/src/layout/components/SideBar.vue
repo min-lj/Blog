@@ -8,7 +8,7 @@
     text-color="#BFCBD9"
     active-text-color="#409EFF"
   >
-    <el-scrollbar style="height:100%">
+    <el-scrollbar style="height:100%;overflow-x: hidden;">
       <template v-for="route of this.$store.state.userMenuList">
         <!-- 二级菜单 -->
         <template v-if="route.name && route.children && !route.hidden">

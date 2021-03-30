@@ -26,6 +26,7 @@ public class ResourceVO {
     /**
      * 资源id
      */
+    @ApiModelProperty(name = "id", value = "资源id", required = true, dataType = "Integer")
     private Integer id;
 
     /**

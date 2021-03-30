@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 聊天界面 -->
     <div
       class="chat-container animated bounceInUp"
       v-show="isShow"
@@ -163,6 +164,9 @@ export default {
     var ele = document.getElementById("message");
     ele.scrollTop = ele.scrollHeight;
   },
+  beforeDestroy() {
+    clearInterval(this.heartBeat);
+  },
   data: function() {
     return {
       isEmoji: false,
@@ -178,7 +182,12 @@ export default {
       unreadCount: 0,
       isVoice: false,
       voiceActive: false,
-      startVoiceTime: null
+      startVoiceTime: null,
+      WebsocketMessage: {
+        type: null,
+        data: null
+      },
+      heartBeat: null
     };
   },
   methods: {
@@ -194,8 +203,9 @@ export default {
       this.isVoice = false;
     },
     connect() {
+      var that = this;
       console.log("建立连接");
-      this.websocket = new WebSocket("ws://127.0.0.1:8080/websocket");
+      this.websocket = new WebSocket("ws://127.0.0.1/websocket");
       // 连接发生错误的回调方法
       this.websocket.onerror = function(event) {
         console.log(event);
@@ -204,45 +214,57 @@ export default {
       // 连接成功建立的回调方法
       this.websocket.onopen = function(event) {
         console.log(event);
+        // 发送心跳消息
+        that.heartBeat = setInterval(function() {
+          var beatMessage = {
+            type: 6,
+            data: "ping"
+          };
+          that.websocket.send(JSON.stringify(beatMessage));
+        }, 30 * 1000);
       };
       // 接收到消息的回调方法
-      var that = this;
       this.websocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         switch (data.type) {
           case 1:
-            that.count = data.count;
+            // 在线人数
+            that.count = data.data;
             break;
           case 2:
-            that.chatRecordList = data.chatRecordList;
+            // 历史记录
+            that.chatRecordList = data.data.chatRecordList;
             that.chatRecordList.forEach(item => {
               if (item.type == 5) {
                 that.voiceList.push(item.id);
               }
             });
-            that.ipAddr = data.ipAddr;
-            that.ipSource = data.ipSource;
+            that.ipAddr = data.data.ipAddr;
+            that.ipSource = data.data.ipSource;
             break;
           case 3:
-            that.chatRecordList.push(data);
+            // 文字消息
+            that.chatRecordList.push(data.data);
             if (!that.isShow) {
               that.unreadCount++;
             }
             break;
           case 4:
-            if (data.isVoice) {
-              that.voiceList.splice(that.voiceList.indexOf(data.id), 1);
+            // 撤回
+            if (data.data.isVoice) {
+              that.voiceList.splice(that.voiceList.indexOf(data.data.id), 1);
             }
             for (var i = 0; i < that.chatRecordList.length; i++) {
-              if (that.chatRecordList[i].id == data.id) {
+              if (that.chatRecordList[i].id == data.data.id) {
                 that.chatRecordList.splice(i, 1);
                 i--;
               }
             }
             break;
           case 5:
-            that.voiceList.push(data.id);
-            that.chatRecordList.push(data);
+            // 语音消息
+            that.voiceList.push(data.data.id);
+            that.chatRecordList.push(data.data);
             if (!that.isShow) {
               that.unreadCount++;
             }
@@ -268,16 +290,18 @@ export default {
         );
       });
       var socketMsg = {
-        type: 3,
         nickname: this.nickname,
         avatar: this.avatar,
         content: this.content,
         userId: this.userId,
+        type: 3,
         ipAddr: this.ipAddr,
         ipSource: this.ipSource,
         createTime: new Date()
       };
-      this.websocket.send(JSON.stringify(socketMsg));
+      this.WebsocketMessage.type = 3;
+      this.WebsocketMessage.data = socketMsg;
+      this.websocket.send(JSON.stringify(this.WebsocketMessage));
       this.content = "";
     },
     addEmoji(key) {
@@ -303,10 +327,11 @@ export default {
     back(item, index) {
       var socketMsg = {
         id: item.id,
-        type: 4,
         isVoice: item.type == 5
       };
-      this.websocket.send(JSON.stringify(socketMsg));
+      this.WebsocketMessage.type = 4;
+      this.WebsocketMessage.data = socketMsg;
+      this.websocket.send(JSON.stringify(this.WebsocketMessage));
       this.$refs.backBtn[index].style.display = "none";
     },
     closeAll() {

@@ -3,6 +3,9 @@ package com.minzheng.blog.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzheng.blog.dao.ChatRecordDao;
+import com.minzheng.blog.dto.ChatRecordDTO;
+import com.minzheng.blog.dto.RecallMessageDTO;
+import com.minzheng.blog.dto.WebsocketMessageDTO;
 import com.minzheng.blog.entity.ChatRecord;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.utils.*;
@@ -16,9 +19,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -49,12 +50,12 @@ public class WebSocketServiceImpl {
         WebSocketServiceImpl.chatRecordDao = chatRecordDao;
     }
 
-
     /**
      * 连接建立成功调用的方法
      */
     @OnOpen
     public void onOpen(Session session, EndpointConfig endpointConfig) throws IOException {
+        // 加入连接
         this.session = session;
         webSocketSet.add(this);
         // 更新在线人数
@@ -62,14 +63,18 @@ public class WebSocketServiceImpl {
         // 加载历史聊天记录
         List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
                 .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
-        Map<String, Object> recordMap = new HashMap<>(16);
         String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
-        recordMap.put("chatRecordList", chatRecordList);
-        recordMap.put("ipAddr", ipAddr);
-        recordMap.put("ipSource", IpUtil.getIpSource(ipAddr));
-        recordMap.put("type", HISTORY_RECORD.getType());
+        ChatRecordDTO chatRecordDTO = ChatRecordDTO.builder()
+                .chatRecordList(chatRecordList)
+                .ipAddr(ipAddr)
+                .ipSource(IpUtil.getIpSource(ipAddr))
+                .build();
+        WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
+                .type(HISTORY_RECORD.getType())
+                .data(chatRecordDTO)
+                .build();
         synchronized (session) {
-            session.getBasicRemote().sendText(JSON.toJSONString(recordMap));
+            session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
         }
     }
 
@@ -106,12 +111,13 @@ public class WebSocketServiceImpl {
      * @throws IOException io异常
      */
     private void updateOnlineCount() throws IOException {
-        Map<String, Object> countMap = new HashMap<>(16);
-        countMap.put("count", webSocketSet.size());
-        countMap.put("type", ONLINE_COUNT.getType());
+        WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
+                .type(ONLINE_COUNT.getType())
+                .data(webSocketSet.size())
+                .build();
         for (WebSocketServiceImpl webSocketService : webSocketSet) {
             synchronized (webSocketService.session) {
-                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(countMap));
+                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
             }
         }
     }
@@ -123,30 +129,34 @@ public class WebSocketServiceImpl {
      */
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        Map data = JSON.parseObject(message, Map.class);
-        switch (Objects.requireNonNull(getChatType((Integer) data.get("type")))) {
+        WebsocketMessageDTO messageDTO = JSON.parseObject(message, WebsocketMessageDTO.class);
+        switch (Objects.requireNonNull(getChatType(messageDTO.getType()))) {
             case SEND_MESSAGE:
                 // 发送消息
-                ChatRecord chatRecord = JSON.parseObject(JSON.toJSONString(data), ChatRecord.class);
+                ChatRecord chatRecord = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), ChatRecord.class);
                 chatRecordDao.insert(chatRecord);
-                data.put("id", chatRecord.getId());
+                messageDTO.setData(chatRecord);
                 for (WebSocketServiceImpl webSocketService : webSocketSet) {
                     synchronized (webSocketService.session) {
-                        webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(data));
+                        webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
                     }
                 }
                 break;
             case RECALL_MESSAGE:
                 // 撤回消息
-                Integer id = (Integer) data.get("id");
+                RecallMessageDTO recallMessage = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), RecallMessageDTO.class);
                 // 删除记录
-                deleteRecord(id);
+                deleteRecord(recallMessage.getId());
                 for (WebSocketServiceImpl webSocketService : webSocketSet) {
                     synchronized (webSocketService.session) {
-                        webSocketService.session.getBasicRemote().sendText(message);
+                        webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
                     }
                 }
                 break;
+            case HEART_BEAT:
+                // 心跳消息
+                messageDTO.setData("pong");
+                session.getBasicRemote().sendText(JSON.toJSONString(JSON.toJSONString(messageDTO)));
             default:
                 break;
         }
@@ -183,9 +193,14 @@ public class WebSocketServiceImpl {
         // 保存记录
         ChatRecord chatRecord = BeanCopyUtil.copyObject(voiceVO, ChatRecord.class);
         chatRecordDao.insert(chatRecord);
+        // 发送消息
+        WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
+                .type(VOICE_MESSAGE.getType())
+                .data(chatRecord)
+                .build();
         for (WebSocketServiceImpl webSocketService : webSocketSet) {
             synchronized (webSocketService.session) {
-                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(chatRecord));
+                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
             }
         }
     }

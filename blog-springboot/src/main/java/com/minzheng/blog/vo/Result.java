@@ -36,9 +36,5 @@ public class Result<T> implements Serializable {
         this.message = "操作成功!";
     }
 
-    public static <T> Result<T> success(T data) {
-        return new Result<>(true, StatusConst.OK, "操作成功", data);
-    }
-
 
 }

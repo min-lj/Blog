@@ -3,6 +3,7 @@ package com.minzheng.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.MenuDao;
 import com.minzheng.blog.dto.MenuDTO;
 import com.minzheng.blog.dto.labelOptionDTO;
@@ -113,7 +114,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
      */
     private Map<Integer, List<Menu>> getMenuMap(List<Menu> menuList) {
         return menuList.stream()
-                .filter(item -> Objects.nonNull(item.getParentId())).collect(Collectors.groupingBy(Menu::getParentId));
+                .filter(item -> Objects.nonNull(item.getParentId()))
+                .collect(Collectors.groupingBy(Menu::getParentId));
     }
 
     /**
@@ -136,7 +138,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
                         .sorted(Comparator.comparing(Menu::getOrderNum))
                         .map(menu -> {
                             UserMenuDTO dto = BeanCopyUtil.copyObject(menu, UserMenuDTO.class);
-                            dto.setHidden(menu.getIsHidden().equals(1));
+                            dto.setHidden(menu.getIsHidden().equals(CommonConst.TURE));
                             return dto;
                         }).collect(Collectors.toList());
             } else {
@@ -150,7 +152,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
                         .component(item.getComponent())
                         .build());
             }
-            userMenuDTO.setHidden(item.getIsHidden().equals(1));
+            userMenuDTO.setHidden(item.getIsHidden().equals(CommonConst.TURE));
             userMenuDTO.setChildren(list);
             return userMenuDTO;
         }).collect(Collectors.toList());

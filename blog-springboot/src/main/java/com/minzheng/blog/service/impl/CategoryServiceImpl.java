@@ -46,7 +46,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         LambdaQueryWrapper<Category> categoryLambdaQueryWrapper = new LambdaQueryWrapper<Category>()
                 .select(Category::getId, Category::getCategoryName, Category::getCreateTime)
                 .like(StringUtils.isNotBlank(condition.getKeywords()), Category::getCategoryName, condition.getKeywords())
-                .orderByDesc(Category::getCreateTime);
+                .orderByDesc(Category::getId);
         Page<Category> categoryPage = categoryDao.selectPage(page, categoryLambdaQueryWrapper);
         return new PageDTO<>(categoryPage.getRecords(), (int) categoryPage.getTotal());
     }
