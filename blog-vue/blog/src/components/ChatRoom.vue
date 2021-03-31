@@ -205,7 +205,7 @@ export default {
     connect() {
       var that = this;
       console.log("建立连接");
-      this.websocket = new WebSocket("ws://127.0.0.1/websocket");
+      this.websocket = new WebSocket("ws://127.0.0.1:8080/websocket");
       // 连接发生错误的回调方法
       this.websocket.onerror = function(event) {
         console.log(event);
@@ -574,7 +574,7 @@ export default {
   padding: 20px 16px 0 16px;
   top: 80px;
   bottom: 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 .text {
