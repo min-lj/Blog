@@ -1,7 +1,7 @@
 <template>
   <v-footer app padless absolute v-if="!this.isMessage">
     <div class="footer-wrap">
-      <div>&copy; 2019 - {{ new Date().getFullYear() }} By 风丶宇</div>
+      <div>©2019 - {{ new Date().getFullYear() }} By 风丶宇</div>
       <a href="https://beian.miit.gov.cn/" target="_blank">
         湘ICP备19021924号
       </a>

@@ -170,7 +170,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 .eq(Article::getIsDelete, FALSE)
                 .eq(Article::getIsDraft, FALSE)
                 .orderByDesc(Article::getId)
-                .last("limit 4"));
+                .last("limit 5"));
         return BeanCopyUtil.copyList(articleList, ArticleRecommendDTO.class);
     }
 

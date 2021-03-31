@@ -42,6 +42,7 @@
       <v-col md="9" cols="12">
         <v-card
           class="animated zoomIn article-card"
+          style="border-radius: 12px 8px 8px 12px"
           v-for="(item, index) of articleList"
           :key="item.id"
         >
