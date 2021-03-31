@@ -377,7 +377,7 @@ export default {
   .home-container {
     max-width: 1200px;
     margin: calc(100vh - 48px) auto 28px auto;
-    padding: 0 7.5px;
+    padding: 0 5px;
   }
   .article-card {
     display: flex;

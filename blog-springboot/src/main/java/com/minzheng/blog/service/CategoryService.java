@@ -39,7 +39,7 @@ public interface CategoryService extends IService<Category> {
     void deleteCategory(List<Integer> categoryIdList);
 
     /**
-     * 保存或更新分类
+     * 添加或修改分类
      * @param categoryVO 分类
      */
     void saveOrUpdateCategory(CategoryVO categoryVO);
