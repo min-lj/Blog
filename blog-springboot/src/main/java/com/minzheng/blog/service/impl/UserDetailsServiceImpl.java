@@ -16,8 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-import static com.minzheng.blog.constant.RedisPrefixConst.ARTICLE_USER_LIKE;
-import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_LIKE_COUNT;
+import static com.minzheng.blog.constant.RedisPrefixConst.*;
 import static com.minzheng.blog.utils.UserUtil.convertLoginUser;
 
 
@@ -57,7 +56,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<String> roleList = roleDao.listRolesByUserInfoId(userInfo.getId());
         // 查询账号点赞信息
         Set<Integer> articleLikeSet = (Set<Integer>) redisTemplate.boundHashOps(ARTICLE_USER_LIKE).get(userInfo.getId().toString());
-        Set<Integer> commentLikeSet = (Set<Integer>) redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).get(userInfo.getId().toString());
+        Set<Integer> commentLikeSet = (Set<Integer>) redisTemplate.boundHashOps(COMMENT_USER_LIKE).get(userInfo.getId().toString());
         // 封装登录信息
         return convertLoginUser(user, userInfo, roleList, articleLikeSet, commentLikeSet, request);
     }

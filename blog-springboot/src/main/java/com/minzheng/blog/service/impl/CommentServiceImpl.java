@@ -123,7 +123,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).increment(commentId.toString(), 1);
         }
         // 保存点赞记录
-        redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).put(UserUtil.getLoginUser().getUserInfoId().toString(), commentLikeSet);
+        redisTemplate.boundHashOps(COMMENT_USER_LIKE).put(UserUtil.getLoginUser().getUserInfoId().toString(), commentLikeSet);
     }
 
     @Transactional(rollbackFor = Exception.class)
