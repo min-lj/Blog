@@ -193,21 +193,31 @@ export default {
         this.messageCount = data.data.messageCount;
         this.userCount = data.data.userCount;
         this.articleCount = data.data.articleCount;
-        data.data.uniqueViewDTOList.forEach(item => {
-          this.viewCount.xAxis.data.push(item.day);
-          this.viewCount.series[0].data.push(item.viewsCount);
-        });
-        data.data.categoryDTOList.forEach(item => {
-          this.category.series[0].data.push({
-            value: item.articleCount,
-            name: item.categoryName
+
+        if (data.data.uniqueViewDTOList != null) {
+          data.data.uniqueViewDTOList.forEach(item => {
+            this.viewCount.xAxis.data.push(item.day);
+            this.viewCount.series[0].data.push(item.viewsCount);
           });
-          this.category.legend.data.push(item.categoryName);
-        });
-        data.data.articleRankDTOList.forEach(item => {
-          this.ariticleRank.series[0].data.push(item.viewsCount);
-          this.ariticleRank.xAxis.data.push(item.articleTitle);
-        });
+        }
+
+        if (data.data.categoryDTOList != null) {
+          data.data.categoryDTOList.forEach(item => {
+            this.category.series[0].data.push({
+              value: item.articleCount,
+              name: item.categoryName
+            });
+            this.category.legend.data.push(item.categoryName);
+          });
+        }
+
+        if (data.data.articleRankDTOList != null) {
+          data.data.articleRankDTOList.forEach(item => {
+            this.ariticleRank.series[0].data.push(item.viewsCount);
+            this.ariticleRank.xAxis.data.push(item.articleTitle);
+          });
+        }
+
         this.loading = false;
       });
     }
