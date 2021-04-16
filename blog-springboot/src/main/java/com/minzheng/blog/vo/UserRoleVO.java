@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- *
  * @author xiaojie
  * @since 2020-05-18
  */
@@ -23,7 +22,7 @@ import java.util.List;
 @ApiModel(description = "用户权限")
 public class UserRoleVO {
     /**
-     * 用户昵称
+     * 用户id
      */
     @NotNull(message = "id不能为空")
     @ApiModelProperty(name = "userInfoId", value = "用户信息id", dataType = "Integer")

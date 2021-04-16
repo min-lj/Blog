@@ -50,7 +50,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "绑定用户邮箱")
     @PostMapping("/users/email")
-    public Result saveUserEmail(@RequestBody EmailVO emailVO) {
+    public Result saveUserEmail(@Valid @RequestBody EmailVO emailVO) {
         userInfoService.saveUserEmail(emailVO);
         return new Result(true, StatusConst.OK, "绑定成功！");
     }
