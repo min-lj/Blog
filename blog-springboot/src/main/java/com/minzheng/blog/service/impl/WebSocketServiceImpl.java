@@ -50,6 +50,23 @@ public class WebSocketServiceImpl {
         WebSocketServiceImpl.chatRecordDao = chatRecordDao;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WebSocketServiceImpl that = (WebSocketServiceImpl) o;
+        return Objects.equals(session, that.session);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(session);
+    }
+
     /**
      * 连接建立成功调用的方法
      */
@@ -61,14 +78,8 @@ public class WebSocketServiceImpl {
         // 更新在线人数
         updateOnlineCount();
         // 加载历史聊天记录
-        List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
-                .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
-        String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
-        ChatRecordDTO chatRecordDTO = ChatRecordDTO.builder()
-                .chatRecordList(chatRecordList)
-                .ipAddr(ipAddr)
-                .ipSource(IpUtil.getIpSource(ipAddr))
-                .build();
+        ChatRecordDTO chatRecordDTO = listChartRecords(endpointConfig);
+        // 发送消息
         WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
                 .type(HISTORY_RECORD.getType())
                 .data(chatRecordDTO)
@@ -82,6 +93,7 @@ public class WebSocketServiceImpl {
      * 获取客户端真实ip
      */
     public static class ChatConfigurator extends ServerEndpointConfig.Configurator {
+
         public static String HEADER_NAME = "X-Real-IP";
 
         @Override
@@ -93,6 +105,7 @@ public class WebSocketServiceImpl {
                 sec.getUserProperties().put(HEADER_NAME, "未知ip");
             }
         }
+
     }
 
     /**
@@ -103,6 +116,23 @@ public class WebSocketServiceImpl {
         // 更新在线人数
         webSocketSet.remove(this);
         updateOnlineCount();
+    }
+
+    /**
+     * 加载历史聊天记录
+     *
+     * @param endpointConfig 配置
+     * @return 加载历史聊天记录
+     */
+    private ChatRecordDTO listChartRecords(EndpointConfig endpointConfig) {
+        List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
+                .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
+        String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
+        return ChatRecordDTO.builder()
+                .chatRecordList(chatRecordList)
+                .ipAddr(ipAddr)
+                .ipSource(IpUtil.getIpSource(ipAddr))
+                .build();
     }
 
     /**

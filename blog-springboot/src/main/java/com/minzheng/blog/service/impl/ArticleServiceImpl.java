@@ -274,7 +274,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         // 修改文章置顶状态
         Article article = Article.builder()
                 .id(articleId)
-                .isTop(isTop).build();
+                .isTop(isTop)
+                .build();
         articleDao.updateById(article);
     }
 

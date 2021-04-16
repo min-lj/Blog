@@ -43,11 +43,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
     public PageDTO<Category> listCategoryBackDTO(ConditionVO condition) {
         // 分页查询分类列表
         Page<Category> page = new Page<>(condition.getCurrent(), condition.getSize());
-        LambdaQueryWrapper<Category> categoryLambdaQueryWrapper = new LambdaQueryWrapper<Category>()
+        Page<Category> categoryPage = categoryDao.selectPage(page, new LambdaQueryWrapper<Category>()
                 .select(Category::getId, Category::getCategoryName, Category::getCreateTime)
                 .like(StringUtils.isNotBlank(condition.getKeywords()), Category::getCategoryName, condition.getKeywords())
-                .orderByDesc(Category::getId);
-        Page<Category> categoryPage = categoryDao.selectPage(page, categoryLambdaQueryWrapper);
+                .orderByDesc(Category::getId));
         return new PageDTO<>(categoryPage.getRecords(), (int) categoryPage.getTotal());
     }
 

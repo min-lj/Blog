@@ -3,7 +3,9 @@ package com.minzheng.blog.handler;
 import com.alibaba.fastjson.JSON;
 import com.minzheng.blog.dao.UserAuthDao;
 import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.dto.UserLoginDTO;
 import com.minzheng.blog.entity.UserAuth;
+import com.minzheng.blog.utils.BeanCopyUtil;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.Result;
 import com.minzheng.blog.constant.StatusConst;
@@ -33,8 +35,9 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         // 更新用户ip，最近登录时间
         updateUserInfo();
+        UserLoginDTO userLoginDTO = BeanCopyUtil.copyObject(UserUtil.getLoginUser(), UserLoginDTO.class);
         httpServletResponse.setContentType("application/json;charset=UTF-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(new Result<UserInfoDTO>(true, StatusConst.OK, "登录成功！", UserUtil.getLoginUser())));
+        httpServletResponse.getWriter().write(JSON.toJSONString(new Result<UserInfoDTO>(true, StatusConst.OK, "登录成功！", userLoginDTO)));
     }
 
     /**

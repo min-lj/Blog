@@ -9,6 +9,7 @@ import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.FilePathEnum;
+import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.UserInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.UserRoleService;
@@ -17,9 +18,11 @@ import com.minzheng.blog.utils.OSSUtil;
 
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.EmailVO;
 import com.minzheng.blog.vo.UserInfoVO;
 import com.minzheng.blog.vo.UserRoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -34,6 +37,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.minzheng.blog.constant.RedisPrefixConst.CODE_KEY;
+
 
 /**
  * @author xiaojie
@@ -47,6 +52,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     private UserRoleService userRoleService;
     @Autowired
     private SessionRegistry sessionRegistry;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -75,6 +82,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
                 .build();
         userInfoDao.updateById(userInfo);
         return avatar;
+    }
+
+    @Override
+    public void saveUserEmail(EmailVO emailVO) {
+        if (!emailVO.getCode().equals(redisTemplate.boundValueOps(CODE_KEY + emailVO.getEmail()).get())) {
+            throw new ServeException("验证码错误！");
+        }
+        UserInfo userInfo = UserInfo.builder()
+                .id(UserUtil.getLoginUser().getUserInfoId())
+                .email(emailVO.getEmail())
+                .build();
+        userInfoDao.updateById(userInfo);
     }
 
     @Transactional(rollbackFor = Exception.class)

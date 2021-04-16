@@ -1,6 +1,5 @@
 package com.minzheng.blog.handler;
 
-import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.RoleDao;
 import com.minzheng.blog.dto.UrlRoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author: yezhiqiu

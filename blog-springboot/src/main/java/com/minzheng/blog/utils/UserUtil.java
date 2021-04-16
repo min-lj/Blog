@@ -49,9 +49,11 @@ public class UserUtil {
         // 封装权限集合
         return UserInfoDTO.builder()
                 .id(user.getId())
+                .loginType(user.getLoginType())
                 .userInfoId(userInfo.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .email(userInfo.getEmail())
                 .roleList(roleList)
                 .nickname(userInfo.getNickname())
                 .avatar(userInfo.getAvatar())

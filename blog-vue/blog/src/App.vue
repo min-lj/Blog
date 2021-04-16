@@ -20,6 +20,8 @@
     <RegisterModel></RegisterModel>
     <!-- 忘记密码模态框 -->
     <ForgetModel></ForgetModel>
+    <!-- 绑定邮箱模态框 -->
+    <EmailModel></EmailModel>
     <!-- 音乐播放器 -->
     <Player></Player>
     <!-- 聊天室 -->
@@ -36,6 +38,7 @@ import searchModel from "./components/model/SearchModel";
 import LoginModel from "./components/model/LoginModel";
 import RegisterModel from "./components/model/RegisterModel";
 import ForgetModel from "./components/model/ForgetModel";
+import EmailModel from "./components/model/EmailModel";
 import Player from "zw-player";
 import ChatRoom from "./components/ChatRoom";
 export default {
@@ -49,6 +52,7 @@ export default {
     LoginModel,
     RegisterModel,
     ForgetModel,
+    EmailModel,
     ChatRoom
   }
 };

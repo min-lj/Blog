@@ -1,10 +1,14 @@
 package com.minzheng.blog.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.minzheng.blog.constant.CommonConst;
+import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Comment;
 import com.minzheng.blog.dao.CommentDao;
+import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.service.CommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.utils.HTMLUtil;
@@ -12,8 +16,12 @@ import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.CommentVO;
 import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.DeleteVO;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +29,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.minzheng.blog.constant.CommonConst.*;
+import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_LIKE_COUNT;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_USER_LIKE;
 
@@ -34,6 +44,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private CommentDao commentDao;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private UserInfoDao userInfoDao;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PageDTO<CommentDTO> listComments(Integer articleId, Long current) {
@@ -99,6 +113,32 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 .createTime(new Date())
                 .build();
         commentDao.insert(comment);
+        // 通知用户
+        notice(commentVO);
+    }
+
+    /**
+     * 通知评论用户
+     *
+     * @param commentVO 评论信息
+     */
+    @Async
+    public void notice(CommentVO commentVO) {
+        // 判断是回复用户还是评论作者
+        Integer userId = Objects.nonNull(commentVO.getReplyId()) ? commentVO.getReplyId() : BLOGGER_ID;
+        // 查询邮箱号
+        String email = userInfoDao.selectById(userId).getEmail();
+        if (StringUtils.isNotBlank(email)) {
+            // 判断页面路径
+            String url = Objects.nonNull(commentVO.getArticleId()) ? URL + ARTICLE_PATH + commentVO.getArticleId() : URL + LINK_PATH;
+            // 发送消息
+            EmailDTO emailDTO = EmailDTO.builder()
+                    .email(email)
+                    .subject("评论提醒")
+                    .content("您收到了一条新的回复，请前往" + url + "\n页面查看")
+                    .build();
+            rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

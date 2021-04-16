@@ -26,6 +26,9 @@ export default {
           this.color = "#52C41A";
           this.icon = "iconfont iconchenggong";
           break;
+        case "warnning":
+          this.color = "#F57C00";
+          this.icon = "iconfont iconchenggong";
       }
     }
   }

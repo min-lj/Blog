@@ -5,10 +5,7 @@ import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzheng.blog.vo.ConditionVO;
-import com.minzheng.blog.vo.DeleteVO;
-import com.minzheng.blog.vo.UserInfoVO;
-import com.minzheng.blog.vo.UserRoleVO;
+import com.minzheng.blog.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -33,6 +30,12 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return 头像OSS地址
      */
     String updateUserAvatar(MultipartFile file);
+
+    /**
+     * 绑定用户邮箱
+     * @param emailVO 邮箱
+     */
+    void saveUserEmail(EmailVO emailVO);
 
     /**
      * 修改用户权限

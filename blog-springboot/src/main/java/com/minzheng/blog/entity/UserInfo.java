@@ -34,6 +34,11 @@ public class UserInfo {
     private Integer id;
 
     /**
+     * 邮箱号
+     */
+    private String email;
+
+    /**
      * 用户昵称
      */
     private String nickname;

@@ -13,13 +13,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static com.minzheng.blog.constant.MQPrefixConst.MAXWELL_EXCHANGE;
+import static com.minzheng.blog.constant.MQPrefixConst.MAXWELL_QUEUE;
+
 /**
  * 同步es数据
  *
  * @author 11921
  */
 @Component
-@RabbitListener(queues = "article")
+@RabbitListener(queues = MAXWELL_QUEUE)
 public class MaxWellReceiver {
     @Autowired
     private ElasticsearchDao elasticsearchDao;

@@ -38,6 +38,20 @@
             label="简介"
             placeholder="介绍下自己吧"
           />
+          <div v-if="loginType != 0" class="mt-7 binding">
+            <v-text-field
+              disabled
+              v-model="email"
+              label="邮箱号"
+              placeholder="请绑定邮箱"
+            />
+            <v-btn v-if="email" text small @click="openEmailModel">
+              修改绑定
+            </v-btn>
+            <v-btn v-else text small @click="openEmailModel">
+              绑定邮箱
+            </v-btn>
+          </div>
           <v-btn @click="updataUserInfo" outlined class="mt-5">修改</v-btn>
         </v-col>
       </v-row>
@@ -54,7 +68,8 @@ export default {
       userInfo: {
         nickname: this.$store.state.nickname,
         intro: this.$store.state.intro,
-        webSite: this.$store.state.webSite
+        webSite: this.$store.state.webSite,
+        loginType: this.$store.state.loginType
       }
     };
   },
@@ -76,6 +91,17 @@ export default {
       } else {
         this.$toast({ type: "error", message: data.message });
       }
+    },
+    openEmailModel() {
+      this.$store.state.emailFlag = true;
+    }
+  },
+  computed: {
+    email() {
+      return this.$store.state.email;
+    },
+    loginType() {
+      return this.$store.state.loginType;
     }
   }
 };
@@ -99,5 +125,9 @@ export default {
 }
 #pick-avatar {
   outline: none;
+}
+.binding {
+  display: flex;
+  align-items: center;
 }
 </style>

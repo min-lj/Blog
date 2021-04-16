@@ -29,6 +29,16 @@ public class UserInfoDTO implements UserDetails {
     private Integer userInfoId;
 
     /**
+     * 邮箱号
+     */
+    private String email;
+
+    /**
+     * 登录方式
+     */
+    private Integer loginType;
+
+    /**
      * 用户名
      */
     private String username;

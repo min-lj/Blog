@@ -29,7 +29,14 @@ export default {
             if (data.flag) {
               //保存登录状态
               that.$store.commit("login", data.data);
-              that.$toast({ type: "success", message: data.message });
+              if (data.data.email == null) {
+                that.$toast({
+                  type: "warnning",
+                  message: "请绑定邮箱以便及时收到回复"
+                });
+              } else {
+                that.$toast({ type: "success", message: data.message });
+              }
             } else {
               that.$toast({ type: "error", message: data.message });
             }
@@ -38,8 +45,6 @@ export default {
       } else {
         that.$toast({ type: "error", message: "登录失败" });
       }
-      //跳转回原页面
-      that.$router.push({ path: that.$store.state.loginUrl });
     } else {
       //微博登录
       let param = new URLSearchParams();
@@ -49,14 +54,21 @@ export default {
         if (data.flag) {
           //保存登录状态
           that.$store.commit("login", data.data);
-          that.$toast({ type: "success", message: data.message });
+          if (data.data.email == null) {
+            that.$toast({
+              type: "warnning",
+              message: "请绑定邮箱以便及时收到回复"
+            });
+          } else {
+            that.$toast({ type: "success", message: data.message });
+          }
         } else {
           that.$toast({ type: "error", message: data.message });
         }
-        //跳转回原页面
-        that.$router.push({ path: that.$store.state.loginUrl });
       });
     }
+    //跳转回原页面
+    that.$router.push({ path: that.$store.state.loginUrl });
   }
 };
 </script>

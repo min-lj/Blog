@@ -43,14 +43,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         // 查询账号是否存在
         UserAuth user = userAuthDao.selectOne(new LambdaQueryWrapper<UserAuth>()
-                .select(UserAuth::getId, UserAuth::getUserInfoId, UserAuth::getUsername, UserAuth::getPassword)
+                .select(UserAuth::getId, UserAuth::getUserInfoId, UserAuth::getUsername, UserAuth::getPassword, UserAuth::getLoginType)
                 .eq(UserAuth::getUsername, username));
         if (Objects.isNull(user)) {
             throw new ServeException("用户名不存在!");
         }
         // 查询账号信息
         UserInfo userInfo = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfo>()
-                .select(UserInfo::getId, UserInfo::getNickname, UserInfo::getAvatar, UserInfo::getIntro, UserInfo::getWebSite, UserInfo::getIsDisable)
+                .select(UserInfo::getId, UserInfo::getEmail, UserInfo::getNickname, UserInfo::getAvatar, UserInfo::getIntro, UserInfo::getWebSite, UserInfo::getIsDisable)
                 .eq(UserInfo::getId, user.getUserInfoId()));
         // 查询账号角色
         List<String> roleList = roleDao.listRolesByUserInfoId(userInfo.getId());

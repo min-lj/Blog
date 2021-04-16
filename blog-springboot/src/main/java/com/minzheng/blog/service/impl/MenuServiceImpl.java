@@ -1,6 +1,7 @@
 package com.minzheng.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.minzheng.blog.constant.CommonConst.*;
+import static com.minzheng.blog.constant.CommonConst.COMPONENT;
 
 /**
  * @author: yezhiqiu
@@ -63,7 +67,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
             // 获取目录下的菜单排序
             List<labelOptionDTO> list = new ArrayList<>();
             List<Menu> children = childrenMap.get(item.getId());
-            if (Objects.nonNull(children)) {
+            if (CollectionUtils.isNotEmpty(children)) {
                 list = children.stream()
                         .sorted(Comparator.comparing(Menu::getOrderNum))
                         .map(menu -> labelOptionDTO.builder()
@@ -100,8 +104,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
      */
     private List<Menu> listCatalog(List<Menu> menuList) {
         return menuList.stream()
-                .filter(item -> Objects.isNull(item.getParentId())).collect(Collectors.toList())
-                .stream()
+                .filter(item -> Objects.isNull(item.getParentId()))
                 .sorted(Comparator.comparing(Menu::getOrderNum))
                 .collect(Collectors.toList());
     }
@@ -131,20 +134,20 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
             List<UserMenuDTO> list = new ArrayList<>();
             // 获取目录下的子菜单
             List<Menu> children = childrenMap.get(item.getId());
-            if (Objects.nonNull(children)) {
+            if (CollectionUtils.isNotEmpty(children)) {
                 // 多级菜单处理
                 userMenuDTO = BeanCopyUtil.copyObject(item, UserMenuDTO.class);
                 list = children.stream()
                         .sorted(Comparator.comparing(Menu::getOrderNum))
                         .map(menu -> {
                             UserMenuDTO dto = BeanCopyUtil.copyObject(menu, UserMenuDTO.class);
-                            dto.setHidden(menu.getIsHidden().equals(CommonConst.TURE));
+                            dto.setHidden(menu.getIsHidden().equals(TURE));
                             return dto;
                         }).collect(Collectors.toList());
             } else {
                 // 一级菜单处理
                 userMenuDTO.setPath(item.getPath());
-                userMenuDTO.setComponent("Layout");
+                userMenuDTO.setComponent(COMPONENT);
                 list.add(UserMenuDTO.builder()
                         .path("")
                         .name(item.getName())
@@ -152,7 +155,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
                         .component(item.getComponent())
                         .build());
             }
-            userMenuDTO.setHidden(item.getIsHidden().equals(CommonConst.TURE));
+            userMenuDTO.setHidden(item.getIsHidden().equals(TURE));
             userMenuDTO.setChildren(list);
             return userMenuDTO;
         }).collect(Collectors.toList());

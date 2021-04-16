@@ -48,6 +48,13 @@ public class UserInfoController {
         return new Result<>(true, StatusConst.OK, "修改成功！", userInfoService.updateUserAvatar(file));
     }
 
+    @ApiOperation(value = "绑定用户邮箱")
+    @PostMapping("/users/email")
+    public Result saveUserEmail(@RequestBody EmailVO emailVO) {
+        userInfoService.saveUserEmail(emailVO);
+        return new Result(true, StatusConst.OK, "绑定成功！");
+    }
+
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "修改用户角色")
     @PutMapping("/admin/users/role")

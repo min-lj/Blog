@@ -10,6 +10,7 @@ export default new Vuex.Store({
     loginFlag: false,
     registerFlag: false,
     forgetFlag: false,
+    emailFlag: false,
     drawer: false,
     loginUrl: "",
     userId: null,
@@ -17,6 +18,8 @@ export default new Vuex.Store({
     nickname: null,
     intro: null,
     webSite: null,
+    loginType: null,
+    email: null,
     articleLikeSet: [],
     commentLikeSet: [],
     blogInfo: {}
@@ -30,6 +33,8 @@ export default new Vuex.Store({
       state.webSite = user.webSite;
       state.articleLikeSet = user.articleLikeSet ? user.articleLikeSet : [];
       state.commentLikeSet = user.commentLikeSet ? user.commentLikeSet : [];
+      state.email = user.email;
+      state.loginType = user.loginType;
     },
     logout(state) {
       state.userId = null;
@@ -39,9 +44,14 @@ export default new Vuex.Store({
       state.webSite = null;
       state.articleLikeSet = [];
       state.commentLikeSet = [];
+      state.email = null;
+      state.loginType = null;
     },
     saveLoginUrl(state, url) {
       state.loginUrl = url;
+    },
+    saveEmail(state, email) {
+      state.email = email;
     },
     updateUserInfo(state, user) {
       state.nickname = user.nickname;
@@ -58,6 +68,7 @@ export default new Vuex.Store({
       state.registerFlag = false;
       state.loginFlag = false;
       state.searchFlag = false;
+      state.emailFlag = false;
     },
     articleLike(state, articleId) {
       var articleLikeSet = state.articleLikeSet;

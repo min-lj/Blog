@@ -44,7 +44,7 @@ public class ServletRequestListenerImpl implements ServletRequestListener {
     @Scheduled(cron = " 0 1 0 * * ?")
     private void clear() {
         //清空redis中的ip
-        redisTemplate.delete("ip_set");
+        redisTemplate.delete(IP_SET);
     }
 
 

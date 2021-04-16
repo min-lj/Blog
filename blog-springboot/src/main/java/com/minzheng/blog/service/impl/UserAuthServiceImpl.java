@@ -8,6 +8,7 @@ import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.RoleDao;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dao.UserRoleDao;
+import com.minzheng.blog.dto.EmailDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.dto.UserBackDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
@@ -25,6 +26,10 @@ import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.PasswordVO;
 import com.minzheng.blog.vo.UserVO;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -48,8 +53,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
+import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_QUEUE;
 import static com.minzheng.blog.constant.RedisPrefixConst.CODE_EXPIRE_TIME;
 import static com.minzheng.blog.constant.RedisPrefixConst.CODE_KEY;
+import static com.minzheng.blog.utils.CommonUtil.checkEmail;
 import static com.minzheng.blog.utils.UserUtil.convertLoginUser;
 
 /**
@@ -74,6 +82,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
     private RestTemplate restTemplate;
     @Resource
     private HttpServletRequest request;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 邮箱号
@@ -141,12 +151,13 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
         for (int i = 0; i < 6; i++) {
             code.append(random.nextInt(10));
         }
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(email);
-        message.setTo(username);
-        message.setSubject("验证码");
-        message.setText("您的验证码为 " + code.toString() + " 有效期15分钟，请不要告诉他人哦！");
-        javaMailSender.send(message);
+        // 发送验证码
+        EmailDTO emailDTO = EmailDTO.builder()
+                .email(username)
+                .subject("验证码")
+                .content("您的验证码为 " + code.toString() + " 有效期15分钟，请不要告诉他人哦！")
+                .build();
+        rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
         // 将验证码存入redis，设置过期时间为15分钟
         redisTemplate.boundValueOps(CODE_KEY + username).set(code);
         redisTemplate.expire(CODE_KEY + username, CODE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
@@ -161,6 +172,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
         }
         // 新增用户信息
         UserInfo userInfo = UserInfo.builder()
+                .email(user.getUsername())
                 .nickname(CommonConst.DEFAULT_NICKNAME)
                 .avatar(CommonConst.DEFAULT_AVATAR)
                 .createTime(new Date())
@@ -382,7 +394,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
                 .eq(UserAuth::getId, user.getId()));
         // 查询账号对应的信息
         UserInfo userInfo = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfo>()
-                .select(UserInfo::getId, UserInfo::getNickname, UserInfo::getAvatar, UserInfo::getIntro, UserInfo::getWebSite, UserInfo::getIsDisable)
+                .select(UserInfo::getId, UserInfo::getEmail, UserInfo::getNickname, UserInfo::getAvatar, UserInfo::getIntro, UserInfo::getWebSite, UserInfo::getIsDisable)
                 .eq(UserInfo::getId, user.getUserInfoId()));
         // 查询账号点赞信息
         Set<Integer> articleLikeSet = (Set<Integer>) redisTemplate.boundHashOps("article_user_like").get(userInfo.getId().toString());
@@ -404,26 +416,11 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
     private UserAuth getUserAuth(String openId, Integer loginType) {
         // 查询账号信息
         return userAuthDao.selectOne(new LambdaQueryWrapper<UserAuth>()
-                .select(UserAuth::getId, UserAuth::getUserInfoId)
+                .select(UserAuth::getId, UserAuth::getUserInfoId, UserAuth::getLoginType)
                 .eq(UserAuth::getUsername, openId)
                 .eq(UserAuth::getLoginType, loginType));
     }
 
-    /**
-     * 检测邮箱是否合法
-     *
-     * @param username 用户名
-     * @return 合法状态
-     */
-    private boolean checkEmail(String username) {
-        String rule = "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
-        //正则表达式的模式 编译正则表达式
-        Pattern p = Pattern.compile(rule);
-        //正则表达式的匹配器
-        Matcher m = p.matcher(username);
-        //进行正则匹配
-        return m.matches();
-    }
 
     /**
      * 校验用户数据是否合法
