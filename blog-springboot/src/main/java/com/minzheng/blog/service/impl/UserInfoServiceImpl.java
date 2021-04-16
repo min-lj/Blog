@@ -84,6 +84,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
         return avatar;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveUserEmail(EmailVO emailVO) {
         if (!emailVO.getCode().equals(redisTemplate.boundValueOps(CODE_KEY + emailVO.getEmail()).get())) {
