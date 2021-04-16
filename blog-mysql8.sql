@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 29/03/2021 15:52:03
+ Date: 16/04/2021 17:21:25
 */
 
 SET NAMES utf8mb4;
@@ -223,7 +223,7 @@ CREATE TABLE `tb_operation_log`  (
   `ip_source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '操作地址',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 314 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_resource
@@ -550,6 +550,7 @@ INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$H/5k4KtIwCuKEqH
 DROP TABLE IF EXISTS `tb_user_info`;
 CREATE TABLE `tb_user_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱号',
   `nickname` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
   `avatar` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '用户头像',
   `intro` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户简介',
@@ -563,7 +564,7 @@ CREATE TABLE `tb_user_info`  (
 -- ----------------------------
 -- Records of tb_user_info
 -- ----------------------------
-INSERT INTO `tb_user_info` VALUES (1, '管理员', 'https://www.static.talkxj.com/avatar/user.png', '发表你的第一篇博客吧', 'https://www.talkxj.com', '2020-06-29 10:48:18', '2021-03-20 22:10:33', 0);
+INSERT INTO `tb_user_info` VALUES (1, NULL, '管理员', 'https://www.static.talkxj.com/avatar/user.png', '发表你的第一篇博客吧', 'https://www.talkxj.com', '2020-06-29 10:48:18', '2021-03-20 22:10:33', 0);
 
 -- ----------------------------
 -- Table structure for tb_user_role
