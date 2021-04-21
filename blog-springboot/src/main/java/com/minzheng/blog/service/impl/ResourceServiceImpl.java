@@ -8,6 +8,9 @@ import com.minzheng.blog.dao.RoleResourceDao;
 import com.minzheng.blog.dto.ResourceDTO;
 import com.minzheng.blog.dto.labelOptionDTO;
 import com.minzheng.blog.entity.Resource;
+import com.minzheng.blog.entity.Role;
+import com.minzheng.blog.entity.RoleResource;
+import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.handler.FilterInvocationSecurityMetadataSourceImpl;
 import com.minzheng.blog.service.ResourceService;
 import com.minzheng.blog.utils.BeanCopyUtil;
@@ -70,8 +73,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
                     .url(url.replaceAll("\\{[^}]*\\}", "*"))
                     .parentId(parentId)
                     .requestMethod(requestMethod.toUpperCase())
-                    .isDisable(0)
-                    .isAnonymous(0)
+                    .isDisable(FALSE)
+                    .isAnonymous(FALSE)
                     .createTime(new Date())
                     .updateTime(new Date())
                     .build();
@@ -85,9 +88,21 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         // 更新资源信息
         Resource resource = BeanCopyUtil.copyObject(resourceVO, Resource.class);
         resource.setCreateTime(Objects.isNull(resource.getId()) ? new Date() : null);
+        resource.setUpdateTime(Objects.nonNull(resource.getId()) ? new Date() : null);
         // 重新加载角色资源信息
         filterInvocationSecurityMetadataSource.clearDataSource();
         this.saveOrUpdate(resource);
+    }
+
+    @Override
+    public void deleteResources(List<Integer> resourceIdList) {
+        // 查询是否有角色关联
+        Integer count = roleResourceDao.selectCount(new LambdaQueryWrapper<RoleResource>()
+                .in(RoleResource::getResourceId, resourceIdList));
+        if (count > 1) {
+            throw new ServeException("该资源下存在角色");
+        }
+        this.removeByIds(resourceIdList);
     }
 
     @Override

@@ -19,14 +19,12 @@
           size="small"
           placeholder="请输入菜单名"
           style="width:200px"
-          @keyup.enter.native="listResources"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listResources"
         >
           搜索
         </el-button>
@@ -114,50 +112,60 @@
       </el-table-column>
     </el-table>
     <!-- 新增模态框 -->
-    <el-dialog :visible.sync="addMenu" width="30%">
-      <el-form label-width="80px" size="medium" :model="categoryForm">
+    <el-dialog :visible.sync="addMenu" width="30%" top="12vh">
+      <el-form label-width="80px" size="medium" :model="menuForm">
         <el-form-item label="菜单类型">
           <el-radio-group v-model="isCatalog">
             <el-radio :label="true">目录</el-radio>
             <el-radio :label="false">一级菜单</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="上级菜单" v-if="!isCatalog">
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="菜单名">
+        <el-form-item label="菜单名称">
           <el-input v-model="menuForm.name" style="width:220px" />
         </el-form-item>
         <el-form-item label="菜单图标">
-          <el-input v-model="menuForm.icon" style="width:220px" />
+          <div @click="showIcon = true">
+            <el-input
+              :prefix-icon="'iconfont ' + icon"
+              v-model="menuForm.icon"
+              style="width:220px"
+            />
+          </div>
+          <div class="menu-container" v-show="showIcon">
+            <div
+              v-for="(item, index) of iconList"
+              :key="index"
+              @click="checkIcon(item)"
+            >
+              <i :class="'iconfont ' + item" /> {{ item }}
+            </div>
+          </div>
         </el-form-item>
-        <el-form-item label="组件路径">
+        <el-form-item label="组件路径" v-show="!isCatalog">
           <el-input v-model="menuForm.component" style="width:220px" />
         </el-form-item>
         <el-form-item label="路由地址">
           <el-input v-model="menuForm.path" style="width:220px" />
         </el-form-item>
         <el-form-item label="显示排序">
-          <el-input v-model="menuForm.orderNum" style="width:220px" />
+          <el-input-number
+            v-model="menuForm.orderNum"
+            controls-position="right"
+            @change="handleChange"
+            :min="1"
+            :max="10"
+          />
         </el-form-item>
         <el-form-item label="显示状态">
           <el-radio-group v-model="menuForm.isHidden">
-            <el-radio :label="true">隐藏</el-radio>
-            <el-radio :label="false">显示</el-radio>
+            <el-radio :label="0">显示</el-radio>
+            <el-radio :label="1">隐藏</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer">
         <el-button @click="addOrEdit = false">取 消</el-button>
-        <el-button type="primary" @click="addOrEditCategory">
+        <el-button type="primary">
           确 定
         </el-button>
       </div>
@@ -168,19 +176,34 @@
 <script>
 export default {
   created() {
-    this.listResources();
+    this.listMenus();
   },
   data() {
     return {
+      keywords: "",
       loading: true,
       addMenu: false,
-      isCatalog: null,
+      showIcon: false,
+      isCatalog: true,
       menuList: [],
-      menuForm: {}
+      menuForm: {},
+      icon: "",
+      iconList: [
+        "el-icon-myshouye",
+        "el-icon-myfabiaowenzhang",
+        "el-icon-myyonghuliebiao",
+        "el-icon-myxiaoxi",
+        "el-icon-myliuyan",
+        "el-icon-myshouye",
+        "el-icon-myfabiaowenzhang",
+        "el-icon-myyonghuliebiao",
+        "el-icon-myxiaoxi",
+        "el-icon-myliuyan"
+      ]
     };
   },
   methods: {
-    listResources() {
+    listMenus() {
       this.axios.get("/api/admin/menus").then(({ data }) => {
         this.menuList = data.data;
         this.loading = false;
@@ -189,7 +212,35 @@ export default {
     openModel(menu) {
       console.log(menu);
       this.addMenu = true;
+    },
+    checkIcon(icon) {
+      this.icon = icon;
+      this.menuForm.icon = icon;
+      this.showIcon = false;
     }
   }
 };
 </script>
+
+<style scoped>
+.menu-container {
+  position: absolute;
+  width: 90%;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #e6ebf5;
+  padding: 12px;
+  z-index: 2000;
+  color: #606266;
+  text-align: justify;
+  font-size: 14px;
+  -webkit-box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  word-break: break-all;
+  overflow-y: auto;
+  height: 200px;
+}
+.menu-container div {
+  cursor: pointer;
+}
+</style>

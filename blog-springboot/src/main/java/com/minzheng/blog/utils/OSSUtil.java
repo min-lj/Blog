@@ -3,6 +3,7 @@ package com.minzheng.blog.utils;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectRequest;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,7 +64,7 @@ public class OSSUtil {
      */
     public static String upload(MultipartFile file, String targetAddr) {
         // 获取不重复的随机名
-        String fileName = String.valueOf(System.currentTimeMillis());
+        String fileName = String.valueOf(IdWorker.getId());
         // 获取文件的扩展名如png,jpg等
         String extension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         // 获取文件存储的相对路径(带文件名)

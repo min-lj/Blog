@@ -22,9 +22,15 @@ public interface ResourceService extends IService<Resource> {
 
     /**
      * 添加或修改资源
-     * @param resourceVO
+     * @param resourceVO 资源对象
      */
     void saveOrUpdateResource(ResourceVO resourceVO);
+
+    /***
+     * 删除资源
+     * @param resourceIdList 资源id列表
+     */
+    void deleteResources(List<Integer> resourceIdList);
 
     /**
      * 查看资源列表

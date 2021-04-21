@@ -40,7 +40,7 @@ public class ResourceController {
     @ApiOperation(value = "删除资源")
     @DeleteMapping("/admin/resources")
     public Result deleteResources(@RequestBody List<Integer> resourceIdList) {
-        resourceService.removeByIds(resourceIdList);
+        resourceService.deleteResources(resourceIdList);
         return new Result<>(true, StatusConst.OK, "删除成功");
     }
 

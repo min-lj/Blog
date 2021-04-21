@@ -45,7 +45,7 @@
 export default {
   data: function() {
     return {
-      email: "",
+      email: this.$store.state.email,
       code: "",
       flag: true,
       codeMsg: "发送",
