@@ -85,7 +85,9 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询用户量
         Integer userCount = userInfoDao.selectCount(null);
         // 查询文章量
-        Integer articleCount = articleDao.selectCount(null);
+        Integer articleCount = articleDao.selectCount(new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getIsDraft, FALSE));
         // 查询一周用户量
         List<UniqueViewDTO> uniqueViewList = uniqueViewService.listUniqueViews();
         // 查询分类数据
