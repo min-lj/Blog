@@ -1,14 +1,14 @@
 <template>
-  <el-menu
-    class="side-nav-bar"
-    router
-    :collapse="this.$store.state.collapse"
-    :default-active="this.$route.path"
-    background-color="#304156"
-    text-color="#BFCBD9"
-    active-text-color="#409EFF"
-  >
-    <el-scrollbar style="height:100%;overflow-x: hidden;">
+  <el-scrollbar style="height:100%;overflow-x: hidden;">
+    <el-menu
+      class="side-nav-bar"
+      router
+      :collapse="this.$store.state.collapse"
+      :default-active="this.$route.path"
+      background-color="#304156"
+      text-color="#BFCBD9"
+      active-text-color="#409EFF"
+    >
       <template v-for="route of this.$store.state.userMenuList">
         <!-- 二级菜单 -->
         <template v-if="route.name && route.children && !route.hidden">
@@ -35,8 +35,8 @@
           </el-menu-item>
         </template>
       </template>
-    </el-scrollbar>
-  </el-menu>
+    </el-menu>
+  </el-scrollbar>
 </template>
 
 <style scoped>
