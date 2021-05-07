@@ -1,6 +1,9 @@
 #配置端口
 server:
   port: 8080
+  servlet:
+    session:
+      timeout: 21600
 
 #配置mysql数据库
 spring:
