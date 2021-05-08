@@ -23,7 +23,7 @@
             <div class="article-item-info">
               <!-- 文章标题 -->
               <div>
-                <router-link to="/articles/1">
+                <router-link :to="'/articles/' + item.id">
                   {{ item.articleTitle }}
                 </router-link>
               </div>
