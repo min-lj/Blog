@@ -1,4 +1,4 @@
-package com.minzheng.blog.handler;
+package com.minzheng.blog.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.minzheng.blog.annotation.OptLog;
@@ -36,7 +36,6 @@ import java.util.Objects;
  * @date: 2021-01-30
  **/
 @Aspect
-@Component
 public class OptLogAspect {
 
     @Autowired
@@ -56,8 +55,6 @@ public class OptLogAspect {
      * @param joinPoint 切入点
      * @param keys      返回结果
      */
-    @Async
-    @Transactional(rollbackFor = Exception.class)
     @AfterReturning(value = "optLogPointCut()", returning = "keys")
     public void saveOptLog(JoinPoint joinPoint, Object keys) {
         // 获取RequestAttributes

@@ -15,6 +15,7 @@ import com.minzheng.blog.handler.FilterInvocationSecurityMetadataSourceImpl;
 import com.minzheng.blog.service.ResourceService;
 import com.minzheng.blog.utils.BeanCopyUtil;
 import com.minzheng.blog.vo.ResourceVO;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,9 +90,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         Resource resource = BeanCopyUtil.copyObject(resourceVO, Resource.class);
         resource.setCreateTime(Objects.isNull(resource.getId()) ? new Date() : null);
         resource.setUpdateTime(Objects.nonNull(resource.getId()) ? new Date() : null);
+        this.saveOrUpdate(resource);
         // 重新加载角色资源信息
         filterInvocationSecurityMetadataSource.clearDataSource();
-        this.saveOrUpdate(resource);
     }
 
     @Override
