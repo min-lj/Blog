@@ -4,15 +4,15 @@
 
 
     <select id="listCategoryDTO" resultType="com.minzheng.blog.dto.CategoryDTO">
-     SELECT
-	 c.id,
-	 c.category_name,
-	 COUNT( 1 ) as article_count
-     FROM
-	 tb_category c
-	 JOIN tb_article a ON c.id = a.category_id
-     GROUP BY
-	 a.category_id
+		SELECT
+		c.id,
+		c.category_name,
+		COUNT( a.id ) AS article_count
+		FROM
+		tb_category c
+		LEFT JOIN tb_article a ON c.id = a.category_id
+		GROUP BY
+		c.id
     </select>
 
 </mapper>
