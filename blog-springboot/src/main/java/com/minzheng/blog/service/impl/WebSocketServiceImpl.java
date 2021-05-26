@@ -50,21 +50,23 @@ public class WebSocketServiceImpl {
         WebSocketServiceImpl.chatRecordDao = chatRecordDao;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WebSocketServiceImpl that = (WebSocketServiceImpl) o;
-        return Objects.equals(session, that.session);
-    }
+    /**
+     * 获取客户端真实ip
+     */
+    public static class ChatConfigurator extends ServerEndpointConfig.Configurator {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(session);
+        public static String HEADER_NAME = "X-Real-IP";
+
+        @Override
+        public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+            try {
+                String firstFoundHeader = request.getHeaders().get(HEADER_NAME.toLowerCase()).get(0);
+                sec.getUserProperties().put(HEADER_NAME, firstFoundHeader);
+            } catch (Exception e) {
+                sec.getUserProperties().put(HEADER_NAME, "未知ip");
+            }
+        }
+
     }
 
     /**
@@ -86,69 +88,6 @@ public class WebSocketServiceImpl {
                 .build();
         synchronized (session) {
             session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
-        }
-    }
-
-    /**
-     * 获取客户端真实ip
-     */
-    public static class ChatConfigurator extends ServerEndpointConfig.Configurator {
-
-        public static String HEADER_NAME = "X-Real-IP";
-
-        @Override
-        public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-            try {
-                String firstFoundHeader = request.getHeaders().get(HEADER_NAME.toLowerCase()).get(0);
-                sec.getUserProperties().put(HEADER_NAME, firstFoundHeader);
-            } catch (Exception e) {
-                sec.getUserProperties().put(HEADER_NAME, "未知ip");
-            }
-        }
-
-    }
-
-    /**
-     * 连接关闭调用的方法
-     */
-    @OnClose
-    public void onClose() throws IOException {
-        // 更新在线人数
-        webSocketSet.remove(this);
-        updateOnlineCount();
-    }
-
-    /**
-     * 加载历史聊天记录
-     *
-     * @param endpointConfig 配置
-     * @return 加载历史聊天记录
-     */
-    private ChatRecordDTO listChartRecords(EndpointConfig endpointConfig) {
-        List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
-                .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
-        String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
-        return ChatRecordDTO.builder()
-                .chatRecordList(chatRecordList)
-                .ipAddr(ipAddr)
-                .ipSource(IpUtil.getIpSource(ipAddr))
-                .build();
-    }
-
-    /**
-     * 更新在线人数
-     *
-     * @throws IOException io异常
-     */
-    private void updateOnlineCount() throws IOException {
-        WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
-                .type(ONLINE_COUNT.getType())
-                .data(webSocketSet.size())
-                .build();
-        for (WebSocketServiceImpl webSocketService : webSocketSet) {
-            synchronized (webSocketService.session) {
-                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
-            }
         }
     }
 
@@ -194,6 +133,59 @@ public class WebSocketServiceImpl {
     }
 
     /**
+     * 发生错误时调用
+     */
+    @OnError
+    public void onError(Session session, Throwable error) {
+        error.printStackTrace();
+    }
+
+    /**
+     * 连接关闭调用的方法
+     */
+    @OnClose
+    public void onClose() throws IOException {
+        // 更新在线人数
+        webSocketSet.remove(this);
+        updateOnlineCount();
+    }
+
+    /**
+     * 加载历史聊天记录
+     *
+     * @param endpointConfig 配置
+     * @return 加载历史聊天记录
+     */
+    private ChatRecordDTO listChartRecords(EndpointConfig endpointConfig) {
+        List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
+                .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
+        String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
+        return ChatRecordDTO.builder()
+                .chatRecordList(chatRecordList)
+                .ipAddr(ipAddr)
+                .ipSource(IpUtil.getIpSource(ipAddr))
+                .build();
+    }
+
+    /**
+     * 更新在线人数
+     *
+     * @throws IOException io异常
+     */
+    @Async
+    public void updateOnlineCount() throws IOException {
+        WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
+                .type(ONLINE_COUNT.getType())
+                .data(webSocketSet.size())
+                .build();
+        for (WebSocketServiceImpl webSocketService : webSocketSet) {
+            synchronized (webSocketService.session) {
+                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
+            }
+        }
+    }
+
+    /**
      * 删除记录
      *
      * @param id ID
@@ -201,14 +193,6 @@ public class WebSocketServiceImpl {
     @Async
     public void deleteRecord(Integer id) {
         chatRecordDao.deleteById(id);
-    }
-
-    /**
-     * 发生错误时调用
-     */
-    @OnError
-    public void onError(Session session, Throwable error) {
-        error.printStackTrace();
     }
 
     /**
