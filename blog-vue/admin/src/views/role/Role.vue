@@ -132,6 +132,7 @@
           <el-tree
             :data="menuList"
             :default-checked-keys="roleForm.menuIdList"
+            check-strictly
             show-checkbox
             node-key="id"
             ref="menuTree"
