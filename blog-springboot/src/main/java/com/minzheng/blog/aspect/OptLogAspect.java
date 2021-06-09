@@ -36,6 +36,7 @@ import java.util.Objects;
  * @date: 2021-01-30
  **/
 @Aspect
+@Component
 public class OptLogAspect {
 
     @Autowired
