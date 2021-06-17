@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.minzheng.blog.constant.MQPrefixConst.MAXWELL_EXCHANGE;
 import static com.minzheng.blog.constant.MQPrefixConst.MAXWELL_QUEUE;
 
 /**

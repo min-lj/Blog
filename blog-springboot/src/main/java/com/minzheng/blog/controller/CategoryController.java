@@ -51,7 +51,7 @@ public class CategoryController {
     @OptLog(optType = SAVE_OR_UPDATE)
     @ApiOperation(value = "添加或修改分类")
     @PostMapping("/admin/categories")
-    public Result saveOrUpdateCategory(@Valid @RequestBody CategoryVO categoryVO) {
+    public Result<?> saveOrUpdateCategory(@Valid @RequestBody CategoryVO categoryVO) {
         categoryService.saveOrUpdateCategory(categoryVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -59,7 +59,7 @@ public class CategoryController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "删除分类")
     @DeleteMapping("/admin/categories")
-    public Result deleteCategories(@RequestBody List<Integer> categoryIdList) {
+    public Result<?> deleteCategories(@RequestBody List<Integer> categoryIdList) {
         categoryService.deleteCategory(categoryIdList);
         return new Result<>(true, StatusConst.OK, "删除成功");
     }

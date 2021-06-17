@@ -6,6 +6,7 @@ import com.minzheng.blog.dao.*;
 import com.minzheng.blog.entity.UserAuth;
 import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.exception.ServeException;
+import com.minzheng.blog.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private RoleDao roleDao;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
     @Resource
     private HttpServletRequest request;
 
@@ -55,8 +56,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 查询账号角色
         List<String> roleList = roleDao.listRolesByUserInfoId(userInfo.getId());
         // 查询账号点赞信息
-        Set<Integer> articleLikeSet = (Set<Integer>) redisTemplate.boundHashOps(ARTICLE_USER_LIKE).get(userInfo.getId().toString());
-        Set<Integer> commentLikeSet = (Set<Integer>) redisTemplate.boundHashOps(COMMENT_USER_LIKE).get(userInfo.getId().toString());
+        Set<Integer> articleLikeSet = (Set<Integer>) redisService.hGet(ARTICLE_USER_LIKE, userInfo.getId().toString());
+        Set<Integer> commentLikeSet = (Set<Integer>) redisService.hGet(COMMENT_USER_LIKE, userInfo.getId().toString());
         // 封装登录信息
         return convertLoginUser(user, userInfo, roleList, articleLikeSet, commentLikeSet, request);
     }

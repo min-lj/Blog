@@ -32,6 +32,14 @@ public class UserUtil {
     }
 
     /**
+     * 获取用户信息id
+     * @return 用户信息id
+     */
+    public static Integer getUserInfoId(){
+        return getLoginUser().getUserInfoId();
+    }
+
+    /**
      * 封装用户登录信息
      *
      * @param user           用户账号

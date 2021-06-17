@@ -7,18 +7,15 @@ import com.minzheng.blog.dto.ArticlePreviewListDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.dto.TagDTO;
 import com.minzheng.blog.entity.Tag;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.ArticleService;
 import com.minzheng.blog.service.TagService;
 import com.minzheng.blog.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
 
 import static com.minzheng.blog.constant.OptTypeConst.REMOVE;
@@ -62,7 +59,7 @@ public class TagController {
     @OptLog(optType = SAVE_OR_UPDATE)
     @ApiOperation(value = "添加或修改标签")
     @PostMapping("/admin/tags")
-    public Result saveOrUpdateTag(@Valid @RequestBody TagVO tagVO) {
+    public Result<?> saveOrUpdateTag(@Valid @RequestBody TagVO tagVO) {
         tagService.saveOrUpdateTag(tagVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -70,7 +67,7 @@ public class TagController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "删除标签")
     @DeleteMapping("/admin/tags")
-    public Result deleteTag(@RequestBody List<Integer> tagIdList) {
+    public Result<?> deleteTag(@RequestBody List<Integer> tagIdList) {
         tagService.deleteTag(tagIdList);
         return new Result<>(true, StatusConst.OK, "删除成功");
     }

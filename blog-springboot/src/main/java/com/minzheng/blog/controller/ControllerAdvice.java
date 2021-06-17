@@ -23,7 +23,7 @@ public class ControllerAdvice {
      * @return
      */
     @ExceptionHandler(value = ServeException.class)
-    public Result errorHandler(ServeException e) {
+    public Result<?> errorHandler(ServeException e) {
         return new Result(false, StatusConst.ERROR, e.getMessage());
     }
 
@@ -34,7 +34,7 @@ public class ControllerAdvice {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result errorHandler(MethodArgumentNotValidException e) {
+    public Result<?> errorHandler(MethodArgumentNotValidException e) {
         return new Result(false, StatusConst.ERROR, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
@@ -45,7 +45,7 @@ public class ControllerAdvice {
      * @return
      */
     @ExceptionHandler(value = Exception.class)
-    public Result errorHandler(Exception e) {
+    public Result<?> errorHandler(Exception e) {
         e.printStackTrace();
         return new Result(false, StatusConst.SYSTEM_ERROR, "系统异常");
     }

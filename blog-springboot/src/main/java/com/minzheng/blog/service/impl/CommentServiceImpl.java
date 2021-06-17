@@ -10,6 +10,7 @@ import com.minzheng.blog.entity.Comment;
 import com.minzheng.blog.dao.CommentDao;
 import com.minzheng.blog.service.CommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.utils.HTMLUtil;
 import com.minzheng.blog.utils.UserUtil;
 import com.minzheng.blog.vo.CommentVO;
@@ -19,7 +20,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Autowired
     private CommentDao commentDao;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
     @Autowired
     private UserInfoDao userInfoDao;
     @Autowired
@@ -62,7 +62,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         // 分页查询评论集合
         List<CommentDTO> commentDTOList = commentDao.listComments(articleId, (current - 1) * 10);
         // 查询redis的评论点赞数据
-        Map<String, Integer> likeCountMap = (Map<String, Integer>) redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).entries();
+        Map<String, Integer> likeCountMap = redisService.hGetAll(COMMENT_LIKE_COUNT);
         // 提取评论id集合
         List<Integer> commentIdList = new ArrayList<>();
         // 封装评论点赞量
@@ -92,7 +92,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         // 转换页码查询评论下的回复
         List<ReplyDTO> replyDTOList = commentDao.listRepliesByCommentId(commentId, (current - 1) * 5);
         // 查询redis的评论点赞数据
-        Map<String, Integer> likeCountMap = (Map<String, Integer>) redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).entries();
+        Map<String, Integer> likeCountMap = redisService.hGetAll(COMMENT_LIKE_COUNT);
         // 封装点赞数据
         replyDTOList.forEach(item -> item.setLikeCount(Objects.requireNonNull(likeCountMap).get(item.getId().toString())));
         return replyDTOList;
@@ -144,7 +144,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Override
     public void saveCommentLike(Integer commentId) {
         // 查询当前用户点赞过的评论id集合
-        HashSet<Integer> commentLikeSet = (HashSet<Integer>) redisTemplate.boundHashOps(COMMENT_USER_LIKE).get(UserUtil.getLoginUser().getUserInfoId().toString());
+        HashSet<Integer> commentLikeSet = (HashSet<Integer>) redisService.hGet(COMMENT_USER_LIKE, UserUtil.getUserInfoId().toString());
         // 第一次点赞则创建
         if (CollectionUtils.isEmpty(commentLikeSet)) {
             commentLikeSet = new HashSet<>();
@@ -154,15 +154,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             // 点过赞则删除评论id
             commentLikeSet.remove(commentId);
             // 评论点赞量-1
-            redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).increment(commentId.toString(), -1);
+            redisService.hDecr(COMMENT_LIKE_COUNT, commentId.toString(), 1L);
         } else {
             // 未点赞则增加评论id
             commentLikeSet.add(commentId);
             // 评论点赞量+1
-            redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).increment(commentId.toString(), 1);
+            redisService.hIncr(COMMENT_LIKE_COUNT, commentId.toString(), 1L);
         }
         // 保存点赞记录
-        redisTemplate.boundHashOps(COMMENT_USER_LIKE).put(UserUtil.getLoginUser().getUserInfoId().toString(), commentLikeSet);
+        redisService.hSet(COMMENT_USER_LIKE, UserUtil.getUserInfoId().toString(), commentLikeSet);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -187,7 +187,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         // 查询后台评论集合
         List<CommentBackDTO> commentBackDTOList = commentDao.listCommentBackDTO(condition);
         // 获取评论点赞量
-        Map<String, Integer> likeCountMap = redisTemplate.boundHashOps(COMMENT_LIKE_COUNT).entries();
+        Map<String, Integer> likeCountMap = redisService.hGetAll(COMMENT_LIKE_COUNT);
         //封装点赞量
         commentBackDTOList.forEach(item -> item.setLikeCount(Objects.requireNonNull(likeCountMap).get(item.getId().toString())));
         return new PageDTO<>(commentBackDTOList, count);

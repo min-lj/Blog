@@ -36,6 +36,11 @@ public class CommonConst {
     public static final String DEFAULT_AVATAR = "https://www.static.talkxj.com/avatar/user.png";
 
     /**
+     * 浏览文章集合
+     */
+    public static String ARTICLE_SET = "articleSet";
+
+    /**
      * 前端组件名
      */
     public static String COMPONENT = "Layout";
@@ -44,6 +49,11 @@ public class CommonConst {
      * 网站域名
      */
     public static final String URL = "https://www.talkxj.com";
+
+    /**
+     * 用户ip
+     */
+    public static final String IP = "ip";
 
     /**
      * 文章页面路径

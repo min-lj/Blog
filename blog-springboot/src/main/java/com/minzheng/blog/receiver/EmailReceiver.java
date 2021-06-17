@@ -16,8 +16,9 @@ import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_QUEUE;
 /**
  * 通知邮箱
  *
- * @author: yezhiqiu
- * @date: 2021-04-16
+ * @author yezhqiu
+ * @date 2021/06/13
+ * @since 1.0.0
  **/
 @Component
 @RabbitListener(queues = EMAIL_QUEUE)

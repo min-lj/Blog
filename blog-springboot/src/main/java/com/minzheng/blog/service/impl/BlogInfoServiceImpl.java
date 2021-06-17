@@ -6,17 +6,13 @@ import com.minzheng.blog.dao.*;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.entity.UserInfo;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.BlogInfoService;
+import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UniqueViewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,11 +38,11 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     @Autowired
     private UniqueViewService uniqueViewService;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
     @Override
     public BlogHomeInfoDTO getBlogInfo() {
-        //查询博主信息
+        // 查询博主信息
         UserInfo userInfo = userInfoDao.selectOne(new LambdaQueryWrapper<UserInfo>()
                 .select(UserInfo::getAvatar, UserInfo::getNickname, UserInfo::getIntro)
                 .eq(UserInfo::getId, CommonConst.BLOGGER_ID));
@@ -59,10 +55,10 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询标签数量
         Integer tagCount = tagDao.selectCount(null);
         // 查询公告
-        Object value = redisTemplate.boundValueOps(NOTICE).get();
+        Object value = redisService.get(NOTICE);
         String notice = Objects.nonNull(value) ? value.toString() : "发布你的第一篇公告吧";
         // 查询访问量
-        String viewsCount = Objects.requireNonNull(redisTemplate.boundValueOps(BLOG_VIEWS_COUNT).get()).toString();
+        String viewsCount = Objects.requireNonNull(redisService.get(BLOG_VIEWS_COUNT)).toString();
         // 封装数据
         return BlogHomeInfoDTO.builder()
                 .nickname(userInfo.getNickname())
@@ -79,7 +75,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     @Override
     public BlogBackInfoDTO getBlogBackInfo() {
         // 查询访问量
-        Integer viewsCount = (Integer) redisTemplate.boundValueOps(BLOG_VIEWS_COUNT).get();
+        Integer viewsCount = (Integer) redisService.get(BLOG_VIEWS_COUNT);
         // 查询留言量
         Integer messageCount = messageDao.selectCount(null);
         // 查询用户量
@@ -93,7 +89,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询分类数据
         List<CategoryDTO> categoryDTOList = categoryDao.listCategoryDTO();
         // 查询redis访问量前五的文章
-        Map<String, Integer> articleViewsMap = redisTemplate.boundHashOps(ARTICLE_VIEWS_COUNT).entries();
+        Map<String, Integer> articleViewsMap = redisService.hGetAll(ARTICLE_VIEWS_COUNT);
         // 将文章进行倒序排序
         List<Integer> articleIdList = Objects.requireNonNull(articleViewsMap).entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
@@ -134,25 +130,25 @@ public class BlogInfoServiceImpl implements BlogInfoService {
 
     @Override
     public String getAbout() {
-        Object value = redisTemplate.boundValueOps(ABOUT).get();
+        Object value = redisService.get(ABOUT);
         return Objects.nonNull(value) ? value.toString() : "";
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateAbout(String aboutContent) {
-        redisTemplate.boundValueOps(ABOUT).set(aboutContent);
+        redisService.set(ABOUT, aboutContent);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateNotice(String notice) {
-        redisTemplate.boundValueOps(NOTICE).set(notice);
+        redisService.set(NOTICE, notice);
     }
 
     @Override
     public String getNotice() {
-        Object value = redisTemplate.boundValueOps(NOTICE).get();
+        Object value = redisService.get(NOTICE);
         return Objects.nonNull(value) ? value.toString() : "发布你的第一篇公告吧";
     }
 

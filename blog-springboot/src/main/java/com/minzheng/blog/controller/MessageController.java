@@ -30,7 +30,7 @@ public class MessageController {
 
     @ApiOperation(value = "添加留言")
     @PostMapping("/messages")
-    public Result saveMessage(@Valid @RequestBody MessageVO messageVO) {
+    public Result<?> saveMessage(@Valid @RequestBody MessageVO messageVO) {
         messageService.saveMessage(messageVO);
         return new Result<>(true, StatusConst.OK, "添加成功");
     }
@@ -50,7 +50,7 @@ public class MessageController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "删除留言")
     @DeleteMapping("/admin/messages")
-    public Result deleteMessages(@RequestBody List<Integer> messageIdList) {
+    public Result<?> deleteMessages(@RequestBody List<Integer> messageIdList) {
         messageService.removeByIds(messageIdList);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }

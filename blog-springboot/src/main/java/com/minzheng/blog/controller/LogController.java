@@ -34,7 +34,7 @@ public class LogController {
 
     @ApiOperation(value = "删除操作日志")
     @DeleteMapping("/admin/operation/logs")
-    public Result deleteOperationLogs(@RequestBody List<Integer> logIdList) {
+    public Result<?> deleteOperationLogs(@RequestBody List<Integer> logIdList) {
         operationLogService.removeByIds(logIdList);
         return new Result<>(true, StatusConst.OK, "删除成功");
     }

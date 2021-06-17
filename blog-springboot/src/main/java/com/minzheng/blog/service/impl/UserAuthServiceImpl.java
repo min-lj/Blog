@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.google.common.collect.Lists;
+import com.minzheng.blog.config.QQConfigProperties;
+import com.minzheng.blog.config.WeiboConfigProperties;
 import com.minzheng.blog.constant.CommonConst;
 import com.minzheng.blog.dao.RoleDao;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dao.UserRoleDao;
-import com.minzheng.blog.dto.EmailDTO;
-import com.minzheng.blog.dto.PageDTO;
-import com.minzheng.blog.dto.UserBackDTO;
-import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.entity.UserAuth;
 import com.minzheng.blog.dao.UserAuthDao;
@@ -19,6 +18,7 @@ import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.LoginTypeEnum;
 import com.minzheng.blog.enums.RoleEnum;
 import com.minzheng.blog.exception.ServeException;
+import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserAuthService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.utils.IpUtil;
@@ -28,15 +28,10 @@ import com.minzheng.blog.vo.PasswordVO;
 import com.minzheng.blog.vo.UserVO;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -49,14 +44,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
-import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_QUEUE;
-import static com.minzheng.blog.constant.RedisPrefixConst.CODE_EXPIRE_TIME;
-import static com.minzheng.blog.constant.RedisPrefixConst.CODE_KEY;
+import static com.minzheng.blog.constant.RedisPrefixConst.*;
+import static com.minzheng.blog.constant.ThirdLoginConst.*;
 import static com.minzheng.blog.utils.CommonUtil.checkEmail;
 import static com.minzheng.blog.utils.UserUtil.convertLoginUser;
 
@@ -67,9 +58,7 @@ import static com.minzheng.blog.utils.UserUtil.convertLoginUser;
 @Service
 public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> implements UserAuthService {
     @Autowired
-    private JavaMailSender javaMailSender;
-    @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
     @Autowired
     private UserAuthDao userAuthDao;
     @Autowired
@@ -84,60 +73,10 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
     private HttpServletRequest request;
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
-    /**
-     * 邮箱号
-     */
-    @Value("${spring.mail.username}")
-    private String email;
-
-    /**
-     * qq appId
-     */
-    @Value("${qq.app-id}")
-    private String QQ_APP_ID;
-
-    /**
-     * qq获取用户信息接口地址
-     */
-    @Value("${qq.user-info-url}")
-    private String QQ_USER_INFO_URL;
-
-    /**
-     * 微博appId
-     */
-    @Value("${weibo.app-id}")
-    private String WEIBO_APP_ID;
-
-    /**
-     * 微博appSecret
-     */
-    @Value("${weibo.app-secret}")
-    private String WEIBO_APP_SECRET;
-
-    /**
-     * 微博授权方式
-     */
-    @Value("${weibo.grant-type}")
-    private String WEIBO_GRANT_TYPE;
-
-    /**
-     * 微博回调地址
-     */
-    @Value("${weibo.redirect-url}")
-    private String WEIBO_REDIRECT_URI;
-
-    /**
-     * 微博获取token和openId接口地址
-     */
-    @Value("${weibo.access-token-url}")
-    private String WEIBO_ACCESS_TOKEN_URI;
-
-    /**
-     * 微博获取用户信息接口地址
-     */
-    @Value("${weibo.user-info-url}")
-    private String WEIBO_USER_INFO_URI;
+    @Autowired
+    private QQConfigProperties qqConfigProperties;
+    @Autowired
+    private WeiboConfigProperties weiboConfigProperties;
 
     @Override
     public void sendCode(String username) {
@@ -159,8 +98,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
                 .build();
         rabbitTemplate.convertAndSend(EMAIL_EXCHANGE, "*", new Message(JSON.toJSONBytes(emailDTO), new MessageProperties()));
         // 将验证码存入redis，设置过期时间为15分钟
-        redisTemplate.boundValueOps(CODE_KEY + username).set(code);
-        redisTemplate.expire(CODE_KEY + username, CODE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+        redisService.set(CODE_KEY + username, code, CODE_EXPIRE_TIME);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -248,18 +186,18 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
             userInfoDTO = getUserInfoDTO(user);
         } else {
             // 不存在通过openId和accessToken获取QQ用户信息，并创建用户
-            Map<String, String> formData = new HashMap<>(16);
+            Map<String, String> formData = new HashMap<>(3);
             // 定义请求参数
-            formData.put("openid", openId);
-            formData.put("access_token", accessToken);
-            formData.put("oauth_consumer_key", QQ_APP_ID);
+            formData.put(QQ_OPEN_ID, openId);
+            formData.put(ACCESS_TOKEN, accessToken);
+            formData.put(OAUTH_CONSUMER_KEY, qqConfigProperties.getAppId());
             // 获取QQ返回的用户信息
-            Map<String, String> userInfoMap = JSON.parseObject(restTemplate.getForObject(QQ_USER_INFO_URL, String.class, formData), Map.class);
+            QQUserInfoDTO qqUserInfoDTO = JSON.parseObject(restTemplate.getForObject(qqConfigProperties.getUserInfoUrl(), String.class, formData), QQUserInfoDTO.class);
             // 获取ip地址
             String ipAddr = IpUtil.getIpAddr(request);
             String ipSource = IpUtil.getIpSource(ipAddr);
             // 将用户账号和信息存入数据库
-            UserInfo userInfo = convertUserInfo(Objects.requireNonNull(userInfoMap).get("nickname"), userInfoMap.get("figureurl_qq_1"));
+            UserInfo userInfo = convertUserInfo(Objects.requireNonNull(qqUserInfoDTO).getNickname(), qqUserInfoDTO.getFigureurl_qq_1());
             userInfoDao.insert(userInfo);
             UserAuth userAuth = convertUserAuth(userInfo.getId(), openId, accessToken, ipAddr, ipSource, LoginTypeEnum.QQ.getType());
             userAuthDao.insert(userAuth);
@@ -295,17 +233,17 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
         // 用code换取accessToken和uid
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         // 定义请求参数
-        formData.add("client_id", WEIBO_APP_ID);
-        formData.add("client_secret", WEIBO_APP_SECRET);
-        formData.add("grant_type", WEIBO_GRANT_TYPE);
-        formData.add("redirect_uri", WEIBO_REDIRECT_URI);
-        formData.add("code", code);
+        formData.add(CLIENT_ID, weiboConfigProperties.getAppId());
+        formData.add(CLIENT_SECRET, weiboConfigProperties.getAppSecret());
+        formData.add(GRANT_TYPE, weiboConfigProperties.getGrantType());
+        formData.add(REDIRECT_URI, weiboConfigProperties.getRedirectUrl());
+        formData.add(CODE, code);
         // 构建参数体
-        HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(formData, null);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, null);
         // 获取accessToken和uid
-        Map<String, String> result = restTemplate.exchange(WEIBO_ACCESS_TOKEN_URI, HttpMethod.POST, requestEntity, Map.class).getBody();
-        String uid = Objects.requireNonNull(result).get("uid");
-        String accessToken = result.get("access_token");
+        WeiboTokenDTO weiboTokenDTO = restTemplate.exchange(weiboConfigProperties.getAccessTokenUrl(), HttpMethod.POST, requestEntity, WeiboTokenDTO.class).getBody();
+        String uid = Objects.requireNonNull(weiboTokenDTO).getUid();
+        String accessToken = weiboTokenDTO.getAccess_token();
         // 校验该第三方账户信息是否存在
         UserAuth user = getUserAuth(uid, LoginTypeEnum.WEIBO.getType());
         if (Objects.nonNull(user) && Objects.nonNull(user.getUserInfoId())) {
@@ -313,17 +251,17 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
             userInfoDTO = getUserInfoDTO(user);
         } else {
             // 不存在则用accessToken和uid换取微博用户信息，并创建用户
-            Map<String, String> data = new HashMap<>(16);
+            Map<String, String> data = new HashMap<>(2);
             // 定义请求参数
-            data.put("uid", uid);
-            data.put("access_token", accessToken);
+            data.put(UID, uid);
+            data.put(ACCESS_TOKEN, accessToken);
             // 获取微博用户信息
-            Map<String, String> userInfoMap = restTemplate.getForObject(WEIBO_USER_INFO_URI, Map.class, data);
+            WeiboUserInfoDTO weiboUserInfoDTO = restTemplate.getForObject(weiboConfigProperties.getUserInfoUrl(), WeiboUserInfoDTO.class, data);
             // 获取ip地址
             String ipAddr = IpUtil.getIpAddr(request);
             String ipSource = IpUtil.getIpSource(ipAddr);
             // 将账号和信息存入数据库
-            UserInfo userInfo = convertUserInfo(Objects.requireNonNull(userInfoMap).get("screen_name"), userInfoMap.get("profile_image_url"));
+            UserInfo userInfo = convertUserInfo(Objects.requireNonNull(weiboUserInfoDTO).getScreen_name(), weiboUserInfoDTO.getAvatar_hd());
             userInfoDao.insert(userInfo);
             UserAuth userAuth = convertUserAuth(userInfo.getId(), uid, accessToken, ipAddr, ipSource, LoginTypeEnum.WEIBO.getType());
             userAuthDao.insert(userAuth);
@@ -397,8 +335,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
                 .select(UserInfo::getId, UserInfo::getEmail, UserInfo::getNickname, UserInfo::getAvatar, UserInfo::getIntro, UserInfo::getWebSite, UserInfo::getIsDisable)
                 .eq(UserInfo::getId, user.getUserInfoId()));
         // 查询账号点赞信息
-        Set<Integer> articleLikeSet = (Set<Integer>) redisTemplate.boundHashOps("article_user_like").get(userInfo.getId().toString());
-        Set<Integer> commentLikeSet = (Set<Integer>) redisTemplate.boundHashOps("comment_user_like").get(userInfo.getId().toString());
+        Set<Integer> articleLikeSet = (Set<Integer>) redisService.hGet(ARTICLE_USER_LIKE, userInfo.getId().toString());
+        Set<Integer> commentLikeSet = (Set<Integer>) redisService.hGet(COMMENT_USER_LIKE, userInfo.getId().toString());
         // 查询账号角色
         List<String> roleList = roleDao.listRolesByUserInfoId(userInfo.getId());
         // 封装信息
@@ -429,7 +367,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
      * @return 合法状态
      */
     private Boolean checkUser(UserVO user) {
-        if (!user.getCode().equals(redisTemplate.boundValueOps(CODE_KEY + user.getUsername()).get())) {
+        if (!user.getCode().equals(redisService.get(CODE_KEY + user.getUsername()))) {
             throw new ServeException("验证码错误！");
         }
         //查询用户名是否存在

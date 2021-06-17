@@ -4,7 +4,6 @@ import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.constant.StatusConst;
 import com.minzheng.blog.dto.UserRoleDTO;
 import com.minzheng.blog.service.RoleService;
-import com.minzheng.blog.service.UserRoleService;
 import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.Result;
 import com.minzheng.blog.vo.RoleVO;
@@ -44,7 +43,7 @@ public class RoleController {
     @OptLog(optType = SAVE_OR_UPDATE)
     @ApiOperation(value = "保存或更新角色")
     @PostMapping("/admin/role")
-    public Result listRoles(@RequestBody @Valid RoleVO roleVO) {
+    public Result<?> listRoles(@RequestBody @Valid RoleVO roleVO) {
         roleService.saveOrUpdateRole(roleVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -52,7 +51,7 @@ public class RoleController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "删除角色")
     @DeleteMapping("/admin/roles")
-    public Result deleteRoles(@RequestBody List<Integer> roleIdList) {
+    public Result<?> deleteRoles(@RequestBody List<Integer> roleIdList) {
         roleService.deleteRoles(roleIdList);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }

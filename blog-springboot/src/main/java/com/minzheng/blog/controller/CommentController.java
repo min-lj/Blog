@@ -42,7 +42,7 @@ public class CommentController {
 
     @ApiOperation(value = "添加评论或回复")
     @PostMapping("/comments")
-    public Result saveComment(@Valid @RequestBody CommentVO commentVO) {
+    public Result<?> saveComment(@Valid @RequestBody CommentVO commentVO) {
         commentService.saveComment(commentVO);
         return new Result<>(true, StatusConst.OK, "评论成功！");
     }
@@ -59,7 +59,7 @@ public class CommentController {
 
     @ApiOperation(value = "评论点赞")
     @PostMapping("/comments/like")
-    public Result saveCommentList(Integer commentId) {
+    public Result<?> saveCommentList(Integer commentId) {
         commentService.saveCommentLike(commentId);
         return new Result<>(true, StatusConst.OK, "点赞成功！");
     }
@@ -67,7 +67,7 @@ public class CommentController {
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "删除或恢复评论")
     @PutMapping("/admin/comments")
-    public Result deleteComment(DeleteVO deleteVO) {
+    public Result<?> deleteComment(DeleteVO deleteVO) {
         commentService.updateCommentDelete(deleteVO);
         return new Result<>(true, StatusConst.OK, "操作成功！");
     }
@@ -75,7 +75,7 @@ public class CommentController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "物理删除评论")
     @DeleteMapping("/admin/comments")
-    public Result deleteComments(@RequestBody List<Integer> commentIdList) {
+    public Result<?> deleteComments(@RequestBody List<Integer> commentIdList) {
         commentService.removeByIds(commentIdList);
         return new Result<>(true, StatusConst.OK, "操作成功！");
     }

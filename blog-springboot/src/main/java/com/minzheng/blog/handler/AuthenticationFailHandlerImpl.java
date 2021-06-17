@@ -20,7 +20,7 @@ public class AuthenticationFailHandlerImpl implements AuthenticationFailureHandl
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         httpServletResponse.setContentType("application/json;charset=UTF-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(new Result(false, StatusConst.ERROR,e.getMessage())));
+        httpServletResponse.getWriter().write(JSON.toJSONString(new Result<>(false, StatusConst.ERROR,e.getMessage())));
     }
 
 }

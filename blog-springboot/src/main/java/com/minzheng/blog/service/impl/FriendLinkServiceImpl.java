@@ -8,7 +8,6 @@ import com.minzheng.blog.dto.FriendLinkDTO;
 import com.minzheng.blog.dto.PageDTO;
 import com.minzheng.blog.entity.FriendLink;
 import com.minzheng.blog.dao.FriendLinkDao;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.FriendLinkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.utils.BeanCopyUtil;

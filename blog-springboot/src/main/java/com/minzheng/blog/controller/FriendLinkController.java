@@ -44,7 +44,7 @@ public class FriendLinkController {
     @OptLog(optType = SAVE_OR_UPDATE)
     @ApiOperation(value = "保存或修改友链")
     @PostMapping("/admin/links")
-    public Result saveOrUpdateFriendLink(@Valid @RequestBody FriendLinkVO friendLinkVO) {
+    public Result<?> saveOrUpdateFriendLink(@Valid @RequestBody FriendLinkVO friendLinkVO) {
         friendLinkService.saveOrUpdateFriendLink(friendLinkVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -52,7 +52,7 @@ public class FriendLinkController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "删除友链")
     @DeleteMapping("/admin/links")
-    public Result deleteFriendLink(@RequestBody List<Integer> linkIdList) {
+    public Result<?> deleteFriendLink(@RequestBody List<Integer> linkIdList) {
         friendLinkService.removeByIds(linkIdList);
         return new Result<>(true, StatusConst.OK, "删除成功");
     }

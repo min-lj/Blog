@@ -5,7 +5,6 @@ import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.constant.StatusConst;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.enums.FilePathEnum;
-import com.minzheng.blog.exception.ServeException;
 import com.minzheng.blog.service.ArticleService;
 import com.minzheng.blog.utils.OSSUtil;
 import com.minzheng.blog.vo.*;
@@ -61,7 +60,7 @@ public class ArticleController {
     @OptLog(optType = SAVE_OR_UPDATE)
     @ApiOperation(value = "添加或修改文章")
     @PostMapping("/admin/articles")
-    public Result saveArticle(@Valid @RequestBody ArticleVO articleVO) {
+    public Result<?> saveArticle(@Valid @RequestBody ArticleVO articleVO) {
         articleService.saveOrUpdateArticle(articleVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -69,7 +68,7 @@ public class ArticleController {
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "修改文章置顶")
     @PutMapping("/admin/articles/top/{articleId}")
-    public Result updateArticleTop(@PathVariable("articleId") Integer articleId, Integer isTop) {
+    public Result<?> updateArticleTop(@PathVariable("articleId") Integer articleId, Integer isTop) {
         articleService.updateArticleTop(articleId, isTop);
         return new Result<>(true, StatusConst.OK, "修改成功");
     }
@@ -84,7 +83,7 @@ public class ArticleController {
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "恢复或删除文章")
     @PutMapping("/admin/articles")
-    public Result updateArticleDelete(DeleteVO deleteVO) {
+    public Result<?> updateArticleDelete(DeleteVO deleteVO) {
         articleService.updateArticleDelete(deleteVO);
         return new Result<>(true, StatusConst.OK, "操作成功");
     }
@@ -92,7 +91,7 @@ public class ArticleController {
     @OptLog(optType = REMOVE)
     @ApiOperation(value = "物理删除文章")
     @DeleteMapping("/admin/articles")
-    public Result deleteArticles(@RequestBody List<Integer> articleIdList) {
+    public Result<?> deleteArticles(@RequestBody List<Integer> articleIdList) {
         articleService.deleteArticles(articleIdList);
         return new Result<>(true, StatusConst.OK, "操作成功！");
     }

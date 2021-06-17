@@ -4,7 +4,6 @@ package com.minzheng.blog.controller;
 import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.constant.StatusConst;
 import com.minzheng.blog.dto.PageDTO;
-import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.service.UserInfoService;
 import com.minzheng.blog.vo.*;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-import java.util.List;
 
 import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
 
@@ -36,7 +34,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "修改用户资料")
     @PutMapping("/users/info")
-    public Result updateUserInfo(@Valid @RequestBody UserInfoVO userInfoVO) {
+    public Result<?> updateUserInfo(@Valid @RequestBody UserInfoVO userInfoVO) {
         userInfoService.updateUserInfo(userInfoVO);
         return new Result<>(true, StatusConst.OK, "修改成功！");
     }
@@ -50,9 +48,9 @@ public class UserInfoController {
 
     @ApiOperation(value = "绑定用户邮箱")
     @PostMapping("/users/email")
-    public Result saveUserEmail(@Valid @RequestBody EmailVO emailVO) {
+    public Result<?> saveUserEmail(@Valid @RequestBody EmailVO emailVO) {
         userInfoService.saveUserEmail(emailVO);
-        return new Result(true, StatusConst.OK, "绑定成功！");
+        return new Result<>(true, StatusConst.OK, "绑定成功！");
     }
 
     @OptLog(optType = UPDATE)
@@ -66,7 +64,7 @@ public class UserInfoController {
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "修改用户禁用状态")
     @PutMapping("/admin/users/disable/{userInfoId}")
-    public Result updateUserSilence(@PathVariable("userInfoId") Integer userInfoId, Integer isDisable) {
+    public Result<?> updateUserSilence(@PathVariable("userInfoId") Integer userInfoId, Integer isDisable) {
         userInfoService.updateUserDisable(userInfoId, isDisable);
         return new Result<>(true, StatusConst.OK, "修改成功！");
     }
@@ -79,7 +77,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "下线用户")
     @DeleteMapping("/admin/users/online/{userInfoId}")
-    public Result removeOnlineUser(@PathVariable("userInfoId") Integer userInfoId) {
+    public Result<?> removeOnlineUser(@PathVariable("userInfoId") Integer userInfoId) {
         userInfoService.removeOnlineUser(userInfoId);
         return new Result<>(true, StatusConst.OK, "操作成功！");
     }

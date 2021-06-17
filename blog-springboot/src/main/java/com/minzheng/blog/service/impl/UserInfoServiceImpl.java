@@ -10,10 +10,10 @@ import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.exception.ServeException;
+import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.UserRoleService;
-import com.minzheng.blog.utils.BeanCopyUtil;
 import com.minzheng.blog.utils.OSSUtil;
 
 import com.minzheng.blog.utils.UserUtil;
@@ -22,15 +22,12 @@ import com.minzheng.blog.vo.EmailVO;
 import com.minzheng.blog.vo.UserInfoVO;
 import com.minzheng.blog.vo.UserRoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -53,7 +50,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     @Autowired
     private SessionRegistry sessionRegistry;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -87,7 +84,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveUserEmail(EmailVO emailVO) {
-        if (!emailVO.getCode().equals(redisTemplate.boundValueOps(CODE_KEY + emailVO.getEmail()).get())) {
+        if (!emailVO.getCode().equals(redisService.get(CODE_KEY + emailVO.getEmail()).toString())) {
             throw new ServeException("验证码错误！");
         }
         UserInfo userInfo = UserInfo.builder()
