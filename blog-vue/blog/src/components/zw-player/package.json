@@ -1,0 +1,52 @@
+{
+  "_from": "zw-player",
+  "_id": "zw-player@1.0.6",
+  "_inBundle": false,
+  "_integrity": "sha1-NajRC2RNL7w89O6lfLrgFW25aJw=",
+  "_location": "/zw-player",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "zw-player",
+    "name": "zw-player",
+    "escapedName": "zw-player",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npm.taobao.org/zw-player/download/zw-player-1.0.6.tgz",
+  "_shasum": "35a8d10b644d2fbc3cf4eea57cbae0156db9689c",
+  "_spec": "zw-player",
+  "_where": "D:\\idea\\blog\\blog-vue\\blog",
+  "author": {
+    "name": "956661947@qq.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "axios": "^0.19.0",
+    "jquery": "^3.4.1"
+  },
+  "deprecated": false,
+  "description": "a web music player",
+  "keywords": [
+    "music",
+    "player",
+    "webplayer",
+    "musicplayer",
+    "vue",
+    "component",
+    "web"
+  ],
+  "license": "ISC",
+  "main": "player.vue",
+  "name": "zw-player",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.6"
+}
