@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.minzheng.blog.constant.CommonConst.ARTICLE_SET;
@@ -131,6 +132,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
     @Override
     public ArticleDTO getArticleById(Integer articleId) {
+        // 查询推荐文章
+        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture.supplyAsync(() -> articleDao.listArticleRecommends(articleId));
         // 更新文章浏览量
         updateArticleViewsCount(articleId);
         // 查询id对应的文章
@@ -152,11 +155,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 .last("limit 1"));
         article.setLastArticle(BeanCopyUtil.copyObject(lastArticle, ArticlePaginationDTO.class));
         article.setNextArticle(BeanCopyUtil.copyObject(nextArticle, ArticlePaginationDTO.class));
-        // 查询相关推荐文章
-        article.setArticleRecommendList(articleDao.listArticleRecommends(articleId));
         // 封装点赞量和浏览量
         article.setViewsCount((Integer) redisService.hGet(ARTICLE_VIEWS_COUNT, articleId.toString()));
         article.setLikeCount((Integer) redisService.hGet(ARTICLE_LIKE_COUNT, articleId.toString()));
+        // 封装相关推荐文章
+        try {
+            article.setArticleRecommendList(recommendArticleList.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return article;
     }
 
