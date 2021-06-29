@@ -205,7 +205,7 @@ export default {
     connect() {
       var that = this;
       console.log("建立连接");
-      this.websocket = new WebSocket("ws://127.0.0.1:8080/websocket");
+      this.websocket = new WebSocket("wss://www.ws.talkxj.com");
       // 连接发生错误的回调方法
       this.websocket.onerror = function(event) {
         console.log(event);

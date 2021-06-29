@@ -6,7 +6,14 @@
       :key="index"
       @click="addEmoji(key)"
     >
-      <img :src="value" :title="key" class="emoji" width="24" height="24" />
+      <v-img
+        :lazy-src="value"
+        :src="value"
+        :title="key"
+        class="emoji"
+        width="24"
+        height="24"
+      />
     </span>
   </div>
 </template>

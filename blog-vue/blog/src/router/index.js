@@ -1,95 +1,84 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/home/Home.vue";
-import Article from "../views/article/Article.vue";
-import Archive from "../views/archive/Archive.vue";
-import Tag from "../views/tag/Tag.vue";
-import Category from "../views/category/Category.vue";
-import Link from "../views/link/Link.vue";
-import About from "../views/about/About.vue";
-import Message from "../views/message/Messsage.vue";
-import ArticleList from "../components/ArticleList.vue";
-import User from "../views/user/User.vue";
-import OauthLogin from "../components/OauthLogin.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    component: Home,
+    component: resolve => require(["../views/home/Home.vue"], resolve),
     meta: {
       title: "风丶宇的个人博客"
     }
   },
   {
     path: "/articles/:articleId",
-    component: Article
+    component: resolve => require(["../views/article/Article.vue"], resolve)
   },
   {
     path: "/archives",
-    component: Archive,
+    component: resolve => require(["../views/archive/Archive.vue"], resolve),
     meta: {
       title: "归档"
     }
   },
   {
     path: "/tags",
-    component: Tag,
+    component: resolve => require(["../views/tag/Tag.vue"], resolve),
     meta: {
       title: "标签"
     }
   },
   {
     path: "/categories",
-    component: Category,
+    component: resolve => require(["../views/category/Category.vue"], resolve),
     meta: {
       title: "分类"
     }
   },
   {
     path: "/categories/*",
-    component: ArticleList
+    component: resolve => require(["../components/ArticleList.vue"], resolve)
+  },
+  {
+    path: "/tags/*",
+    component: resolve => require(["../components/ArticleList.vue"], resolve)
   },
   {
     path: "/links",
-    component: Link,
+    component: resolve => require(["../views/link/Link.vue"], resolve),
     meta: {
       title: "友链列表"
     }
   },
   {
     path: "/about",
-    component: About,
+    component: resolve => require(["../views/about/About.vue"], resolve),
     meta: {
       title: "关于我"
     }
   },
   {
     path: "/message",
-    component: Message,
+    component: resolve => require(["../views/message/Messsage.vue"], resolve),
     meta: {
       title: "留言板"
     }
   },
   {
-    path: "/tags/*",
-    component: ArticleList
-  },
-  {
     path: "/user",
-    component: User,
+    component: resolve => require(["../views/user/User.vue"], resolve),
     meta: {
       title: "个人中心"
     }
   },
   {
     path: "/oauth/login/qq",
-    component: OauthLogin
+    component: resolve => require(["../components/OauthLogin.vue"], resolve)
   },
   {
     path: "/oauth/login/weibo",
-    component: OauthLogin
+    component: resolve => require(["../components/OauthLogin.vue"], resolve)
   }
 ];
 
