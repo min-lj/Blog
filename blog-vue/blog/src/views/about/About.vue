@@ -6,14 +6,13 @@
     </div>
     <!-- 关于我内容 -->
     <v-card class="blog-container">
+      <!-- 博主头像 -->
       <div class="my-wrapper">
         <v-avatar size="110">
-          <img
-            class="author-avatar"
-            src="https://www.static.talkxj.com/avatar/blogger.jpg"
-          />
+          <img class="author-avatar" :src="avatar" />
         </v-avatar>
       </div>
+      <!-- 介绍 -->
       <div class="about-content markdown-body" v-html="aboutContent" />
     </v-card>
   </div>
@@ -36,6 +35,11 @@ export default {
         const md = new MarkdownIt();
         this.aboutContent = md.render(data.data);
       });
+    }
+  },
+  computed: {
+    avatar() {
+      return this.$store.state.blogInfo.avatar;
     }
   }
 };

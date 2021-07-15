@@ -28,6 +28,4 @@ public class ArticleOptionDTO {
      */
     private List<CategoryBackDTO> categoryDTOList;
 
-
-
 }

@@ -42,6 +42,9 @@ import EmailModel from "./components/model/EmailModel";
 import Player from "./components/zw-player/player.vue";
 import ChatRoom from "./components/ChatRoom";
 export default {
+  created() {
+    this.getBlogInfo();
+  },
   components: {
     TopNavBar,
     Player,
@@ -54,6 +57,13 @@ export default {
     ForgetModel,
     EmailModel,
     ChatRoom
+  },
+  methods: {
+    getBlogInfo() {
+      this.axios.get("/api/").then(({ data }) => {
+        this.$store.commit("checkBlogInfo", data.data);
+      });
+    }
   }
 };
 </script>
