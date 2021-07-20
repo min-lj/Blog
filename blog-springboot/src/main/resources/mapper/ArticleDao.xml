@@ -254,6 +254,7 @@
                  article_id != #{articleId}
             ) t2
                JOIN tb_article a ON t2.article_id = a.id
+	WHERE  a.is_delete = 0
         ORDER BY
             is_top DESC,id DESC
             LIMIT 6
