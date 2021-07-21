@@ -13,7 +13,8 @@ public class HTMLUtil {
      */
     public static String deleteCommentTag(String source) {
         // 保留图片标签
-        source = source.replaceAll("(?!<(img).*?>)<.*?>", "");
+        source = source.replaceAll("(?!<(img).*?>)<.*?>", "")
+                .replaceAll("(on[a-z]*\\=\\\")([^\\s]*)(\")", "");
         return deleteHMTLTag(source);
     }
 

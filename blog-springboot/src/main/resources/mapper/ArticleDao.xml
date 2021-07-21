@@ -239,10 +239,10 @@
 
     <select id="listArticleRecommends" resultType="com.minzheng.blog.dto.ArticleRecommendDTO">
         SELECT
-            id,
-            article_title,
-            article_cover,
-            create_time
+          id,
+          article_title,
+          article_cover,
+          create_time
         FROM
             (
               SELECT DISTINCT
@@ -254,9 +254,10 @@
                  article_id != #{articleId}
             ) t2
                JOIN tb_article a ON t2.article_id = a.id
-        ORDER BY
-            is_top DESC,id DESC
-            LIMIT 6
+           WHERE a.is_delete = 0
+           ORDER BY
+           is_top DESC,id DESC
+           LIMIT 6
     </select>
 
 </mapper>

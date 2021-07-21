@@ -60,7 +60,7 @@ public interface ArticleDao extends BaseMapper<Article> {
     /**
      * 查询文章排行
      *
-     * @param articleIdList
+     * @param articleIdList 文章id
      * @return
      */
     List<Article> listArticleRank(@Param("articleIdList") List<Integer> articleIdList);

@@ -103,6 +103,8 @@ public class WebSocketServiceImpl {
             case SEND_MESSAGE:
                 // 发送消息
                 ChatRecord chatRecord = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), ChatRecord.class);
+                // 过滤html标签
+                chatRecord.setContent(HTMLUtil.deleteCommentTag(chatRecord.getContent()));
                 chatRecordDao.insert(chatRecord);
                 messageDTO.setData(chatRecord);
                 for (WebSocketServiceImpl webSocketService : webSocketSet) {
