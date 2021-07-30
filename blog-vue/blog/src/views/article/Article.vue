@@ -344,7 +344,7 @@ export default {
           for (var i = 0; i < imgList.length; i++) {
             this.imgList.push(imgList[i].src);
             imgList[i].addEventListener("click", function(e) {
-              that.previewImg(e.toElement.src);
+              that.previewImg(e.target.currentSrc);
             });
           }
         });
