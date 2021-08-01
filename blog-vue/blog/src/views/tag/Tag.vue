@@ -45,8 +45,8 @@ export default {
 
 <style scoped>
 .tag-banner {
-  background: url(https://www.static.talkxj.com/73lleo.png) center center /
-    cover no-repeat;
+  background: url(https://www.static.talkxj.com/tag.jpg) center center / cover
+    no-repeat;
   background-color: #49b1f5;
 }
 .tag-cloud-title {

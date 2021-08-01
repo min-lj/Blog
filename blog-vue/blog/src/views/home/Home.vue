@@ -326,8 +326,8 @@ export default {
   left: 0;
   right: 0;
   height: 100vh;
-  background: url("https://www.static.talkxj.com/wallhaven-g89p2.png") center
-    center / cover no-repeat;
+  background: url("https://www.static.talkxj.com/ymwmek.jpg") center center /
+    cover no-repeat;
   background-color: #49b1f5;
   background-attachment: fixed;
   text-align: center;

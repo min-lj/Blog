@@ -101,8 +101,8 @@ blockquote {
   border-radius: 4px;
 }
 .link-banner {
-  background: url(https://www.static.talkxj.com/ne78w4%20.jpg) center center /
-    cover no-repeat;
+  background: url(https://www.static.talkxj.com/fdl.jpg) center center / cover
+    no-repeat;
   background-color: #49b1f5;
 }
 .link-title {

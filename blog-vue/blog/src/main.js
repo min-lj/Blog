@@ -7,14 +7,13 @@ import animated from "animate.css";
 import "./assets/css/index.css";
 import "./assets/css/iconfont.css";
 import "./assets/css/markdown.css";
-import "@mdi/font/css/materialdesignicons.css";
 import config from "./assets/js/config";
 import Share from "vue-social-share";
+import dayjs from "dayjs";
 import "vue-social-share/dist/client.css";
 import { vueBaberrage } from "vue-baberrage";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import moment from "moment";
 import InfiniteLoading from "vue-infinite-loading";
 import "highlight.js/styles/atom-one-dark.css";
 import VueImageSwipe from "vue-image-swipe";
@@ -34,11 +33,11 @@ Vue.use(VueImageSwipe);
 Vue.use(Toast);
 
 Vue.filter("date", function(value) {
-  return moment(value).format("YYYY-MM-DD");
+  return dayjs(value).format("YYYY-MM-DD");
 });
 
 Vue.filter("hour", function(value) {
-  return moment(value).format("HH:mm:ss");
+  return dayjs(value).format("HH:mm:ss");
 });
 
 Vue.filter("num", function(value) {
