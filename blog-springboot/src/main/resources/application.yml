@@ -10,7 +10,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://你的ip:3306/test?serverTimezone=GMT%2B8&allowMultiQueries=true
+    url: jdbc:mysql://你的ip:3306/blog?serverTimezone=GMT%2B8&allowMultiQueries=true
     username: MYSQL用户名
     password: MYSQL密码
     hikari:
