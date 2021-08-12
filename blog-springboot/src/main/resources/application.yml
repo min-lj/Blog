@@ -10,7 +10,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://你的ip:3306/blog?serverTimezone=GMT%2B8&allowMultiQueries=true
+    url: jdbc:mysql://你的ip:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true
     username: MYSQL用户名
     password: MYSQL密码
     hikari:
@@ -105,4 +105,3 @@ weibo:
   redirect-url: 微博回调地址
   access-token-url: https://api.weibo.com/oauth2/access_token
   user-info-url: https://api.weibo.com/2/users/show.json?uid={uid}&access_token={access_token}
-
