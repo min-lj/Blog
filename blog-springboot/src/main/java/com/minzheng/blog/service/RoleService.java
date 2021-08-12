@@ -1,7 +1,7 @@
 package com.minzheng.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.dto.RoleDTO;
 import com.minzheng.blog.dto.UserRoleDTO;
 import com.minzheng.blog.entity.Role;
@@ -11,9 +11,11 @@ import com.minzheng.blog.vo.RoleVO;
 import java.util.List;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 角色服务
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 public interface RoleService extends IService<Role> {
 
     /**
@@ -29,7 +31,7 @@ public interface RoleService extends IService<Role> {
      * @param conditionVO 条件
      * @return 角色列表
      */
-    PageDTO<RoleDTO> listRoles(ConditionVO conditionVO);
+    PageResult<RoleDTO> listRoles(ConditionVO conditionVO);
 
     /**
      * 保存或更新角色

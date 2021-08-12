@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="category-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">分类</h1>
     </div>
     <!-- 分类列表 -->
@@ -41,16 +41,22 @@ export default {
         this.count = data.data.count;
       });
     }
+  },
+  computed: {
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "category") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
+    }
   }
 };
 </script>
 
 <style scoped>
-.category-banner {
-  background: url(https://www.static.talkxj.com/wallhaven-13mk9v.jpg) center
-    center / cover no-repeat;
-  background-color: #49b1f5;
-}
 .category-title {
   text-align: center;
   font-size: 36px;

@@ -1,13 +1,9 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.minzheng.blog.utils.UserUtil;
-import com.minzheng.blog.vo.CommentVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +12,8 @@ import lombok.NoArgsConstructor;
 /**
  * 评论
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 @Data
 @Builder
@@ -40,7 +36,7 @@ public class Comment {
     /**
      * 回复用户id
      */
-    private Integer replyId;
+    private Integer replyUserId;
 
     /**
      * 评论文章id
@@ -53,18 +49,25 @@ public class Comment {
     private String commentContent;
 
     /**
-     * 评论时间
-     */
-    private Date createTime;
-
-    /**
      * 父评论id
      */
     private Integer parentId;
 
     /**
-     * 状态码
+     * 是否审核
      */
-    private Integer isDelete;
+    private Integer isReview;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
 }

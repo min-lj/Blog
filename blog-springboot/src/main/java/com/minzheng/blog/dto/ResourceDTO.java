@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 权限DTO
- * @author: yezhiqiu
- * @date: 2021-01-22
- **/
+ * 资源
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,11 +41,6 @@ public class ResourceDTO {
     private String requestMethod;
 
     /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
      * 是否禁用
      */
     private Integer isDisable;
@@ -55,8 +51,14 @@ public class ResourceDTO {
     private Integer isAnonymous;
 
     /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
      * 权限列表
      */
     private List<ResourceDTO> children;
+
 
 }

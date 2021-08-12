@@ -1,16 +1,46 @@
 <template>
   <el-card class="main-card">
     <div class="title">{{ this.$route.name }}</div>
+    <div class="review-menu">
+      <span>状态</span>
+      <span
+        @click="changeReview(null)"
+        :class="isReview == null ? 'active-review' : 'review'"
+      >
+        全部
+      </span>
+      <span
+        @click="changeReview(1)"
+        :class="isReview == 1 ? 'active-review' : 'review'"
+      >
+        正常
+      </span>
+      <span
+        @click="changeReview(0)"
+        :class="isReview == 0 ? 'active-review' : 'review'"
+      >
+        审核中
+      </span>
+    </div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <el-button
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="messageIdList.length == 0"
         @click="deleteFlag = true"
       >
         批量删除
+      </el-button>
+      <el-button
+        type="success"
+        size="small"
+        icon="el-icon-success"
+        :disabled="messageIdList.length == 0"
+        @click="updateMessageReview(null)"
+      >
+        批量通过
       </el-button>
       <!-- 数据筛选 -->
       <div style="margin-left:auto">
@@ -66,6 +96,13 @@
         align="center"
         width="170"
       />
+      <!-- 状态 -->
+      <el-table-column prop="isReview" label="状态" width="80" align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.isReview == 0" type="warning">审核中</el-tag>
+          <el-tag v-if="scope.row.isReview == 1" type="success">正常</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="createTime"
         label="留言时间"
@@ -78,11 +115,21 @@
         </template>
       </el-table-column>
       <!-- 列操作 -->
-      <el-table-column label="操作" width="100" align="center">
+      <el-table-column label="操作" width="160" align="center">
         <template slot-scope="scope">
+          <el-button
+            v-if="scope.row.isReview == 0"
+            size="mini"
+            type="success"
+            slot="reference"
+            @click="updateMessageReview(scope.row.id)"
+          >
+            通过
+          </el-button>
           <el-popconfirm
+            style="margin-left:10px"
             title="确定删除吗？"
-            @onConfirm="deleteMessage(scope.row.id)"
+            @confirm="deleteMessage(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除
@@ -131,6 +178,7 @@ export default {
       messageIdList: [],
       messageList: [],
       keywords: null,
+      isReview: null,
       current: 1,
       size: 10,
       count: 0
@@ -174,13 +222,40 @@ export default {
         this.deleteFlag = false;
       });
     },
+    updateMessageReview(id) {
+      let param = {};
+      if (id != null) {
+        param.idList = [id];
+      } else {
+        param.idList = this.messageIdList;
+      }
+      param.isReview = 1;
+      this.axios.put("/api/admin/messages/review", param).then(({ data }) => {
+        if (data.flag) {
+          this.$notify.success({
+            title: "成功",
+            message: data.message
+          });
+          this.listMessages();
+        } else {
+          this.$notify.error({
+            title: "失败",
+            message: data.message
+          });
+        }
+      });
+    },
+    changeReview(review) {
+      this.isReview = review;
+    },
     listMessages() {
       this.axios
         .get("/api/admin/messages", {
           params: {
             current: this.current,
             size: this.size,
-            keywords: this.keywords
+            keywords: this.keywords,
+            isReview: this.isReview
           }
         })
         .then(({ data }) => {
@@ -189,6 +264,33 @@ export default {
           this.loading = false;
         });
     }
+  },
+  watch: {
+    isReview() {
+      this.listMessages();
+    }
   }
 };
 </script>
+
+<style scoped>
+.operation-container {
+  margin-top: 1.5rem;
+}
+.review-menu {
+  font-size: 14px;
+  margin-top: 40px;
+  color: #999;
+}
+.review-menu span {
+  margin-right: 24px;
+}
+.review {
+  cursor: pointer;
+}
+.active-review {
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+}
+</style>

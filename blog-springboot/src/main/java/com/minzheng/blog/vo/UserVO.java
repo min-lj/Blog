@@ -18,8 +18,9 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "用户注册")
+@ApiModel(description = "用户账号")
 public class UserVO {
+
     /**
      * 用户名
      */

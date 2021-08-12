@@ -8,10 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 /**
- * @author: yezhiqiu
- * @date: 2021-03-30
- **/
+ * 聊天记录
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,10 +29,11 @@ public class ChatRecordDTO {
     /**
      * ip地址
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源
      */
     private String ipSource;
+
 }

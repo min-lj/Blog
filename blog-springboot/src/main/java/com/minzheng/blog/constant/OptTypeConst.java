@@ -3,9 +3,9 @@ package com.minzheng.blog.constant;
 /**
  * 操作日志类型常量
  *
- * @author: yezhiqiu
- * @date: 2021-01-31
- **/
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 public class OptTypeConst {
 
     /**
@@ -16,7 +16,7 @@ public class OptTypeConst {
     /**
      * 新增
      */
-    public static final String SAVE = "修改";
+    public static final String SAVE = "新增";
 
     /**
      * 修改操作

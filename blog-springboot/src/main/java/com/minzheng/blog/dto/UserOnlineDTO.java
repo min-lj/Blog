@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 /**
- * 在线用户DTO
- * @author: yezhiqiu
- * @date: 2021-02-04
- **/
+ * 在线用户
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -37,7 +38,7 @@ public class UserOnlineDTO {
     /**
      * 用户登录ip
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源
@@ -57,6 +58,6 @@ public class UserOnlineDTO {
     /**
      * 最近登录时间
      */
-    private Date lastLoginTime;
+    private LocalDateTime lastLoginTime;
 
 }

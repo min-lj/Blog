@@ -39,16 +39,24 @@
           <span @click="openRegister">立即注册</span>
           <span @click="openForget" class="float-right">忘记密码?</span>
         </div>
-        <div class="social-login-title">社交账号登录</div>
-        <div class="social-login-wrapper">
-          <!-- 微博登录 -->
-          <a
-            class="mr-3 iconfont iconweibo"
-            style="color:#e05244"
-            @click="weiboLogin"
-          />
-          <!-- qq登录 -->
-          <a class="iconfont iconqq" style="color:#00AAEE" @click="qqLogin" />
+        <div v-if="socialLoginList.length > 0">
+          <div class="social-login-title">社交账号登录</div>
+          <div class="social-login-wrapper">
+            <!-- 微博登录 -->
+            <a
+              v-if="showLogin('weibo')"
+              class="mr-3 iconfont iconweibo"
+              style="color:#e05244"
+              @click="weiboLogin"
+            />
+            <!-- qq登录 -->
+            <a
+              v-if="showLogin('qq')"
+              class="iconfont iconqq"
+              style="color:#00AAEE"
+              @click="qqLogin"
+            />
+          </div>
         </div>
       </div>
     </v-card>
@@ -79,6 +87,14 @@ export default {
         return false;
       }
       return true;
+    },
+    socialLoginList() {
+      return this.$store.state.blogInfo.websiteConfig.socialLoginList;
+    },
+    showLogin() {
+      return function(type) {
+        return this.socialLoginList.indexOf(type) != -1;
+      };
     }
   },
   methods: {
@@ -116,7 +132,7 @@ export default {
               that.password = "";
               that.$store.commit("login", data.data);
               that.$store.commit("closeModel");
-              that.$toast({ type: "success", message: data.message });
+              that.$toast({ type: "success", message: "登录成功" });
             } else {
               that.$toast({ type: "error", message: data.message });
             }

@@ -33,7 +33,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="nickname" label="昵称" align="center" />
-      <el-table-column prop="ipAddr" label="ip地址" align="center" />
+      <el-table-column prop="ipAddress" label="ip地址" align="center" />
       <el-table-column prop="ipSource" label="登录地址" align="center" />
       <el-table-column
         prop="browser"
@@ -58,7 +58,7 @@
           <el-popconfirm
             title="确定下线吗？"
             style="margin-left:10px"
-            @onConfirm="removeOnlineUser(scope.row)"
+            @confirm="removeOnlineUser(scope.row)"
           >
             <el-button size="mini" type="text" slot="reference">
               <i class="el-icon-delete" /> 下线
@@ -114,13 +114,9 @@ export default {
           this.loading = false;
         });
     },
-    check(optLog) {
-      this.optLog = JSON.parse(JSON.stringify(optLog));
-      this.isCheck = true;
-    },
     removeOnlineUser(user) {
       this.axios
-        .delete("/api/admin/users/online/" + user.userInfoId)
+        .delete("/api/admin/users/" + user.userInfoId + "/online")
         .then(({ data }) => {
           if (data.flag) {
             this.$notify.success({

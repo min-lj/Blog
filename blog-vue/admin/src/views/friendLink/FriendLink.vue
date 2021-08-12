@@ -14,7 +14,7 @@
       <el-button
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="linkIdList.length == 0"
         @click="deleteFlag = true"
       >
@@ -83,7 +83,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:1rem"
-            @onConfirm="deleteLink(scope.row.id)"
+            @confirm="deleteLink(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除
@@ -127,11 +127,11 @@
         <el-form-item label="链接头像">
           <el-input style="width:250px" v-model="linkForm.linkAvatar" />
         </el-form-item>
-        <el-form-item label="链接介绍">
-          <el-input style="width:250px" v-model="linkForm.linkIntro" />
-        </el-form-item>
         <el-form-item label="链接地址">
           <el-input style="width:250px" v-model="linkForm.linkAddress" />
+        </el-form-item>
+        <el-form-item label="链接介绍">
+          <el-input style="width:250px" v-model="linkForm.linkIntro" />
         </el-form-item>
       </el-form>
       <div slot="footer">

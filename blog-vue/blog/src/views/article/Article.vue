@@ -77,7 +77,9 @@
           <div class="aritcle-copyright">
             <div>
               <span>文章作者：</span>
-              <a href="http://www.talkxj.com" target="_blank"> 风丶宇</a>
+              <router-link to="/">
+                {{ blogInfo.websiteConfig.websiteAuthor }}
+              </router-link>
             </div>
             <div>
               <span>文章链接：</span>
@@ -116,7 +118,7 @@
                 article.likeCount
               }}</span>
             </a>
-            <a class="reward-btn">
+            <a class="reward-btn" v-if="blogInfo.websiteConfig.isReward == 1">
               <!-- 打赏按钮 -->
               <i class="iconfont iconerweima" /> 打赏
               <!-- 二维码 -->
@@ -125,14 +127,14 @@
                   <li class="reward-item">
                     <img
                       class="reward-img"
-                      :src="require('../../assets/img/wechat.png')"
+                      :src="blogInfo.websiteConfig.weiXinQRCode"
                     />
                     <div class="reward-desc">微信</div>
                   </li>
                   <li class="reward-item">
                     <img
                       class="reward-img"
-                      :src="require('../../assets/img/alipay.png')"
+                      :src="blogInfo.websiteConfig.alipayQRCode"
                     />
                     <div class="reward-desc">支付宝</div>
                   </li>
@@ -181,7 +183,7 @@
           <!-- 推荐文章 -->
           <div
             class="recommend-container"
-            v-if="article.articleRecommendList.length"
+            v-if="article.recommendArticleList.length"
           >
             <div class="recommend-title">
               <v-icon size="20" color="#4c4948">mdi-thumb-up</v-icon> 相关推荐
@@ -189,7 +191,7 @@
             <div class="recommend-list">
               <div
                 class="recommend-item"
-                v-for="item of article.articleRecommendList"
+                v-for="item of article.recommendArticleList"
                 :key="item.id"
               >
                 <router-link :to="'/articles/' + item.id">
@@ -235,7 +237,7 @@
             <div class="article-list">
               <div
                 class="article-item"
-                v-for="item of articleLatestList"
+                v-for="item of article.newestArticleList"
                 :key="item.id"
               >
                 <router-link :to="'/articles/' + item.id" class="content-cover">
@@ -269,7 +271,6 @@ export default {
   created() {
     this.getArticle();
     this.listComment();
-    this.listNewestArticles();
   },
   destroyed() {
     this.clipboard.destroy();
@@ -290,9 +291,9 @@ export default {
           id: 0,
           articleCover: ""
         },
-        articleRecommendList: []
+        recommendArticleList: [],
+        newestArticleList: []
       },
-      articleLatestList: [],
       commentList: [],
       count: 0,
       wordNum: "",
@@ -344,7 +345,7 @@ export default {
           for (var i = 0; i < imgList.length; i++) {
             this.imgList.push(imgList[i].src);
             imgList[i].addEventListener("click", function(e) {
-              that.previewImg(e.toElement.src);
+              that.previewImg(e.target.currentSrc);
             });
           }
         });
@@ -363,11 +364,6 @@ export default {
           this.count = data.data.count;
         });
     },
-    listNewestArticles() {
-      this.axios.get("/api/articles/newest").then(({ data }) => {
-        this.articleLatestList = data.data;
-      });
-    },
     like() {
       // 判断登录
       if (!this.$store.state.userId) {
@@ -375,19 +371,21 @@ export default {
         return false;
       }
       //发送请求
-      let param = new URLSearchParams();
-      param.append("articleId", this.article.id);
-      this.axios.post("/api/articles/like", param).then(({ data }) => {
-        if (data.flag) {
-          //判断是否点赞
-          if (this.$store.state.articleLikeSet.indexOf(this.article.id) != -1) {
-            this.$set(this.article, "likeCount", this.article.likeCount - 1);
-          } else {
-            this.$set(this.article, "likeCount", this.article.likeCount + 1);
+      this.axios
+        .post("/api/articles/" + this.article.id + "/like")
+        .then(({ data }) => {
+          if (data.flag) {
+            //判断是否点赞
+            if (
+              this.$store.state.articleLikeSet.indexOf(this.article.id) != -1
+            ) {
+              this.$set(this.article, "likeCount", this.article.likeCount - 1);
+            } else {
+              this.$set(this.article, "likeCount", this.article.likeCount + 1);
+            }
+            this.$store.commit("articleLike", this.article.id);
           }
-          this.$store.commit("articleLike", this.article.id);
-        }
-      });
+        });
     },
     markdownToHtml(article) {
       const MarkdownIt = require("markdown-it");
@@ -455,6 +453,9 @@ export default {
     }
   },
   computed: {
+    blogInfo() {
+      return this.$store.state.blogInfo;
+    },
     articleCover() {
       return (
         "background: url(" +

@@ -5,17 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 /**
  * 归档文章
- * @author 11921
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArchiveDTO {
+
     /**
      * id
      */
@@ -29,6 +33,6 @@ public class ArchiveDTO {
     /**
      * 发表时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
 }

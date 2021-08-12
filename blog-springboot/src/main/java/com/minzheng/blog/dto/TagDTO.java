@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * 标签
- * @author 11921
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -26,6 +28,5 @@ public class TagDTO {
      * 标签名
      */
     private String tagName;
-
 
 }

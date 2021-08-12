@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.minzheng.blog.entity.UserRole;
 import org.springframework.stereotype.Repository;
 
+
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 用户角色
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 @Repository
 public interface UserRoleDao extends BaseMapper<UserRole> {
 

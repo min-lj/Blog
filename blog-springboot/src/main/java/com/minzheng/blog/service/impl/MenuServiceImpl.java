@@ -5,16 +5,21 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.MenuDao;
+import com.minzheng.blog.dao.RoleMenuDao;
 import com.minzheng.blog.dto.MenuDTO;
-import com.minzheng.blog.dto.labelOptionDTO;
+import com.minzheng.blog.dto.LabelOptionDTO;
 import com.minzheng.blog.dto.UserMenuDTO;
 import com.minzheng.blog.entity.Menu;
+import com.minzheng.blog.entity.RoleMenu;
+import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.MenuService;
-import com.minzheng.blog.utils.BeanCopyUtil;
-import com.minzheng.blog.utils.UserUtil;
+import com.minzheng.blog.util.BeanCopyUtils;
+import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.MenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,18 +28,22 @@ import static com.minzheng.blog.constant.CommonConst.*;
 import static com.minzheng.blog.constant.CommonConst.COMPONENT;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-23
- **/
+ * 菜单服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuService {
     @Autowired
     private MenuDao menuDao;
+    @Autowired
+    private RoleMenuDao roleMenuDao;
 
     @Override
     public List<MenuDTO> listMenus(ConditionVO conditionVO) {
         // 查询菜单数据
-        List<Menu> menuList = this.list(new LambdaQueryWrapper<Menu>()
+        List<Menu> menuList = menuDao.selectList(new LambdaQueryWrapper<Menu>()
                 .like(StringUtils.isNotBlank(conditionVO.getKeywords()), Menu::getName, conditionVO.getKeywords()));
         // 获取目录列表
         List<Menu> catalogList = listCatalog(menuList);
@@ -42,9 +51,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
         Map<Integer, List<Menu>> childrenMap = getMenuMap(menuList);
         // 组装目录菜单数据
         return catalogList.stream().map(item -> {
-            MenuDTO menuDTO = BeanCopyUtil.copyObject(item, MenuDTO.class);
+            MenuDTO menuDTO = BeanCopyUtils.copyObject(item, MenuDTO.class);
             // 获取目录下的菜单排序
-            List<MenuDTO> list = BeanCopyUtil.copyList(childrenMap.get(item.getId()), MenuDTO.class).stream()
+            List<MenuDTO> list = BeanCopyUtils.copyList(childrenMap.get(item.getId()), MenuDTO.class).stream()
                     .sorted(Comparator.comparing(MenuDTO::getOrderNum))
                     .collect(Collectors.toList());
             menuDTO.setChildren(list);
@@ -52,8 +61,34 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
         }).sorted(Comparator.comparing(MenuDTO::getOrderNum)).collect(Collectors.toList());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<labelOptionDTO> listMenuOptions() {
+    public void saveOrUpdateMenu(MenuVO menuVO) {
+        Menu menu = BeanCopyUtils.copyObject(menuVO, Menu.class);
+        this.saveOrUpdate(menu);
+    }
+
+    @Override
+    public void deleteMenu(Integer menuId) {
+        // 查询是否有角色关联
+        Integer count = roleMenuDao.selectCount(new LambdaQueryWrapper<RoleMenu>()
+                .eq(RoleMenu::getMenuId, menuId));
+        if (count > 0) {
+            throw new BizException("菜单下有角色关联");
+        }
+        // 查询子菜单
+        List<Integer> menuIdList = menuDao.selectList(new LambdaQueryWrapper<Menu>()
+                .select(Menu::getId)
+                .eq(Menu::getParentId, menuId))
+                .stream()
+                .map(Menu::getId)
+                .collect(Collectors.toList());
+        menuIdList.add(menuId);
+        menuDao.deleteBatchIds(menuIdList);
+    }
+
+    @Override
+    public List<LabelOptionDTO> listMenuOptions() {
         // 查询菜单数据
         List<Menu> menuList = this.list(new LambdaQueryWrapper<Menu>()
                 .select(Menu::getId, Menu::getName, Menu::getParentId, Menu::getOrderNum));
@@ -64,18 +99,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
         // 组装目录菜单数据
         return catalogList.stream().map(item -> {
             // 获取目录下的菜单排序
-            List<labelOptionDTO> list = new ArrayList<>();
+            List<LabelOptionDTO> list = new ArrayList<>();
             List<Menu> children = childrenMap.get(item.getId());
             if (CollectionUtils.isNotEmpty(children)) {
                 list = children.stream()
                         .sorted(Comparator.comparing(Menu::getOrderNum))
-                        .map(menu -> labelOptionDTO.builder()
+                        .map(menu -> LabelOptionDTO.builder()
                                 .id(menu.getId())
                                 .label(menu.getName())
                                 .build())
                         .collect(Collectors.toList());
             }
-            return labelOptionDTO.builder()
+            return LabelOptionDTO.builder()
                     .id(item.getId())
                     .label(item.getName())
                     .children(list)
@@ -86,7 +121,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     @Override
     public List<UserMenuDTO> listUserMenus() {
         // 查询用户菜单信息
-        List<Menu> menuList = menuDao.listMenusByUserInfoId(UserUtil.getLoginUser().getUserInfoId());
+        List<Menu> menuList = menuDao.listMenusByUserInfoId(UserUtils.getLoginUser().getUserInfoId());
         // 获取目录列表
         List<Menu> catalogList = listCatalog(menuList);
         // 获取目录下的子菜单
@@ -135,14 +170,15 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
             List<Menu> children = childrenMap.get(item.getId());
             if (CollectionUtils.isNotEmpty(children)) {
                 // 多级菜单处理
-                userMenuDTO = BeanCopyUtil.copyObject(item, UserMenuDTO.class);
+                userMenuDTO = BeanCopyUtils.copyObject(item, UserMenuDTO.class);
                 list = children.stream()
                         .sorted(Comparator.comparing(Menu::getOrderNum))
                         .map(menu -> {
-                            UserMenuDTO dto = BeanCopyUtil.copyObject(menu, UserMenuDTO.class);
+                            UserMenuDTO dto = BeanCopyUtils.copyObject(menu, UserMenuDTO.class);
                             dto.setHidden(menu.getIsHidden().equals(TRUE));
                             return dto;
-                        }).collect(Collectors.toList());
+                        })
+                        .collect(Collectors.toList());
             } else {
                 // 一级菜单处理
                 userMenuDTO.setPath(item.getPath());

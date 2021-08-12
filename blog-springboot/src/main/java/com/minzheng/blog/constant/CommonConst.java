@@ -1,13 +1,12 @@
 package com.minzheng.blog.constant;
 
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 
 /**
  * 公共常量
  *
- * @author: yezhiqiu
- * @date: 2021-01-29
- **/
+ * @author yezhiqiu
+ * @date 2021/07/27
+ */
 public class CommonConst {
 
     /**
@@ -21,14 +20,34 @@ public class CommonConst {
     public static final int TRUE = 1;
 
     /**
-     * 博主id
+     * 高亮标签
      */
-    public static final int BLOGGER_ID = 1;
+    public static final String PRE_TAG = "<span style='color:#f47466'>";
+
+    /**
+     * 高亮标签
+     */
+    public static final String POST_TAG = "</span>";
+
+    /**
+     * 当前页码
+     */
+    public static final String CURRENT = "current";
+
+    /**
+     * 页码条数
+     */
+    public static final String SIZE = "size";
+
+    /**
+     * 默认条数
+     */
+    public static final String DEFAULT_SIZE = "10";
 
     /**
      * 默认用户昵称
      */
-    public static final String DEFAULT_NICKNAME = "用户" + IdWorker.getId();
+    public static final String DEFAULT_NICKNAME = "用户";
 
     /**
      * 默认用户头像
@@ -46,19 +65,10 @@ public class CommonConst {
     public static String COMPONENT = "Layout";
 
     /**
-     * 网站域名
-     */
-    public static final String URL = "https://www.talkxj.com";
-
-    /**
-     * 用户ip
-     */
-    public static final String IP = "ip";
-
-    /**
      * 文章页面路径
      */
     public static final String ARTICLE_PATH = "/articles/";
+
 
     /**
      * 友联页面路径

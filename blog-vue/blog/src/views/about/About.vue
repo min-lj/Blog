@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="about-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">关于我</h1>
     </div>
     <!-- 关于我内容 -->
@@ -39,18 +39,22 @@ export default {
   },
   computed: {
     avatar() {
-      return this.$store.state.blogInfo.avatar;
+      return this.$store.state.blogInfo.websiteConfig.websiteAvatar;
+    },
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "about") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
     }
   }
 };
 </script>
 
 <style scoped>
-.about-banner {
-  background: url(https://www.static.talkxj.com/8xy.jpg) center center / cover
-    no-repeat;
-  background-color: #49b1f5;
-}
 .about-content {
   word-break: break-word;
   line-height: 1.8;

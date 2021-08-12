@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.ResourceDao;
 import com.minzheng.blog.dao.RoleResourceDao;
 import com.minzheng.blog.dto.ResourceDTO;
-import com.minzheng.blog.dto.labelOptionDTO;
+import com.minzheng.blog.dto.LabelOptionDTO;
 import com.minzheng.blog.entity.Resource;
 import com.minzheng.blog.entity.RoleResource;
-import com.minzheng.blog.exception.ServeException;
+import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.handler.FilterInvocationSecurityMetadataSourceImpl;
 import com.minzheng.blog.service.ResourceService;
-import com.minzheng.blog.utils.BeanCopyUtil;
+import com.minzheng.blog.util.BeanCopyUtils;
 import com.minzheng.blog.vo.ResourceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,17 @@ import java.util.stream.Collectors;
 import static com.minzheng.blog.constant.CommonConst.FALSE;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 资源服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Service
 public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> implements ResourceService {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private ResourceDao resourceDao;
     @Autowired
     private RoleResourceDao roleResourceDao;
     @Autowired
@@ -49,9 +53,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         tagList.forEach(item -> {
             Resource resource = Resource.builder()
                     .resourceName(item.get("name"))
-                    .createTime(new Date())
-                    .updateTime(new Date())
-                    .isDisable(FALSE)
                     .isAnonymous(FALSE)
                     .build();
             resourceList.add(resource);
@@ -71,10 +72,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
                     .url(url.replaceAll("\\{[^}]*\\}", "*"))
                     .parentId(parentId)
                     .requestMethod(requestMethod.toUpperCase())
-                    .isDisable(FALSE)
                     .isAnonymous(FALSE)
-                    .createTime(new Date())
-                    .updateTime(new Date())
                     .build();
             resourceList.add(resource);
         }));
@@ -84,66 +82,71 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
     @Override
     public void saveOrUpdateResource(ResourceVO resourceVO) {
         // 更新资源信息
-        Resource resource = BeanCopyUtil.copyObject(resourceVO, Resource.class);
-        resource.setCreateTime(Objects.isNull(resource.getId()) ? new Date() : null);
-        resource.setUpdateTime(Objects.nonNull(resource.getId()) ? new Date() : null);
+        Resource resource = BeanCopyUtils.copyObject(resourceVO, Resource.class);
         this.saveOrUpdate(resource);
         // 重新加载角色资源信息
         filterInvocationSecurityMetadataSource.clearDataSource();
     }
 
     @Override
-    public void deleteResources(List<Integer> resourceIdList) {
+    public void deleteResource(Integer resourceId) {
         // 查询是否有角色关联
         Integer count = roleResourceDao.selectCount(new LambdaQueryWrapper<RoleResource>()
-                .in(RoleResource::getResourceId, resourceIdList));
+                .eq(RoleResource::getResourceId, resourceId));
         if (count > 1) {
-            throw new ServeException("该资源下存在角色");
+            throw new BizException("该资源下存在角色");
         }
-        this.removeByIds(resourceIdList);
+        // 删除子资源
+        List<Integer> resourceIdList = resourceDao.selectList(new LambdaQueryWrapper<Resource>()
+                .select(Resource::getId).
+                        eq(Resource::getParentId, resourceId))
+                .stream()
+                .map(Resource::getId)
+                .collect(Collectors.toList());
+        resourceIdList.add(resourceId);
+        resourceDao.deleteBatchIds(resourceIdList);
     }
 
     @Override
     public List<ResourceDTO> listResources() {
         // 查询资源列表
-        List<Resource> resourceList = this.list(null);
+        List<Resource> resourceList = resourceDao.selectList(null);
         // 获取所有模块
         List<Resource> parentList = listResourceModule(resourceList);
         // 根据父id分组获取模块下的资源
         Map<Integer, List<Resource>> childrenMap = listResourceChildren(resourceList);
         // 绑定模块下的所有接口
         return parentList.stream().map(item -> {
-            ResourceDTO resourceDTO = BeanCopyUtil.copyObject(item, ResourceDTO.class);
-            List<ResourceDTO> childrenList = BeanCopyUtil.copyList(childrenMap.get(item.getId()), ResourceDTO.class);
+            ResourceDTO resourceDTO = BeanCopyUtils.copyObject(item, ResourceDTO.class);
+            List<ResourceDTO> childrenList = BeanCopyUtils.copyList(childrenMap.get(item.getId()), ResourceDTO.class);
             resourceDTO.setChildren(childrenList);
             return resourceDTO;
         }).collect(Collectors.toList());
     }
 
     @Override
-    public List<labelOptionDTO> listResourceOption() {
+    public List<LabelOptionDTO> listResourceOption() {
         // 查询资源列表
-        List<Resource> resourceList = this.list(new LambdaQueryWrapper<Resource>()
+        List<Resource> resourceList = resourceDao.selectList(new LambdaQueryWrapper<Resource>()
                 .select(Resource::getId, Resource::getResourceName, Resource::getParentId)
-                .eq(Resource::getIsAnonymous, FALSE)
-                .eq(Resource::getIsDisable, FALSE));
+                .eq(Resource::getIsAnonymous, FALSE));
         // 获取所有模块
         List<Resource> parentList = listResourceModule(resourceList);
         // 根据父id分组获取模块下的资源
         Map<Integer, List<Resource>> childrenMap = listResourceChildren(resourceList);
         // 组装父子数据
         return parentList.stream().map(item -> {
-            List<labelOptionDTO> list = new ArrayList<>();
+            List<LabelOptionDTO> list = new ArrayList<>();
             List<Resource> children = childrenMap.get(item.getId());
             if (Objects.nonNull(children)) {
                 list = children.stream()
-                        .map(resource -> labelOptionDTO.builder()
+                        .map(resource -> LabelOptionDTO.builder()
                                 .id(resource.getId())
                                 .label(resource.getResourceName())
                                 .build())
                         .collect(Collectors.toList());
             }
-            return labelOptionDTO.builder()
+            return LabelOptionDTO.builder()
                     .id(item.getId())
                     .label(item.getResourceName())
                     .children(list)

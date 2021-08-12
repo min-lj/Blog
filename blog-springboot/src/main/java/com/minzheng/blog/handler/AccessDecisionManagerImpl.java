@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-06
- **/
+ * 访问决策管理器
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Component
 public class AccessDecisionManagerImpl implements AccessDecisionManager {
     @Override

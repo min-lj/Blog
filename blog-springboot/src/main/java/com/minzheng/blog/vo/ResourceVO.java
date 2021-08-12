@@ -1,7 +1,5 @@
 package com.minzheng.blog.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,19 +8,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 /**
- * 资源对象
- * @author: yezhiqiu
- * @date: 2021-03-01
- **/
+ * 资源
+ *
+ * @author yezhiqiu
+ * @date 2021/08/03
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "资源")
 public class ResourceVO {
+
     /**
      * 资源id
      */
@@ -53,12 +52,6 @@ public class ResourceVO {
      */
     @ApiModelProperty(name = "parentId", value = "父资源id", required = true, dataType = "Integer")
     private Integer parentId;
-
-    /**
-     * 是否禁用
-     */
-    @ApiModelProperty(name = "isDisable", value = "是否禁用", required = true, dataType = "Integer")
-    private Integer isDisable;
 
     /**
      * 是否匿名访问

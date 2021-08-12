@@ -1,14 +1,9 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.minzheng.blog.utils.UserUtil;
-import com.minzheng.blog.vo.UserInfoVO;
-import com.minzheng.blog.vo.UserRoleVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +12,8 @@ import lombok.NoArgsConstructor;
 /**
  * 用户信息
  *
- * @author xiaojie
+ * @author yezhiqiu
+ * @date 2021/08/01
  * @since 2020-05-18
  */
 @Data
@@ -66,11 +62,14 @@ public class UserInfo {
     /**
      * 创建时间
      */
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
     /**
-     * 更新时间
+     * 修改时间
      */
-    private Date updateTime;
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
+
 
 }

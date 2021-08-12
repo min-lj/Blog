@@ -5,18 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 推荐文章
- * @author: yezhiqiu
- * @date: 2021-01-20
- **/
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ArticleRecommendDTO {
+
     /**
      * id
      */
@@ -35,6 +37,6 @@ public class ArticleRecommendDTO {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
 }

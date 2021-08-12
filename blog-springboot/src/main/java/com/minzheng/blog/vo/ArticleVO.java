@@ -1,22 +1,19 @@
 package com.minzheng.blog.vo;
 
 
-import com.minzheng.blog.entity.Article;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.Date;
 import java.util.List;
 
 
 /**
- * 文章VO
+ * 文章
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/03
  */
 @Data
 @Builder
@@ -54,14 +51,26 @@ public class ArticleVO {
     /**
      * 文章分类
      */
-    @ApiModelProperty(name = "categoryId", value = "文章分类", dataType = "Integer")
-    private Integer categoryId;
+    @ApiModelProperty(name = "category", value = "文章分类", dataType = "Integer")
+    private String categoryName;
 
     /**
      * 文章标签
      */
-    @ApiModelProperty(name = "tagIdList", value = "文章标签", dataType = "List<Integer>")
-    private List<Integer> tagIdList;
+    @ApiModelProperty(name = "tagNameList", value = "文章标签", dataType = "List<Integer>")
+    private List<String> tagNameList;
+
+    /**
+     * 文章类型
+     */
+    @ApiModelProperty(name = "type", value = "文章类型", dataType = "Integer")
+    private Integer type;
+
+    /**
+     * 原文链接
+     */
+    @ApiModelProperty(name = "originalUrl", value = "原文链接", dataType = "String")
+    private String originalUrl;
 
     /**
      * 是否置顶
@@ -70,10 +79,9 @@ public class ArticleVO {
     private Integer isTop;
 
     /**
-     * 是否为草稿
+     * 文章状态 1.公开 2.私密 3.评论可见
      */
-    @ApiModelProperty(name = "isDraft", value = "是否为草稿", dataType = "Integer")
-    private Integer isDraft;
-
+    @ApiModelProperty(name = "status", value = "文章状态", dataType = "String")
+    private Integer status;
 
 }

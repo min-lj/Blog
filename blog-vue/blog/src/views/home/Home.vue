@@ -1,11 +1,11 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="home-banner">
+    <div class="home-banner" :style="cover">
       <div class="banner-container">
         <!-- 联系方式 -->
         <h1 class="blog-title animated zoomIn">
-          风丶宇的个人博客
+          {{ blogInfo.websiteConfig.websiteName }}
         </h1>
         <!-- 一言 -->
         <div class="blog-intro">
@@ -14,18 +14,25 @@
         <!-- 联系方式 -->
         <div class="blog-contact">
           <a
-            class="iconfont iconqq"
+            v-if="isShowSocial('qq')"
+            class="mr-5 iconfont iconqq"
             target="_blank"
-            href="http://wpa.qq.com/msgrd?v=3&uin=1192176811&site=qq&menu=yes"
+            :href="
+              'http://wpa.qq.com/msgrd?v=3&uin=' +
+                blogInfo.websiteConfig.qq +
+                '&site=qq&menu=yes'
+            "
           />
           <a
+            v-if="isShowSocial('github')"
             target="_blank"
-            href="https://github.com/X1192176811"
-            class="ml-5 mr-5 iconfont icongithub"
+            :href="blogInfo.websiteConfig.github"
+            class="mr-5 iconfont icongithub"
           />
           <a
+            v-if="isShowSocial('gitee')"
             target="_blank"
-            href="https://gitee.com/feng_meiyu"
+            :href="blogInfo.websiteConfig.gitee"
             class="iconfont icongitee-fill-round"
           />
         </div>
@@ -111,10 +118,17 @@
             <div class="author-wrapper">
               <!-- 博主头像 -->
               <v-avatar size="110">
-                <img class="author-avatar" :src="blogInfo.avatar" />
+                <img
+                  class="author-avatar"
+                  :src="blogInfo.websiteConfig.websiteAvatar"
+                />
               </v-avatar>
-              <div style="font-size: 1.375rem">{{ blogInfo.nickname }}</div>
-              <div style="font-size: 0.875rem;">{{ blogInfo.intro }}</div>
+              <div style="font-size: 1.375rem">
+                {{ blogInfo.websiteConfig.websiteAuthor }}
+              </div>
+              <div style="font-size: 0.875rem;">
+                {{ blogInfo.websiteConfig.websiteIntro }}
+              </div>
             </div>
             <!-- 博客信息 -->
             <div class="blog-info-wrapper">
@@ -146,20 +160,28 @@
               <v-icon color="#fff" size="18" class="mr-1">mdi-bookmark</v-icon>
               加入书签
             </a>
+            <!-- 社交信息 -->
             <div class="card-info-social">
               <a
-                class="iconfont iconqq"
+                v-if="isShowSocial('qq')"
+                class="mr-5 iconfont iconqq"
                 target="_blank"
-                href="http://wpa.qq.com/msgrd?v=3&uin=1192176811&site=qq&menu=yes"
+                :href="
+                  'http://wpa.qq.com/msgrd?v=3&uin=' +
+                    blogInfo.websiteConfig.qq +
+                    '&site=qq&menu=yes'
+                "
               />
               <a
+                v-if="isShowSocial('github')"
                 target="_blank"
-                href="https://github.com/X1192176811"
-                class="ml-5 mr-5 iconfont icongithub"
+                :href="blogInfo.websiteConfig.github"
+                class="mr-5 iconfont icongithub"
               />
               <a
+                v-if="isShowSocial('gitee')"
                 target="_blank"
-                href="https://gitee.com/feng_meiyu"
+                :href="blogInfo.websiteConfig.gitee"
                 class="iconfont icongitee-fill-round"
               />
             </div>
@@ -171,7 +193,7 @@
               公告
             </div>
             <div style="font-size:0.875rem">
-              {{ blogInfo.notice }}
+              {{ blogInfo.websiteConfig.websiteNotice }}
             </div>
           </v-card>
           <!-- 网站信息 -->
@@ -229,7 +251,7 @@ export default {
   methods: {
     // 初始化
     init() {
-      document.title = this.$route.meta.title;
+      document.title = this.blogInfo.websiteConfig.websiteName;
       // 一言Api进行打字机循环输出效果
       fetch("https://v1.hitokoto.cn?c=i")
         .then(res => {
@@ -252,7 +274,8 @@ export default {
     },
     runTime() {
       var timeold =
-        new Date().getTime() - new Date("December 12,2019").getTime();
+        new Date().getTime() -
+        new Date(this.blogInfo.websiteConfig.websiteCreateTime).getTime();
       var msPerDay = 24 * 60 * 60 * 1000;
       var daysold = Math.floor(timeold / msPerDay);
       var str = "";
@@ -301,6 +324,20 @@ export default {
     },
     blogInfo() {
       return this.$store.state.blogInfo;
+    },
+    isShowSocial() {
+      return function(social) {
+        return this.blogInfo.websiteConfig.socialUrlList.indexOf(social) != -1;
+      };
+    },
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "home") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
     }
   }
 };
@@ -326,9 +363,6 @@ export default {
   left: 0;
   right: 0;
   height: 100vh;
-  background: url("https://www.static.talkxj.com/wallhaven-g89p2.png") center
-    center / cover no-repeat;
-  background-color: #49b1f5;
   background-attachment: fixed;
   text-align: center;
   color: #fff !important;
@@ -345,8 +379,10 @@ export default {
 .card-info-social {
   line-height: 40px;
   text-align: center;
-  font-size: 1.5rem;
   margin: 6px 0 -6px;
+}
+.card-info-social a {
+  font-size: 1.5rem;
 }
 .left-radius {
   border-radius: 8px 0 0 8px !important;

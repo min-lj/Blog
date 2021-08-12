@@ -5,6 +5,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,7 @@ public interface RedisService {
      * @param key 外部key值
      * @return 返回hashMap
      */
-    Map hGetAll(String key);
+    Map<String, Object> hGetAll(String key);
 
     /**
      * 直接设置整个Hash结构
@@ -196,6 +197,53 @@ public interface RedisService {
     Long hDecr(String key, String hashKey, Long delta);
 
     /**
+     * zset添加分数
+     *
+     * @param key   关键
+     * @param value 价值
+     * @param score 分数
+     * @return {@link Double}
+     */
+    Double zIncr(String key, Object value, Double score);
+
+    /**
+     * zset减少分数
+     *
+     * @param key   关键
+     * @param value 价值
+     * @param score 分数
+     * @return {@link Double}
+     */
+    Double zDecr(String key, Object value, Double score);
+
+    /**
+     * zset根据分数排名获取指定元素信息
+     *
+     * @param key   关键
+     * @param start 开始
+     * @param end   结束
+     * @return {@link Map<Object, Double>}
+     */
+    Map<Object, Double> zReverseRangeWithScore(String key, long start, long end);
+
+    /**
+     * 获取zset指定元素分数
+     *
+     * @param key   关键
+     * @param value 价值
+     * @return {@link Double}
+     */
+    Double zScore(String key, Object value);
+
+    /**
+     * 获取zset所有分数
+     *
+     * @param key 关键
+     * @return {@link Map}
+     */
+    Map<Object, Double> zAllScore(String key);
+
+    /**
      * 获取Set结构
      *
      * @param key key
@@ -220,7 +268,7 @@ public interface RedisService {
      * @param values 值集合
      * @return 返回添加的数量
      */
-    Long sAdd(String key, long time, Object... values);
+    Long sAddExpire(String key, long time, Object... values);
 
     /**
      * 是否为Set中的属性
@@ -367,6 +415,30 @@ public interface RedisService {
      * @return 以二进制字节数组返回
      */
     byte[] bitGetAll(String key);
+
+    /**
+     * 向hyperlog中添加数据
+     *
+     * @param key   key
+     * @param value 值
+     * @return {@link Long}
+     */
+    Long hyperAdd(String key, Object... value);
+
+    /**
+     * 获取hyperlog元素数量
+     *
+     * @param key key
+     * @return {@link Long} 元素数量
+     */
+    Long hyperGet(String... key);
+
+    /**
+     * 删除hyperlog数据
+     *
+     * @param key key
+     */
+    void hyperDel(String key);
 
     /**
      * 增加坐标

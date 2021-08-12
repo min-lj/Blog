@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar style="height:100%;overflow-x: hidden;">
+  <div>
     <el-menu
       class="side-nav-bar"
       router
@@ -36,7 +36,7 @@
         </template>
       </template>
     </el-menu>
-  </el-scrollbar>
+  </div>
 </template>
 
 <style scoped>
@@ -48,8 +48,18 @@
   top: 0;
   left: 0;
   bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .side-nav-bar i {
   margin-right: 1rem;
+}
+*::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 1px;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 0.5rem;
+  background-color: rgba(144, 147, 153, 0.3);
 }
 </style>

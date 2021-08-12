@@ -2,25 +2,26 @@ package com.minzheng.blog.handler;
 
 
 import com.minzheng.blog.service.RedisService;
-import com.minzheng.blog.utils.IpUtil;
+import com.minzheng.blog.util.IpUtils;
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.OperatingSystem;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import static com.minzheng.blog.constant.CommonConst.IP;
-import static com.minzheng.blog.constant.RedisPrefixConst.BLOG_VIEWS_COUNT;
-import static com.minzheng.blog.constant.RedisPrefixConst.IP_SET;
+import static com.minzheng.blog.constant.RedisPrefixConst.*;
 
 
 /**
- * request监听
+ * request过滤器
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/11
  */
 @Component
 public class ServletRequestListenerImpl implements ServletRequestListener {
@@ -30,23 +31,20 @@ public class ServletRequestListenerImpl implements ServletRequestListener {
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         HttpServletRequest request = (HttpServletRequest) sre.getServletRequest();
-        HttpSession session = request.getSession();
-        String ip = (String) session.getAttribute(IP);
-        // 判断当前ip是否访问，增加访问量
-        String ipAddr = IpUtil.getIpAddr(request);
-        if (!ipAddr.equals(ip)) {
-            session.setAttribute(IP, ipAddr);
+        // 获取ip
+        String ipAddress = IpUtils.getIpAddress(request);
+        // 获取访问设备
+        UserAgent userAgent = IpUtils.getUserAgent(request);
+        Browser browser = userAgent.getBrowser();
+        OperatingSystem operatingSystem = userAgent.getOperatingSystem();
+        // 生成唯一用户标识
+        String uuid = ipAddress + browser.getName() + operatingSystem.getName();
+        String md5 = DigestUtils.md5DigestAsHex(uuid.getBytes());
+        // 判断是否访问
+        if (!redisService.sIsMember(UNIQUE_VISITOR, md5)) {
             redisService.incr(BLOG_VIEWS_COUNT, 1);
         }
-        // 将ip存入redis，统计每日用户量
-        redisService.sAdd(IP_SET, ipAddr);
+        redisService.sAdd(UNIQUE_VISITOR, md5);
     }
-
-    @Scheduled(cron = " 0 1 0 * * ?")
-    private void clear() {
-        //清空redis中的ip
-        redisService.del(IP_SET);
-    }
-
 
 }

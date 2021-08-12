@@ -4,37 +4,30 @@ import com.alibaba.fastjson.JSON;
 import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.dao.OperationLogDao;
 import com.minzheng.blog.entity.OperationLog;
-import com.minzheng.blog.utils.IpUtil;
-import com.minzheng.blog.utils.UserUtil;
+import com.minzheng.blog.util.IpUtils;
+import com.minzheng.blog.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * 操作日志切面处理
  *
- * @author: yezhiqiu
- * @date: 2021-01-30
- **/
+ * @author yezhiqiu
+ * @date 2021/07/27
+ */
 @Aspect
 @Component
 public class OptLogAspect {
@@ -46,8 +39,7 @@ public class OptLogAspect {
      * 设置操作日志切入点 记录操作日志 在注解的位置切入代码
      */
     @Pointcut("@annotation(com.minzheng.blog.annotation.OptLog)")
-    public void optLogPointCut() {
-    }
+    public void optLogPointCut() {}
 
 
     /**
@@ -91,17 +83,15 @@ public class OptLogAspect {
         // 返回结果
         operationLog.setResponseData(JSON.toJSONString(keys));
         // 请求用户ID
-        operationLog.setUserId(UserUtil.getLoginUser().getId());
+        operationLog.setUserId(UserUtils.getLoginUser().getId());
         // 请求用户
-        operationLog.setNickname(UserUtil.getLoginUser().getNickname());
+        operationLog.setNickname(UserUtils.getLoginUser().getNickname());
         // 请求IP
-        String ipAddr = IpUtil.getIpAddr(request);
-        operationLog.setIpAddr(ipAddr);
-        operationLog.setIpSource(IpUtil.getIpSource(ipAddr));
+        String ipAddress = IpUtils.getIpAddress(request);
+        operationLog.setIpAddress(ipAddress);
+        operationLog.setIpSource(IpUtils.getIpSource(ipAddress));
         // 请求URL
         operationLog.setOptUrl(request.getRequestURI());
-        // 创建时间
-        operationLog.setCreateTime(new Date());
         operationLogDao.insert(operationLog);
     }
 

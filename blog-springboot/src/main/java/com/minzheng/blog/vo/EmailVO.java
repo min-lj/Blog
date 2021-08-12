@@ -11,9 +11,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-04-16
- **/
+ * 邮件
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

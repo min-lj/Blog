@@ -6,9 +6,9 @@ import lombok.Getter;
 /**
  * 聊天类型枚举
  *
- * @author: yezhiqiu
- * @date: 2021-02-21
- **/
+ * @author yezhiqiu
+ * @date 2021/08/06
+ */
 @Getter
 @AllArgsConstructor
 public enum ChatTypeEnum {

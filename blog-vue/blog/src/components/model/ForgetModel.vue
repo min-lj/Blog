@@ -89,7 +89,7 @@ export default {
             })
             .then(({ data }) => {
               if (data.flag) {
-                that.$toast({ type: "success", message: data.message });
+                that.$toast({ type: "success", message: "发送成功" });
               } else {
                 that.$toast({ type: "error", message: data.message });
               }
@@ -133,7 +133,7 @@ export default {
       };
       this.axios.put("/api/users/password", user).then(({ data }) => {
         if (data.flag) {
-          this.$toast({ type: "success", message: data.message });
+          this.$toast({ type: "success", message: "修改成功" });
         } else {
           this.$toast({ type: "error", message: data.message });
         }

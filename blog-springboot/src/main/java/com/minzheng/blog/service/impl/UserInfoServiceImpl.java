@@ -2,25 +2,23 @@ package com.minzheng.blog.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.minzheng.blog.dto.PageDTO;
-import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.strategy.context.UploadStrategyContext;
+import com.minzheng.blog.util.PageUtils;
+import com.minzheng.blog.vo.*;
+import com.minzheng.blog.dto.UserDetailDTO;
 import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.FilePathEnum;
-import com.minzheng.blog.exception.ServeException;
+import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.UserRoleService;
-import com.minzheng.blog.utils.OSSUtil;
 
-import com.minzheng.blog.utils.UserUtil;
+import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.ConditionVO;
-import com.minzheng.blog.vo.EmailVO;
-import com.minzheng.blog.vo.UserInfoVO;
-import com.minzheng.blog.vo.UserRoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -30,16 +28,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.minzheng.blog.constant.RedisPrefixConst.CODE_KEY;
+import static com.minzheng.blog.constant.RedisPrefixConst.USER_CODE_KEY;
 
 
 /**
- * @author xiaojie
- * @since 2020-05-18
+ * 用户信息服务
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> implements UserInfoService {
@@ -51,6 +50,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     private SessionRegistry sessionRegistry;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private UploadStrategyContext uploadStrategyContext;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -58,11 +59,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     public void updateUserInfo(UserInfoVO userInfoVO) {
         // 封装用户信息
         UserInfo userInfo = UserInfo.builder()
-                .id(UserUtil.getLoginUser().getUserInfoId())
+                .id(UserUtils.getLoginUser().getUserInfoId())
                 .nickname(userInfoVO.getNickname())
                 .intro(userInfoVO.getIntro())
                 .webSite(userInfoVO.getWebSite())
-                .updateTime(new Date())
                 .build();
         userInfoDao.updateById(userInfo);
     }
@@ -70,11 +70,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateUserAvatar(MultipartFile file) {
-        // 头像上传oss，返回图片地址
-        String avatar = OSSUtil.upload(file, FilePathEnum.AVATAR.getPath());
+        // 头像上传
+        String avatar = uploadStrategyContext.executeUploadStrategy(file, FilePathEnum.AVATAR.getPath());
         // 更新用户信息
         UserInfo userInfo = UserInfo.builder()
-                .id(UserUtil.getLoginUser().getUserInfoId())
+                .id(UserUtils.getLoginUser().getUserInfoId())
                 .avatar(avatar)
                 .build();
         userInfoDao.updateById(userInfo);
@@ -84,11 +84,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveUserEmail(EmailVO emailVO) {
-        if (!emailVO.getCode().equals(redisService.get(CODE_KEY + emailVO.getEmail()).toString())) {
-            throw new ServeException("验证码错误！");
+        if (!emailVO.getCode().equals(redisService.get(USER_CODE_KEY + emailVO.getEmail()).toString())) {
+            throw new BizException("验证码错误！");
         }
         UserInfo userInfo = UserInfo.builder()
-                .id(UserUtil.getLoginUser().getUserInfoId())
+                .id(UserUtils.getLoginUser().getUserInfoId())
                 .email(emailVO.getEmail())
                 .build();
         userInfoDao.updateById(userInfo);
@@ -117,36 +117,38 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateUserDisable(Integer userInfoId, Integer isDisable) {
+    public void updateUserDisable(UserDisableVO userDisableVO) {
         // 更新用户禁用状态
         UserInfo userInfo = UserInfo.builder()
-                .id(userInfoId)
-                .isDisable(isDisable)
+                .id(userDisableVO.getId())
+                .isDisable(userDisableVO.getIsDisable())
                 .build();
         userInfoDao.updateById(userInfo);
     }
 
     @Override
-    public PageDTO<UserOnlineDTO> listOnlineUsers(ConditionVO conditionVO) {
+    public PageResult<UserOnlineDTO> listOnlineUsers(ConditionVO conditionVO) {
         // 获取security在线session
+        for (Object allPrincipal : sessionRegistry.getAllPrincipals()) {
+            System.out.println(allPrincipal);
+        }
         List<UserOnlineDTO> userOnlineDTOList = sessionRegistry.getAllPrincipals().stream()
                 .filter(item -> sessionRegistry.getAllSessions(item, false).size() > 0)
                 .map(item -> JSON.parseObject(JSON.toJSONString(item), UserOnlineDTO.class))
                 .sorted(Comparator.comparing(UserOnlineDTO::getLastLoginTime).reversed())
                 .collect(Collectors.toList());
         // 执行分页
-        int current = (conditionVO.getCurrent() - 1) * conditionVO.getSize();
-        int size = userOnlineDTOList.size() > conditionVO.getSize() ? current + conditionVO.getSize() : userOnlineDTOList.size();
-        List<UserOnlineDTO> userOnlineList = userOnlineDTOList.subList((conditionVO.getCurrent() - 1) * conditionVO.getSize(), size);
-        return new PageDTO<>(userOnlineList, userOnlineDTOList.size());
+        int size = Math.min(userOnlineDTOList.size(), PageUtils.getSize().intValue());
+        List<UserOnlineDTO> userOnlineList = userOnlineDTOList.subList(PageUtils.getLimitCurrent().intValue(), size);
+        return new PageResult<>(userOnlineList, userOnlineDTOList.size());
     }
 
     @Override
     public void removeOnlineUser(Integer userInfoId) {
         // 获取用户session
         List<Object> userInfoList = sessionRegistry.getAllPrincipals().stream().filter(item -> {
-            UserInfoDTO userInfoDTO = (UserInfoDTO) item;
-            return userInfoDTO.getUserInfoId().equals(userInfoId);
+            UserDetailDTO userDetailDTO = (UserDetailDTO) item;
+            return userDetailDTO.getUserInfoId().equals(userInfoId);
         }).collect(Collectors.toList());
         List<SessionInformation> allSessions = new ArrayList<>();
         userInfoList.forEach(item -> allSessions.addAll(sessionRegistry.getAllSessions(item, false)));

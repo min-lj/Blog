@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="tag-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">标签</h1>
     </div>
     <!-- 标签列表 -->
@@ -39,16 +39,22 @@ export default {
         this.count = data.data.count;
       });
     }
+  },
+  computed: {
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "tag") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
+    }
   }
 };
 </script>
 
 <style scoped>
-.tag-banner {
-  background: url(https://www.static.talkxj.com/73lleo.png) center center /
-    cover no-repeat;
-  background-color: #49b1f5;
-}
 .tag-cloud-title {
   line-height: 2;
   font-size: 36px;

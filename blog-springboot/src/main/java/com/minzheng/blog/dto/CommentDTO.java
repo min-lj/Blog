@@ -5,18 +5,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
+
 /**
- * 评论列表
- * @author 11921
+ * 评论
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDTO {
+
     /**
      * 评论id
      */
@@ -55,7 +59,7 @@ public class CommentDTO {
     /**
      * 评论时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 回复量

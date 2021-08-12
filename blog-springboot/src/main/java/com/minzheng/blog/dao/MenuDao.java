@@ -6,10 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
- * @author: yezhiqiu
- * @date: 2021-01-23
- **/
+ * 菜单
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 @Repository
 public interface MenuDao extends BaseMapper<Menu> {
 

@@ -2,20 +2,18 @@ package com.minzheng.blog.service;
 
 import com.minzheng.blog.dto.CommentBackDTO;
 import com.minzheng.blog.dto.CommentDTO;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.*;
 import com.minzheng.blog.dto.ReplyDTO;
 import com.minzheng.blog.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzheng.blog.vo.CommentVO;
-import com.minzheng.blog.vo.ConditionVO;
-import com.minzheng.blog.vo.DeleteVO;
 
 import java.util.List;
 
 /**
+ * 评论服务
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 public interface CommentService extends IService<Comment> {
 
@@ -23,19 +21,17 @@ public interface CommentService extends IService<Comment> {
      * 查看评论
      *
      * @param articleId 文章id
-     * @param current   当前页码
-     * @return CommentListDTO
+     * @return 评论列表
      */
-    PageDTO<CommentDTO> listComments(Integer articleId, Long current);
+    PageResult<CommentDTO> listComments(Integer articleId);
 
     /**
      * 查看评论下的回复
      *
      * @param commentId 评论id
-     * @param current   当前页码
      * @return 回复列表
      */
-    List<ReplyDTO> listRepliesByCommentId(Integer commentId, Long current);
+    List<ReplyDTO> listRepliesByCommentId(Integer commentId);
 
     /**
      * 添加评论
@@ -52,11 +48,11 @@ public interface CommentService extends IService<Comment> {
     void saveCommentLike(Integer commentId);
 
     /**
-     * 恢复或删除评论
+     * 审核评论
      *
-     * @param deleteVO 逻辑删除对象
+     * @param reviewVO 审核信息
      */
-    void updateCommentDelete(DeleteVO deleteVO);
+    void updateCommentsReview(ReviewVO reviewVO);
 
     /**
      * 查询后台评论
@@ -64,6 +60,6 @@ public interface CommentService extends IService<Comment> {
      * @param condition 条件
      * @return 评论列表
      */
-    PageDTO<CommentBackDTO> listCommentBackDTO(ConditionVO condition);
+    PageResult<CommentBackDTO> listCommentBackDTO(ConditionVO condition);
 
 }

@@ -6,7 +6,7 @@
       <el-button
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="this.logIdList.length == 0"
         @click="isDelete = true"
       >
@@ -46,12 +46,17 @@
         align="center"
         width="120"
       />
-      <el-table-column prop="optType" label="操作类型" align="center" />
+      <el-table-column
+        width="100"
+        prop="optType"
+        label="操作类型"
+        align="center"
+      />
       <el-table-column
         prop="optDesc"
         label="操作描述"
         align="center"
-        width="130"
+        width="150"
       />
       <el-table-column
         prop="requetMethod"
@@ -67,7 +72,7 @@
       </el-table-column>
       <el-table-column prop="nickname" label="操作人员" align="center" />
       <el-table-column
-        prop="ipAddr"
+        prop="ipAddress"
         label="登录ip"
         align="center"
         width="130"
@@ -82,7 +87,7 @@
         prop="createTime"
         label="操作日期"
         align="center"
-        width="200"
+        width="190"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" style="margin-right:5px" />
@@ -102,7 +107,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:10px"
-            @onConfirm="deleteLog(scope.row.id)"
+            @confirm="deleteLog(scope.row.id)"
           >
             <el-button size="mini" type="text" slot="reference">
               <i class="el-icon-delete" /> 删除

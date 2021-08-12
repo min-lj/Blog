@@ -10,7 +10,7 @@
     <!-- 博主介绍 -->
     <div class="blogger-info">
       <v-avatar size="110" style="margin-bottom:0.5rem">
-        <img :src="this.$store.state.blogInfo.avatar" />
+        <img :src="this.$store.state.blogInfo.websiteConfig.websiteAvatar" />
       </v-avatar>
     </div>
     <!-- 博客信息 -->
@@ -51,6 +51,11 @@
       <div class="menus-item">
         <router-link to="/archives">
           <i class="iconfont iconguidang" /> 归档
+        </router-link>
+      </div>
+      <div class="menus-item">
+        <router-link to="/albums">
+          <i class="iconfont iconxiangce1" /> 相册
         </router-link>
       </div>
       <div class="menus-item">

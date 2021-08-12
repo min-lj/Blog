@@ -8,12 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 角色资源
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -35,6 +36,5 @@ public class RoleResource {
      * 资源id
      */
     private Integer resourceId;
-
 
 }

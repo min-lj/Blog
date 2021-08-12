@@ -9,10 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
+ * 文章
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Repository
 public interface ArticleDao extends BaseMapper<Article> {
@@ -20,34 +22,39 @@ public interface ArticleDao extends BaseMapper<Article> {
     /**
      * 查询首页文章
      *
-     * @param current 当前页码
-     * @return 首页文章集合
+     * @param current 页码
+     * @param size    大小
+     * @return 文章列表
      */
-    List<ArticleHomeDTO> listArticles(Long current);
+    List<ArticleHomeDTO> listArticles(@Param("current") Long current, @Param("size") Long size);
 
     /**
      * 根据id查询文章
      *
      * @param articleId 文章id
-     * @return 文章
+     * @return 文章信息
      */
-    ArticleDTO getArticleById(Integer articleId);
+    ArticleDTO getArticleById(@Param("articleId") Integer articleId);
 
     /**
      * 根据条件查询文章
      *
+     * @param current   页码
+     * @param size      大小
      * @param condition 条件
-     * @return 文章集合
+     * @return 文章列表
      */
-    List<ArticlePreviewDTO> listArticlesByCondition(@Param("condition") ConditionVO condition);
+    List<ArticlePreviewDTO> listArticlesByCondition(@Param("current") Long current, @Param("size") Long size, @Param("condition") ConditionVO condition);
 
     /**
      * 查询后台文章
      *
+     * @param current   页码
+     * @param size      大小
      * @param condition 条件
-     * @return 后台文章集合
+     * @return 文章列表
      */
-    List<ArticleBackDTO> listArticleBacks(@Param("condition") ConditionVO condition);
+    List<ArticleBackDTO> listArticleBacks(@Param("current") Long current, @Param("size") Long size, @Param("condition") ConditionVO condition);
 
     /**
      * 查询后台文章总量
@@ -58,18 +65,18 @@ public interface ArticleDao extends BaseMapper<Article> {
     Integer countArticleBacks(@Param("condition") ConditionVO condition);
 
     /**
-     * 查询文章排行
+     * 查看文章的推荐文章
      *
-     * @param articleIdList 文章id
-     * @return
+     * @param articleId 文章id
+     * @return 文章列表
      */
-    List<Article> listArticleRank(@Param("articleIdList") List<Integer> articleIdList);
+    List<ArticleRecommendDTO> listRecommendArticles(@Param("articleId") Integer articleId);
 
     /**
-     * 查看文章的推荐文章
-     * @param articleId 文章id
-     * @return 推荐文章
+     * 文章统计
+     *
+     * @return {@link List<ArticleStatisticsDTO>} 文章统计结果
      */
-    List<ArticleRecommendDTO> listArticleRecommends(@Param("articleId") Integer articleId);
+    List<ArticleStatisticsDTO> listArticleStatistics();
 
 }

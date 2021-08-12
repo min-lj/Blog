@@ -8,6 +8,7 @@
         <result column="article_title" property="articleTitle"/>
         <result column="article_content" property="articleContent"/>
         <result column="create_time" property="createTime"/>
+        <result column="type" property="type"/>
         <result column="is_top" property="isTop"/>
         <result column="category_id" property="categoryId"/>
         <result column="category_name" property="categoryName"/>
@@ -35,6 +36,8 @@
         <result column="article_cover" property="articleCover"/>
         <result column="article_title" property="articleTitle"/>
         <result column="article_content" property="articleContent"/>
+        <result column="type" property="type"/>
+        <result column="original_url" property="originalUrl"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="category_id" property="categoryId"/>
@@ -47,12 +50,13 @@
 
     <resultMap id="articleBackResultMap" type="com.minzheng.blog.dto.ArticleBackDTO">
         <id column="id" property="id"/>
+        <result column="article_cover" property="articleCover"/>
         <result column="article_title" property="articleTitle"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
+        <result column="type" property="type"/>
         <result column="is_top" property="isTop"/>
-        <result column="is_draft" property="isDraft"/>
         <result column="is_delete" property="isDelete"/>
+        <result column="status" property="status"/>
         <result column="category_name" property="categoryName"/>
         <collection property="tagDTOList" ofType="com.minzheng.blog.dto.TagDTO">
             <id column="tag_id" property="id"/>
@@ -67,6 +71,7 @@
 	 article_title,
      SUBSTR( article_content, 1, 500 ) AS article_content,
 	 a.create_time,
+     a.type,
 	 a.is_top,
 	 a.category_id,
 	 category_name,
@@ -79,20 +84,25 @@
 		article_cover,
 		article_title,
 		article_content,
+	    type,
 		is_top,
 		create_time,
 		category_id
 	    FROM
  		tb_article
  		WHERE is_delete = 0
- 		and is_draft = 0
-		ORDER BY is_top DESC,id DESC
-		LIMIT #{current} , 10
+        AND status = 1
+		ORDER BY
+         is_top DESC,
+		 id DESC
+		LIMIT #{current} , #{size}
 	 ) a
 	 JOIN tb_category c ON a.category_id = c.id
 	 JOIN tb_article_tag atg ON a.id = atg.article_id
 	 JOIN tb_tag t ON t.id = atg.tag_id
-	 ORDER BY a.is_top DESC,a.id DESC
+	 ORDER BY
+	   a.is_top DESC,
+	   a.id DESC
     </select>
 
     <select id="listArticlesByCondition" resultMap="articlePreviewResultMap">
@@ -118,7 +128,7 @@
         tb_article
         <where>
             <if test="condition.categoryId != null">
-                category_id =#{condition.categoryId}
+                category_id = #{condition.categoryId}
             </if>
             <if test="condition.tagId != null">
                 id IN (
@@ -131,9 +141,9 @@
             </if>
         </where>
         AND is_delete = 0
-        AND is_draft = 0
+        AND status = 1
         ORDER BY id DESC
-        LIMIT #{condition.current} , 9
+        LIMIT #{current},#{size}
         ) a
         JOIN tb_category c ON a.category_id = c.id
         JOIN tb_article_tag atg ON a.id = atg.article_id
@@ -146,6 +156,8 @@
 	 article_cover,
 	 article_title,
 	 article_content,
+	 a.type,
+	 a.original_url,
 	 a.create_time,
 	 a.update_time,
 	 a.category_id,
@@ -159,17 +171,20 @@
 	 JOIN tb_tag t ON t.id = atg.tag_id
      WHERE
 	 a.id = #{articleId}
+     AND a.is_delete = 0
+     AND a.status = 1
 	</select>
 
     <select id="listArticleBacks" resultMap="articleBackResultMap">
         SELECT
         a.id,
+        article_cover,
         article_title,
+        type,
         is_top,
-        is_draft,
         a.is_delete,
+        a.status,
         a.create_time,
-        a.update_time,
         category_name,
         t.id AS tag_id,
         t.tag_name
@@ -177,67 +192,83 @@
         (
         SELECT
         id,
+        article_cover,
         article_title,
+        type,
         is_top,
-        is_draft,
         is_delete,
+        status,
         create_time,
-        update_time,
         category_id
         FROM
         tb_article
         <where>
             is_delete = #{condition.isDelete}
-            <if test="condition.isDraft != null">
-                and is_draft = #{condition.isDraft}
-            </if>
             <if test="condition.keywords != null">
                 and article_title like concat('%',#{condition.keywords},'%')
             </if>
+            <if test="condition.status != null">
+                and status = #{condition.status}
+            </if>
+            <if test="condition.categoryId != null">
+                and category_id = #{condition.categoryId}
+            </if>
+            <if test="condition.type != null">
+                and type = #{condition.type}
+            </if>
+            <if test="condition.tagId != null">
+                and id in
+                 (
+                  SELECT
+                    article_id
+                  FROM
+                    tb_article_tag
+                  WHERE
+                    tag_id = #{condition.tagId}
+                 )
+            </if>
         </where>
-        ORDER BY is_top DESC, id DESC
-        LIMIT #{condition.current},#{condition.size}
+        ORDER BY
+          is_top DESC,
+          id DESC
+        LIMIT #{current},#{size}
         ) a
         LEFT JOIN tb_category c ON a.category_id = c.id
         LEFT JOIN tb_article_tag atg ON a.id = atg.article_id
         LEFT JOIN tb_tag t ON t.id = atg.tag_id
-        ORDER BY is_top DESC, a.id DESC
+        ORDER BY
+          is_top DESC,
+          a.id DESC
     </select>
 
     <select id="countArticleBacks" resultType="java.lang.Integer">
         SELECT
-        count(1)
+        count(DISTINCT a.id)
         from
-        tb_article
+        tb_article a
+        LEFT JOIN tb_article_tag tat on  a.id = tat.article_id
         <where>
             is_delete = #{condition.isDelete}
-            <if test="condition.isDraft != null">
-                and is_draft = #{condition.isDraft}
-            </if>
             <if test="condition.keywords != null">
                 and article_title like concat('%',#{condition.keywords},'%')
+            </if>
+            <if test="condition.status != null">
+                and `status` = #{condition.status}
+            </if>
+            <if test="condition.categoryId != null">
+                and category_id = #{condition.categoryId}
+            </if>
+            <if test="condition.type != null">
+                and type = #{condition.type}
+            </if>
+            <if test="condition.tagId != null">
+                and tat.tag_id = #{condition.tagId}
             </if>
         </where>
     </select>
 
-    <select id="listArticleRank" resultType="com.minzheng.blog.entity.Article">
-        SELECT
-        id,
-        article_title
-        FROM
-        tb_article
-        WHERE
-        id IN
-        <foreach collection="articleIdList" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        ORDER BY field
-        <foreach collection="articleIdList" item="item" open="(id," separator="," close=")">
-            #{item}
-        </foreach>
-    </select>
 
-    <select id="listArticleRecommends" resultType="com.minzheng.blog.dto.ArticleRecommendDTO">
+    <select id="listRecommendArticles" resultType="com.minzheng.blog.dto.ArticleRecommendDTO">
         SELECT
           id,
           article_title,
@@ -258,6 +289,18 @@
            ORDER BY
            is_top DESC,id DESC
            LIMIT 6
+    </select>
+
+    <select id="listArticleStatistics" resultType="com.minzheng.blog.dto.ArticleStatisticsDTO">
+        SELECT
+            DATE_FORMAT( create_time, "%Y-%m-%d" ) AS date,
+            COUNT( 1 ) AS count
+        FROM
+            tb_article
+        GROUP BY
+            date
+        ORDER BY
+            date DESC
     </select>
 
 </mapper>

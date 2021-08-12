@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 用户角色服务
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 @Service
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleDao, UserRole> implements UserRoleService {
 

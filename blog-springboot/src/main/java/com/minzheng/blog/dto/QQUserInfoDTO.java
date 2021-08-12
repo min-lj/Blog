@@ -28,9 +28,5 @@ public class QQUserInfoDTO {
      */
     private String figureurl_qq_1;
 
-    /**
-     * 性别
-     */
-    private String gender;
 
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minzheng.blog.dao.RoleDao">
 
-    <resultMap id="RolePermissionMap" type="com.minzheng.blog.dto.UrlRoleDTO">
+    <resultMap id="RolePermissionMap" type="com.minzheng.blog.dto.ResourceRoleDTO">
         <id column="id" property="id"/>
         <result column="url" property="url"/>
         <result column="request_method" property="requestMethod"/>
@@ -31,7 +31,7 @@
         </collection>
     </resultMap>
 
-    <select id="listUrlRoles" resultMap="RolePermissionMap">
+    <select id="listResourceRoles" resultMap="RolePermissionMap">
         SELECT
          re.id,
          url,
@@ -67,14 +67,22 @@
         rr.resource_id,
         rm.menu_id
         FROM
-        ( SELECT id, role_name, role_label, create_time, is_disable
-        FROM tb_role
+        (
+          SELECT
+            id,
+            role_name,
+            role_label,
+            create_time,
+            is_disable
+          FROM
+            tb_role
         <where>
             <if test="conditionVO.keywords != null ">
                 role_name like concat('%',#{conditionVO.keywords},'%')
             </if>
         </where>
-        LIMIT #{conditionVO.current}, #{conditionVO.size} ) r
+        LIMIT #{current}, #{size}
+        ) r
         LEFT JOIN tb_role_resource rr ON r.id = rr.role_id
         LEFT JOIN tb_role_menu rm on r.id = rm.role_id
         ORDER BY r.id

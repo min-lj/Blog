@@ -2,6 +2,9 @@ body {
   padding: 0;
   margin: 0;
 }
+html{
+  scroll-behavior: smooth;
+}
 .el-card.is-always-shadow,
 .el-card.is-hover-shadow:focus,
 .el-card.is-hover-shadow:hover {
@@ -47,7 +50,21 @@ body {
   border-left: 3px solid #0081ff;
   margin-right: 20px;
 }
-
 .side-nav-bar .el-scrollbar__wrap {
   overflow-x: hidden !important;
+}
+.el-upload-list__item-thumbnail {
+    object-fit: cover !important;
+}
+.photo-container .el-checkbox__input {
+    position: absolute !important;
+    top: 0.3rem;
+    left: 0.8rem;
+}
+
+.album-check-item .el-radio__input {
+    position: absolute !important;
+    top: 1.2rem;
+    left: 0.2rem;
+    z-index: 1000;
 }

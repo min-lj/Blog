@@ -5,6 +5,21 @@
     <div class="operation-container">
       <!-- 条件筛选 -->
       <div style="margin-left:auto">
+        <!-- 登录方式 -->
+        <el-select
+          clearable
+          v-model="loginType"
+          placeholder="请选择登录方式"
+          size="small"
+          style="margin-right:1rem"
+        >
+          <el-option
+            v-for="item in typeList"
+            :key="item.type"
+            :label="item.desc"
+            :value="item.type"
+          />
+        </el-select>
         <el-input
           v-model="keywords"
           prefix-icon="el-icon-search"
@@ -50,9 +65,9 @@
         width="80"
       >
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.loginType == 0">邮箱</el-tag>
-          <el-tag v-if="scope.row.loginType == 1">QQ</el-tag>
-          <el-tag type="danger" v-if="scope.row.loginType == 2">微博</el-tag>
+          <el-tag type="success" v-if="scope.row.loginType == 1">邮箱</el-tag>
+          <el-tag v-if="scope.row.loginType == 2">QQ</el-tag>
+          <el-tag type="danger" v-if="scope.row.loginType == 3">微博</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="roleList" label="用户角色" align="center">
@@ -79,7 +94,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="ipAddr"
+        prop="ipAddress"
         label="登录ip"
         align="center"
         width="140"
@@ -181,10 +196,25 @@ export default {
         userInfoId: null,
         nickname: ""
       },
+      loginType: null,
       userRoleList: [],
       roleIdList: [],
       userList: [],
-      keywords: null,
+      typeList: [
+        {
+          type: 1,
+          desc: "邮箱"
+        },
+        {
+          type: 2,
+          desc: "QQ"
+        },
+        {
+          type: 3,
+          desc: "微博"
+        }
+      ],
+      keywords: "",
       current: 1,
       size: 10,
       count: 0
@@ -200,9 +230,10 @@ export default {
       this.listUsers();
     },
     changeDisable(user) {
-      let param = new URLSearchParams();
-      param.append("isDisable", user.isDisable);
-      this.axios.put("/api/admin/users/disable/" + user.userInfoId, param);
+      this.axios.put("/api/admin/users/disable", {
+        id: user.userInfoId,
+        isDisable: user.isDisable
+      });
     },
     openEditModel(user) {
       this.roleIdList = [];
@@ -238,7 +269,8 @@ export default {
           params: {
             current: this.current,
             size: this.size,
-            keywords: this.keywords
+            keywords: this.keywords,
+            loginType: this.loginType
           }
         })
         .then(({ data }) => {
@@ -249,6 +281,11 @@ export default {
       this.axios.get("/api/admin/users/role").then(({ data }) => {
         this.userRoleList = data.data;
       });
+    }
+  },
+  watch: {
+    loginType() {
+      this.listUsers();
     }
   }
 };

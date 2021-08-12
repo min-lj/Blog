@@ -1,20 +1,16 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-import lombok.experimental.Accessors;
 
 /**
  * 网站访问量
  *
- * @author xiaojie
+ * @author yezhiqiu
+ * @date 2021/08/01
  * @since 2020-05-18
  */
 @Data
@@ -31,13 +27,20 @@ public class UniqueView {
     private Integer id;
 
     /**
-     * 时间
-     */
-    private Date createTime;
-
-    /**
      * 访问量
      */
     private Integer viewsCount;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
 }

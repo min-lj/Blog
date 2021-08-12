@@ -16,17 +16,6 @@
       <el-col :span="6">
         <el-card>
           <div class="card-icon-container">
-            <i class="el-icon-s-comment" style="color:#36A3F7" />
-          </div>
-          <div class="card-desc">
-            <div class="card-title">留言量</div>
-            <div class="card-count">{{ messageCount }}</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card>
-          <div class="card-icon-container">
             <i class="iconfont el-icon-myuser" style="color:#34BFA3" />
           </div>
           <div class="card-desc">
@@ -46,12 +35,33 @@
           </div>
         </el-card>
       </el-col>
+      <el-col :span="6">
+        <el-card>
+          <div class="card-icon-container">
+            <i class="el-icon-s-comment" style="color:#36A3F7" />
+          </div>
+          <div class="card-desc">
+            <div class="card-title">留言量</div>
+            <div class="card-count">{{ messageCount }}</div>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
     <!-- 一周访问量展示 -->
     <el-card style="margin-top:1.25rem">
       <div class="e-title">一周访问量</div>
       <div style="height:350px">
         <v-chart :options="viewCount" v-loading="loading" />
+      </div>
+    </el-card>
+    <!-- 文章贡献统计 -->
+    <el-card style="margin-top:1.25rem">
+      <div class="e-title">文章贡献统计</div>
+      <div v-loading="loading">
+        <calendar-heatmap
+          :end-date="new Date()"
+          :values="articleStatisticsList"
+        />
       </div>
     </el-card>
     <el-row :gutter="30" style="margin-top:1.25rem">
@@ -89,6 +99,7 @@ export default {
       messageCount: 0,
       userCount: 0,
       articleCount: 0,
+      articleStatisticsList: [],
       viewCount: {
         tooltip: {
           trigger: "axis",
@@ -193,7 +204,7 @@ export default {
         this.messageCount = data.data.messageCount;
         this.userCount = data.data.userCount;
         this.articleCount = data.data.articleCount;
-
+        this.articleStatisticsList = data.data.articleStatisticsList;
         if (data.data.uniqueViewDTOList != null) {
           data.data.uniqueViewDTOList.forEach(item => {
             this.viewCount.xAxis.data.push(item.day);

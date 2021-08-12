@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="link-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">友情链接</h1>
     </div>
     <!-- 链接列表 -->
@@ -33,9 +33,9 @@
         <v-icon color="blue">mdi-dots-horizontal-circle</v-icon> 添加友链
       </div>
       <blockquote>
-        <div>名称：风丶宇的个人博客</div>
-        <div>简介：成事在人 谋事在天</div>
-        <div>头像：https://www.static.talkxj.com/avatar/blogger.jpg</div>
+        <div>名称：{{ blogInfo.websiteConfig.websiteName }}</div>
+        <div>简介：{{ blogInfo.websiteConfig.websiteIntro }}</div>
+        <div>头像：{{ blogInfo.websiteConfig.websiteAvatar }}</div>
       </blockquote>
       <div class="mt-5 mb-5">
         需要交换友链的可在下方留言💖
@@ -86,6 +86,20 @@ export default {
           this.count = data.data.count;
         });
     }
+  },
+  computed: {
+    blogInfo() {
+      return this.$store.state.blogInfo;
+    },
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "link") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
+    }
   }
 };
 </script>
@@ -99,11 +113,6 @@ blockquote {
   padding: 10px 1rem !important;
   background-color: #ecf7fe;
   border-radius: 4px;
-}
-.link-banner {
-  background: url(https://www.static.talkxj.com/ne78w4%20.jpg) center center /
-    cover no-repeat;
-  background-color: #49b1f5;
 }
 .link-title {
   color: #344c67;

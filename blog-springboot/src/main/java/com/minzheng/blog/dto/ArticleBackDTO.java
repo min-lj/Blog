@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+
 
 /**
  * 后台文章
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -25,6 +27,11 @@ public class ArticleBackDTO {
     private Integer id;
 
     /**
+     * 文章封面
+     */
+    private String articleCover;
+
+    /**
      * 标题
      */
     private String articleTitle;
@@ -32,12 +39,7 @@ public class ArticleBackDTO {
     /**
      * 发表时间
      */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private LocalDateTime createTime;
 
     /**
      * 点赞量
@@ -60,18 +62,23 @@ public class ArticleBackDTO {
     private List<TagDTO> tagDTOList;
 
     /**
+     * 文章类型
+     */
+    private Integer type;
+
+    /**
      * 是否置顶
      */
     private Integer isTop;
 
     /**
-     * 是否为草稿
-     */
-    private Integer isDraft;
-
-    /**
      * 是否删除
      */
     private Integer isDelete;
+
+    /**
+     * 文章状态
+     */
+    private Integer status;
 
 }

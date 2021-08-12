@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 /**
- * 用户菜单DTO
- * @author: yezhiqiu
- * @date: 2021-01-26
- **/
+ * 用户菜单
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @Builder
 @AllArgsConstructor

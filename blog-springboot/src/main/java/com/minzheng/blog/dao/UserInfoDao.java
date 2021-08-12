@@ -4,13 +4,12 @@ import com.minzheng.blog.entity.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
+
 /**
- * <p>
- *  Mapper 接口
- * </p>
+ * 用户信息
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Repository
 public interface UserInfoDao extends BaseMapper<UserInfo> {

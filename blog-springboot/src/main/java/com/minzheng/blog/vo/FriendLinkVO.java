@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 友链DTO
+ * 友链VO
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/07/28
  */
 @Data
 @Builder

@@ -14,7 +14,7 @@
       <el-button
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="tagIdList.length == 0"
         @click="isDelete = true"
       >
@@ -57,6 +57,8 @@
           </el-tag>
         </template>
       </el-table-column>
+      <!-- 文章量 -->
+      <el-table-column prop="articleCount" label="文章量" align="center" />
       <!-- 标签创建时间 -->
       <el-table-column prop="createTime" label="创建时间" align="center">
         <template slot-scope="scope">
@@ -73,7 +75,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:1rem"
-            @onConfirm="deleteTag(scope.row.id)"
+            @confirm="deleteTag(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除

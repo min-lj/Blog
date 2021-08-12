@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">个人中心</h1>
     </div>
     <v-card class="blog-container">
@@ -78,7 +78,7 @@ export default {
       this.axios.put("/api/users/info", this.userInfo).then(({ data }) => {
         if (data.flag) {
           this.$store.commit("updateUserInfo", this.userInfo);
-          this.$toast({ type: "success", message: data.message });
+          this.$toast({ type: "success", message: "修改成功" });
         } else {
           this.$toast({ type: "error", message: data.message });
         }
@@ -87,7 +87,7 @@ export default {
     uploadAvatar(data) {
       if (data.flag) {
         this.$store.commit("updateAvatar", data.data);
-        this.$toast({ type: "success", message: data.message });
+        this.$toast({ type: "success", message: "上传成功" });
       } else {
         this.$toast({ type: "error", message: data.message });
       }
@@ -102,17 +102,21 @@ export default {
     },
     loginType() {
       return this.$store.state.loginType;
+    },
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "user") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
     }
   }
 };
 </script>
 
 <style scoped>
-.user-banner {
-  background: url(https://www.static.talkxj.com/article/setting.jpeg) center
-    center / cover no-repeat;
-  background-color: #49b1f5;
-}
 .info-title {
   font-size: 1.25rem;
   font-weight: bold;

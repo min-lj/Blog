@@ -18,25 +18,26 @@ import "echarts/lib/component/legend";
 import "echarts/lib/component/title";
 import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
-import moment from "moment";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { generaMenu } from "./assets/js/menu";
+import VueCalendarHeatmap from "vue-calendar-heatmap";
+import dayjs from "dayjs";
 
 Vue.prototype.config = config;
 Vue.use(mavonEditor);
+Vue.use(VueCalendarHeatmap);
 Vue.component("v-chart", ECharts);
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
-Vue.prototype.$moment = moment;
+Vue.prototype.$moment = dayjs;
 
 Vue.filter("date", function(value, formatStr = "YYYY-MM-DD") {
-  return moment(value).format(formatStr);
+  return dayjs(value).format(formatStr);
 });
 
 Vue.filter("dateTime", function(value, formatStr = "YYYY-MM-DD hh:mm:ss") {
-  return moment(value).format(formatStr);
+  return dayjs(value).format(formatStr);
 });
 
 NProgress.configure({
@@ -90,11 +91,5 @@ axios.interceptors.response.use(
 new Vue({
   router,
   store,
-  render: h => h(App),
-  created() {
-    // 刷新页面查询用户菜单
-    if (store.state.userId != null) {
-      generaMenu();
-    }
-  }
+  render: h => h(App)
 }).$mount("#app");

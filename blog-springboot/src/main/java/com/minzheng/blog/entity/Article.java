@@ -1,23 +1,19 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.minzheng.blog.utils.UserUtil;
-import com.minzheng.blog.vo.ArticleVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
  * 文章
  *
- * @author xiaojie
+ * @author yezhiqiu
+ * @date 2021/07/29
  * @since 2020-05-18
  */
 @Data
@@ -59,14 +55,14 @@ public class Article {
     private String articleContent;
 
     /**
-     * 发表时间
+     * 文章类型
      */
-    private Date createTime;
+    private Integer type;
 
     /**
-     * 更新时间
+     * 原文链接
      */
-    private Date updateTime;
+    private String originalUrl;
 
     /**
      * 是否置顶
@@ -74,14 +70,25 @@ public class Article {
     private Integer isTop;
 
     /**
-     * 是否为草稿
-     */
-    private Integer isDraft;
-
-    /**
-     * 状态码
+     * 是否删除
      */
     private Integer isDelete;
 
+    /**
+     * 文章状态 1.公开 2.私密 3.评论可见
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
 }

@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 /**
  * 博客后台信息
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -41,6 +43,11 @@ public class BlogBackInfoDTO {
      * 分类统计
      */
     private List<CategoryDTO> categoryDTOList;
+
+    /**
+     * 文章统计列表
+     */
+    private List<ArticleStatisticsDTO> articleStatisticsList;
 
     /**
      * 一周用户量集合

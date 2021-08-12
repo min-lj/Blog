@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author yezhqiu
  * @date 2021/06/14
- * @since 1.0.0
  **/
 @Data
 @Configuration

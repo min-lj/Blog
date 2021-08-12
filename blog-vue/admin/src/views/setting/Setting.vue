@@ -75,19 +75,6 @@
           </el-button>
         </el-form>
       </el-tab-pane>
-      <!-- 网站公告 -->
-      <el-tab-pane label="修改公告" name="notice">
-        <el-input
-          v-model="notice"
-          placeholder="请输入公告内容"
-          style="margin-bottom:1rem"
-          type="textarea"
-          :rows="5"
-        />
-        <el-button type="danger" size="medium" @click="updateNotice">
-          修改
-        </el-button>
-      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>
@@ -106,7 +93,6 @@ export default {
         newPassword: "",
         confirmPassword: ""
       },
-      notice: "",
       activeName: "info"
     };
   },

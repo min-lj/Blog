@@ -5,10 +5,13 @@ import com.minzheng.blog.entity.Menu;
 import com.minzheng.blog.entity.OperationLog;
 import org.springframework.stereotype.Repository;
 
+
 /**
- * @author: yezhiqiu
- * @date: 2021-01-31
- **/
+ * 操作日志
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
+ */
 @Repository
 public interface OperationLogDao extends BaseMapper<OperationLog> {
 }

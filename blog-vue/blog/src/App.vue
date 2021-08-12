@@ -23,9 +23,9 @@
     <!-- 绑定邮箱模态框 -->
     <EmailModel></EmailModel>
     <!-- 音乐播放器 -->
-    <Player></Player>
+    <Player v-if="blogInfo.websiteConfig.isMusicPlayer == 1"></Player>
     <!-- 聊天室 -->
-    <ChatRoom></ChatRoom>
+    <ChatRoom v-if="blogInfo.websiteConfig.isChatRoom == 1"></ChatRoom>
   </v-app>
 </template>
 
@@ -63,6 +63,11 @@ export default {
       this.axios.get("/api/").then(({ data }) => {
         this.$store.commit("checkBlogInfo", data.data);
       });
+    }
+  },
+  computed: {
+    blogInfo() {
+      return this.$store.state.blogInfo;
     }
   }
 };

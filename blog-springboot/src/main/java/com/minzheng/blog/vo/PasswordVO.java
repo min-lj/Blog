@@ -11,9 +11,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
- * 密码对象
+ * 密码
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/03
  */
 @Data
 @Builder

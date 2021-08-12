@@ -11,7 +11,7 @@
           />
           <img
             v-else
-            src="https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mp&v=1.4.14"
+            :src="this.$store.state.blogInfo.websiteConfig.touristAvatar"
           />
         </v-avatar>
         <div style="width:100%" class="ml-3">
@@ -243,8 +243,8 @@ export default {
     },
     checkReplies(index, item) {
       this.axios
-        .get("/api/comments/replies/" + item.id, {
-          params: { current: 1 }
+        .get("/api/comments/" + item.id + "/replies", {
+          params: { current: 1, size: 5 }
         })
         .then(({ data }) => {
           this.$refs.check[index].style.display = "none";
@@ -258,8 +258,8 @@ export default {
     changeReplyCurrent(current, index, commentId) {
       //查看下一页回复
       this.axios
-        .get("/api/comments/replies/" + commentId, {
-          params: { current: current }
+        .get("/api/comments/" + commentId + "/replies", {
+          params: { current: current, size: 5 }
         })
         .then(({ data }) => {
           this.commentList[index].replyDTOList = data.data;
@@ -310,36 +310,42 @@ export default {
         if (data.flag) {
           //查询最新评论
           this.$emit("reloadComment");
-          this.$toast({ type: "success", message: data.message });
+          const isReview = this.$store.state.blogInfo.websiteConfig
+            .isCommentReview;
+          if (isReview) {
+            this.$toast({ type: "warnning", message: "评论成功，正在审核中" });
+          } else {
+            this.$toast({ type: "success", message: "评论成功" });
+          }
         } else {
           this.$toast({ type: "error", message: data.message });
         }
       });
     },
     like(comment) {
-      //判断登录
+      // 判断登录
       if (!this.$store.state.userId) {
         this.$store.state.loginFlag = true;
         return false;
       }
-      //发送请求
-      let param = new URLSearchParams();
-      param.append("commentId", comment.id);
-      this.axios.post("/api/comments/like", param).then(({ data }) => {
-        if (data.flag) {
-          //判断是否点赞
-          if (this.$store.state.commentLikeSet.indexOf(comment.id) != -1) {
-            this.$set(comment, "likeCount", comment.likeCount - 1);
-          } else {
-            this.$set(comment, "likeCount", comment.likeCount + 1);
+      // 发送请求
+      this.axios
+        .post("/api/comments/" + comment.id + "/like")
+        .then(({ data }) => {
+          if (data.flag) {
+            // 判断是否点赞
+            if (this.$store.state.commentLikeSet.indexOf(comment.id) != -1) {
+              this.$set(comment, "likeCount", comment.likeCount - 1);
+            } else {
+              this.$set(comment, "likeCount", comment.likeCount + 1);
+            }
+            this.$store.commit("commentLike", comment.id);
           }
-          this.$store.commit("commentLike", comment.id);
-        }
-      });
+        });
     },
     reloadReply(index) {
       this.axios
-        .get("/api/comments/replies/" + this.commentList[index].id, {
+        .get("/api/comments/" + this.commentList[index].id + "/replies", {
           params: {
             current: this.$refs.page[index].current
           }

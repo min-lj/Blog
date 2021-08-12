@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 /**
- * 后台留言列表
- * @author 11921
+ * 后台留言
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -48,8 +51,13 @@ public class MessageBackDTO {
     private String messageContent;
 
     /**
+     * 是否审核
+     */
+    private Integer isReview;
+
+    /**
      * 留言时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
 }

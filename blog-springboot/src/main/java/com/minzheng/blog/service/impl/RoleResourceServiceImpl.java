@@ -7,9 +7,11 @@ import com.minzheng.blog.service.RoleResourceService;
 import org.springframework.stereotype.Service;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 角色资源服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Service
 public class RoleResourceServiceImpl extends ServiceImpl<RoleResourceDao, RoleResource> implements RoleResourceService {
 

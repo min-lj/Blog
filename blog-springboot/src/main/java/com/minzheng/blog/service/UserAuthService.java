@@ -1,18 +1,17 @@
 package com.minzheng.blog.service;
 
-import com.minzheng.blog.dto.PageDTO;
-import com.minzheng.blog.dto.UserBackDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
+import com.minzheng.blog.vo.*;
+import com.minzheng.blog.dto.UserBackDTO;
 import com.minzheng.blog.entity.UserAuth;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzheng.blog.vo.ConditionVO;
-import com.minzheng.blog.vo.PasswordVO;
-import com.minzheng.blog.vo.UserVO;
 
 
 /**
- * @author xiaojie
- * @since 2020-05-18
+ * 用户账号服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 public interface UserAuthService extends IService<UserAuth> {
 
@@ -28,24 +27,24 @@ public interface UserAuthService extends IService<UserAuth> {
      *
      * @param user 用户对象
      */
-    void saveUser(UserVO user);
+    void register(UserVO user);
 
     /**
      * qq登录
      *
-     * @param openId      qq openId
-     * @param accessToken qq token
+     * @param qqLoginVO qq登录信息
      * @return 用户登录信息
      */
-    UserInfoDTO qqLogin(String openId, String accessToken);
+    UserInfoDTO qqLogin(QQLoginVO qqLoginVO);
 
     /**
+     * 魏bo登录
      * 微博登录
      *
-     * @param code 微博code
+     * @param weiboLoginVO 微博登录信息
      * @return 用户登录信息
      */
-    UserInfoDTO weiBoLogin(String code);
+    UserInfoDTO weiboLogin(WeiboLoginVO weiboLoginVO);
 
     /**
      * 修改密码
@@ -67,6 +66,6 @@ public interface UserAuthService extends IService<UserAuth> {
      * @param condition 条件
      * @return 用户列表
      */
-    PageDTO<UserBackDTO> listUserBackDTO(ConditionVO condition);
+    PageResult<UserBackDTO> listUserBackDTO(ConditionVO condition);
 
 }

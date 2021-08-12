@@ -9,9 +9,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 角色菜单
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
+ */
 @Data
 @Builder
 @AllArgsConstructor

@@ -7,17 +7,21 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 /**
- * 分类或标签下的文章列表
- * @author 11921
+ * 文章预览列表
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArticlePreviewListDTO {
+
     /**
-     * 条件对应的文章列表
+     * 文章列表
      */
     private List<ArticlePreviewDTO> articlePreviewDTOList;
 

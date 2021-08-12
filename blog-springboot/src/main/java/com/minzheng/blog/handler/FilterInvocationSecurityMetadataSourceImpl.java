@@ -1,7 +1,7 @@
 package com.minzheng.blog.handler;
 
 import com.minzheng.blog.dao.RoleDao;
-import com.minzheng.blog.dto.UrlRoleDTO;
+import com.minzheng.blog.dto.ResourceRoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -16,39 +16,41 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-06
- **/
+ * 接口拦截规则
+ *
+ * @author yezhiqiu
+ * @date 2021/07/27
+ */
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
     /**
-     * 接口角色列表
+     * 资源角色列表
      */
-    private static List<UrlRoleDTO> urlRoleList;
+    private static List<ResourceRoleDTO> resourceRoleList;
 
     @Autowired
     private RoleDao roleDao;
 
     /**
-     * 加载接口角色信息
+     * 加载资源角色信息
      */
     @PostConstruct
     private void loadDataSource() {
-        urlRoleList = roleDao.listUrlRoles();
+        resourceRoleList = roleDao.listResourceRoles();
     }
 
     /**
      * 清空接口角色信息
      */
     public void clearDataSource() {
-        urlRoleList = null;
+        resourceRoleList = null;
     }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         // 修改接口角色关系后重新加载
-        if (CollectionUtils.isEmpty(urlRoleList)) {
+        if (CollectionUtils.isEmpty(resourceRoleList)) {
             this.loadDataSource();
         }
         FilterInvocation fi = (FilterInvocation) object;
@@ -58,9 +60,9 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
         String url = fi.getRequest().getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         // 获取接口角色信息，若为匿名接口则放行，若无对应角色则禁止
-        for (UrlRoleDTO urlRoleDTO : urlRoleList) {
-            if (antPathMatcher.match(urlRoleDTO.getUrl(), url) && urlRoleDTO.getRequestMethod().equals(method)) {
-                List<String> roleList = urlRoleDTO.getRoleList();
+        for (ResourceRoleDTO resourceRoleDTO : resourceRoleList) {
+            if (antPathMatcher.match(resourceRoleDTO.getUrl(), url) && resourceRoleDTO.getRequestMethod().equals(method)) {
+                List<String> roleList = resourceRoleDTO.getRoleList();
                 if (CollectionUtils.isEmpty(roleList)) {
                     return SecurityConfig.createList("disable");
                 }

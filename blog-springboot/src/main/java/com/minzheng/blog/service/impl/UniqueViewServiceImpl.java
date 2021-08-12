@@ -1,26 +1,33 @@
 package com.minzheng.blog.service.impl;
 
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.minzheng.blog.dto.UniqueViewDTO;
 import com.minzheng.blog.entity.UniqueView;
 import com.minzheng.blog.dao.UniqueViewDao;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UniqueViewService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzheng.blog.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
-import static com.minzheng.blog.constant.RedisPrefixConst.IP_SET;
+import static com.minzheng.blog.constant.RedisPrefixConst.UNIQUE_VISITOR;
+
 
 /**
- * @author xiaojie
- * @since 2020-05-18
+ * 访问量统计服务
+ *
+ * @author yezhiqiu
+ * @date 2021/08/06
  */
 @Service
 public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView> implements UniqueViewService {
@@ -29,23 +36,30 @@ public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView
     @Autowired
     private UniqueViewDao uniqueViewDao;
 
-    @Scheduled(cron = " 0 0 0 * * ?")
     @Override
+    public List<UniqueViewDTO> listUniqueViews() {
+        DateTime startTime =  DateUtil.beginOfDay(DateUtil.offsetDay(new Date(), -7));
+        DateTime endTime = DateUtil.endOfDay(new Date());
+        return uniqueViewDao.listUniqueViews(startTime, endTime);
+    }
+
+    @Scheduled(cron = " 0 0 0 * * ?")
     public void saveUniqueView() {
         // 获取每天用户量
-        Long count = redisService.sSize(IP_SET);
+        Long count = redisService.sSize(UNIQUE_VISITOR);
         // 获取昨天日期插入数据
         UniqueView uniqueView = UniqueView.builder()
-                .createTime(DateUtil.getSomeDay(new Date(), -1))
-                .viewsCount(Objects.nonNull(count) ? count.intValue() : 0).build();
+                .createTime(LocalDateTimeUtil.offset(LocalDateTime.now(), -1, ChronoUnit.DAYS))
+                .viewsCount(Optional.of(count.intValue()).orElse(0))
+                .build();
         uniqueViewDao.insert(uniqueView);
     }
 
-    @Override
-    public List<UniqueViewDTO> listUniqueViews() {
-        String startTime = DateUtil.getMinTime(DateUtil.getSomeDay(new Date(), -7));
-        String endTime = DateUtil.getMaxTime(new Date());
-        return uniqueViewDao.listUniqueViews(startTime, endTime);
+    @Scheduled(cron = " 0 1 0 * * ?")
+    public void clear() {
+        //清空redis访客记录
+        redisService.del(UNIQUE_VISITOR);
     }
+
 
 }

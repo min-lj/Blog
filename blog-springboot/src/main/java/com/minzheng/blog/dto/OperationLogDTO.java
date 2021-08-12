@@ -1,20 +1,18 @@
 package com.minzheng.blog.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
- * 操作日志DTO
+ * 操作日志
  *
- * @author: yezhiqiu
- * @date: 2021-01-31
- **/
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -73,7 +71,7 @@ public class OperationLogDTO {
     /**
      * 用户登录ip
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源
@@ -83,6 +81,6 @@ public class OperationLogDTO {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
 }

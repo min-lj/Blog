@@ -22,50 +22,50 @@ export default {
       // 拿到openId，accessToken传入后台
       if (QC.Login.check()) {
         QC.Login.getMe(function(openId, accessToken) {
-          let param = new URLSearchParams();
-          param.append("openId", openId);
-          param.append("accessToken", accessToken);
-          that.axios.post("/api/users/oauth/qq", param).then(({ data }) => {
-            if (data.flag) {
-              //保存登录状态
-              that.$store.commit("login", data.data);
-              if (data.data.email == null) {
-                that.$toast({
-                  type: "warnning",
-                  message: "请绑定邮箱以便及时收到回复"
-                });
+          that.axios
+            .post("/api/users/oauth/qq", {
+              openId: openId,
+              accessToken: accessToken
+            })
+            .then(({ data }) => {
+              if (data.flag) {
+                //保存登录状态
+                that.$store.commit("login", data.data);
+                if (data.data.email == null) {
+                  that.$toast({
+                    type: "warnning",
+                    message: "请绑定邮箱以便及时收到回复"
+                  });
+                } else {
+                  that.$toast({ type: "success", message: data.message });
+                }
               } else {
-                that.$toast({ type: "success", message: data.message });
+                that.$toast({ type: "error", message: data.message });
               }
-            } else {
-              that.$toast({ type: "error", message: data.message });
-            }
-          });
+            });
         });
       } else {
         that.$toast({ type: "error", message: "登录失败" });
       }
     } else {
-      //微博登录
-      let param = new URLSearchParams();
-      //将code传入后台
-      param.append("code", this.$route.query.code);
-      that.axios.post("/api/users/oauth/weibo", param).then(({ data }) => {
-        if (data.flag) {
-          //保存登录状态
-          that.$store.commit("login", data.data);
-          if (data.data.email == null) {
-            that.$toast({
-              type: "warnning",
-              message: "请绑定邮箱以便及时收到回复"
-            });
+      that.axios
+        .post("/api/users/oauth/weibo", { code: code })
+        .then(({ data }) => {
+          if (data.flag) {
+            //保存登录状态
+            that.$store.commit("login", data.data);
+            if (data.data.email == null) {
+              that.$toast({
+                type: "warnning",
+                message: "请绑定邮箱以便及时收到回复"
+              });
+            } else {
+              that.$toast({ type: "success", message: data.message });
+            }
           } else {
-            that.$toast({ type: "success", message: data.message });
+            that.$toast({ type: "error", message: data.message });
           }
-        } else {
-          that.$toast({ type: "error", message: data.message });
-        }
-      });
+        });
     }
     //跳转回原页面
     that.$router.push({ path: that.$store.state.loginUrl });

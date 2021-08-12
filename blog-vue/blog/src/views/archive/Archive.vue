@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="archive-banner banner">
+    <div class="banner" :style="cover">
       <h1 class="banner-title">归档</h1>
     </div>
     <!-- 归档列表 -->
@@ -61,6 +61,17 @@ export default {
         });
     }
   },
+  computed: {
+    cover() {
+      var cover = "";
+      this.$store.state.blogInfo.pageList.forEach(item => {
+        if (item.pageLabel == "archive") {
+          cover = item.pageCover;
+        }
+      });
+      return "background: url(" + cover + ") center center / cover no-repeat";
+    }
+  },
   watch: {
     current(value) {
       this.axios
@@ -77,11 +88,6 @@ export default {
 </script>
 
 <style scoped>
-.archive-banner {
-  background: url(https://www.static.talkxj.com/wallroom-1920x1080-bg-338d7bc.jpg)
-    center center / cover no-repeat;
-  background-color: #49b1f5;
-}
 .time {
   font-size: 0.75rem;
   color: #555;

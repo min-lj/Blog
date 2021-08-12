@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 回复列表
- * @author 11921
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
  */
 @Data
 @Builder
@@ -50,7 +52,7 @@ public class ReplyDTO {
     /**
      * 被回复用户id
      */
-    private Integer replyId;
+    private Integer replyUserId;
 
     /**
      * 被回复用户昵称
@@ -75,6 +77,6 @@ public class ReplyDTO {
     /**
      * 评论时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
 }

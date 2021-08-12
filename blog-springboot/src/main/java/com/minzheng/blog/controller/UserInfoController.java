@@ -2,8 +2,7 @@ package com.minzheng.blog.controller;
 
 
 import com.minzheng.blog.annotation.OptLog;
-import com.minzheng.blog.constant.StatusConst;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.dto.UserOnlineDTO;
 import com.minzheng.blog.service.UserInfoService;
 import com.minzheng.blog.vo.*;
@@ -21,10 +20,10 @@ import javax.validation.Valid;
 import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
 
 /**
- * 处理用户信息
+ * 用户信息控制器
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 @Api(tags = "用户信息模块")
 @RestController
@@ -32,54 +31,96 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @ApiOperation(value = "修改用户资料")
+    /**
+     * 更新用户信息
+     *
+     * @param userInfoVO 用户信息
+     * @return {@link Result<>}
+     */
+    @ApiOperation(value = "更新用户信息")
     @PutMapping("/users/info")
     public Result<?> updateUserInfo(@Valid @RequestBody UserInfoVO userInfoVO) {
         userInfoService.updateUserInfo(userInfoVO);
-        return new Result<>(true, StatusConst.OK, "修改成功！");
+        return Result.ok();
     }
 
-    @ApiOperation(value = "修改用户头像")
+    /**
+     * 更新用户头像
+     *
+     * @param file 文件
+     * @return {@link Result<String>} 头像地址
+     */
+    @ApiOperation(value = "更新用户头像")
     @ApiImplicitParam(name = "file", value = "用户头像", required = true, dataType = "MultipartFile")
     @PostMapping("/users/avatar")
-    public Result<String> updateUserInfo(MultipartFile file) {
-        return new Result<>(true, StatusConst.OK, "修改成功！", userInfoService.updateUserAvatar(file));
+    public Result<String> updateUserAvatar(MultipartFile file) {
+        return Result.ok(userInfoService.updateUserAvatar(file));
     }
 
+    /**
+     * 绑定用户邮箱
+     *
+     * @param emailVO 邮箱信息
+     * @return {@link Result<>}
+     */
     @ApiOperation(value = "绑定用户邮箱")
     @PostMapping("/users/email")
     public Result<?> saveUserEmail(@Valid @RequestBody EmailVO emailVO) {
         userInfoService.saveUserEmail(emailVO);
-        return new Result<>(true, StatusConst.OK, "绑定成功！");
+        return Result.ok();
     }
 
+    /**
+     * 修改用户角色
+     *
+     * @param userRoleVO 用户角色信息
+     * @return {@link Result<>}
+     */
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "修改用户角色")
     @PutMapping("/admin/users/role")
-    public Result<String> updateUserRole(@Valid @RequestBody UserRoleVO userRoleVO) {
+    public Result<?> updateUserRole(@Valid @RequestBody UserRoleVO userRoleVO) {
         userInfoService.updateUserRole(userRoleVO);
-        return new Result<>(true, StatusConst.OK, "修改成功！");
+        return Result.ok();
     }
 
+    /**
+     * 修改用户禁用状态
+     *
+     * @param userDisableVO 用户禁用信息
+     * @return {@link Result<>}
+     */
     @OptLog(optType = UPDATE)
     @ApiOperation(value = "修改用户禁用状态")
-    @PutMapping("/admin/users/disable/{userInfoId}")
-    public Result<?> updateUserSilence(@PathVariable("userInfoId") Integer userInfoId, Integer isDisable) {
-        userInfoService.updateUserDisable(userInfoId, isDisable);
-        return new Result<>(true, StatusConst.OK, "修改成功！");
+    @PutMapping("/admin/users/disable")
+    public Result<?> updateUserDisable(@Valid @RequestBody UserDisableVO userDisableVO) {
+        userInfoService.updateUserDisable(userDisableVO);
+        return Result.ok();
     }
 
+    /**
+     * 查看在线用户
+     *
+     * @param conditionVO 条件
+     * @return {@link Result<UserOnlineDTO>} 在线用户列表
+     */
     @ApiOperation(value = "查看在线用户")
     @GetMapping("/admin/users/online")
-    public Result<PageDTO<UserOnlineDTO>> listOnlineUsers(ConditionVO conditionVO) {
-        return new Result<>(true, StatusConst.OK, "查询成功！", userInfoService.listOnlineUsers(conditionVO));
+    public Result<PageResult<UserOnlineDTO>> listOnlineUsers(ConditionVO conditionVO) {
+        return Result.ok(userInfoService.listOnlineUsers(conditionVO));
     }
 
+    /**
+     * 下线用户
+     *
+     * @param userInfoId 用户信息
+     * @return {@link Result<>}
+     */
     @ApiOperation(value = "下线用户")
-    @DeleteMapping("/admin/users/online/{userInfoId}")
+    @DeleteMapping("/admin/users/{userInfoId}/online")
     public Result<?> removeOnlineUser(@PathVariable("userInfoId") Integer userInfoId) {
         userInfoService.removeOnlineUser(userInfoId);
-        return new Result<>(true, StatusConst.OK, "操作成功！");
+        return Result.ok();
     }
 
 }

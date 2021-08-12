@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-11
- **/
+ * 角色枚举
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Getter
 @AllArgsConstructor
 public enum RoleEnum {

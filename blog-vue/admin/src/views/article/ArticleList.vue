@@ -1,13 +1,30 @@
 <template>
   <el-card class="main-card">
     <div class="title">{{ this.$route.name }}</div>
+    <!-- 文章状态 -->
+    <div class="article-status-menu">
+      <span>状态</span>
+      <span @click="changeStauts('all')" :class="isActive('all')">全部</span>
+      <span @click="changeStauts('public')" :class="isActive('public')">
+        公开
+      </span>
+      <span @click="changeStauts('secret')" :class="isActive('secret')">
+        私密
+      </span>
+      <span @click="changeStauts('draft')" :class="isActive('draft')">
+        草稿箱
+      </span>
+      <span @click="changeStauts('delete')" :class="isActive('delete')">
+        回收站
+      </span>
+    </div>
     <!-- 表格操作 -->
     <div class="operation-container">
       <el-button
         v-if="isDelete == 0"
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="articleIdList.length == 0"
         @click="updateIsDelete = true"
       >
@@ -17,7 +34,7 @@
         v-else
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="articleIdList.length == 0"
         @click="remove = true"
       >
@@ -25,20 +42,56 @@
       </el-button>
       <!-- 条件筛选 -->
       <div style="margin-left:auto">
+        <!-- 文章类型 -->
         <el-select
-          v-model="condition"
-          placeholder="请选择"
+          clearable
+          v-model="type"
+          placeholder="请选择文章类型"
           size="small"
           style="margin-right:1rem"
         >
           <el-option
-            v-for="item in options"
+            v-for="item in typeList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
+        <!-- 分类 -->
+        <el-select
+          clearable
+          size="small"
+          v-model="categoryId"
+          filterable
+          placeholder="请选择分类"
+          style="margin-right:1rem"
+        >
+          <el-option
+            v-for="item in categoryList"
+            :key="item.id"
+            :label="item.categoryName"
+            :value="item.id"
+          />
+        </el-select>
+        <!-- 标签 -->
+        <el-select
+          clearable
+          size="small"
+          v-model="tagId"
+          filterable
+          placeholder="请选择标签"
+          style="margin-right:1rem"
+        >
+          <el-option
+            v-for="item in tagList"
+            :key="item.id"
+            :label="item.tagName"
+            :value="item.id"
+          />
+        </el-select>
+        <!-- 文章名 -->
         <el-input
+          clearable
           v-model="keywords"
           prefix-icon="el-icon-search"
           size="small"
@@ -66,19 +119,50 @@
     >
       <!-- 表格列 -->
       <el-table-column type="selection" width="55" />
+      <!-- 文章修改时间 -->
+      <el-table-column
+        prop="articleCover"
+        label="文章封面"
+        width="180"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-image
+            class="article-cover"
+            :src="
+              scope.row.articleCover
+                ? scope.row.articleCover
+                : 'https://www.static.talkxj.com/articles/c5cc2b2561bd0e3060a500198a4ad37d.png'
+            "
+          />
+          <i
+            v-if="scope.row.status == 1"
+            class="iconfont el-icon-mygongkai article-status-icon"
+          />
+          <i
+            v-if="scope.row.status == 2"
+            class="iconfont el-icon-mymima article-status-icon"
+          />
+          <i
+            v-if="scope.row.status == 3"
+            class="iconfont el-icon-mycaogaoxiang article-status-icon"
+          />
+        </template>
+      </el-table-column>
+      <!-- 文章标题 -->
       <el-table-column prop="articleTitle" label="标题" align="center" />
       <!-- 文章分类 -->
       <el-table-column
         prop="categoryName"
         label="分类"
-        width="120"
+        width="110"
         align="center"
       />
       <!-- 文章标签 -->
       <el-table-column
         prop="tagDTOList"
         label="标签"
-        width="180"
+        width="170"
         align="center"
       >
         <template slot-scope="scope">
@@ -95,7 +179,7 @@
       <el-table-column
         prop="viewsCount"
         label="浏览量"
-        width="80"
+        width="70"
         align="center"
       >
         <template slot-scope="scope">
@@ -109,7 +193,7 @@
       <el-table-column
         prop="likeCount"
         label="点赞量"
-        width="80"
+        width="70"
         align="center"
       >
         <template slot-scope="scope">
@@ -119,11 +203,19 @@
           <span v-else>0</span>
         </template>
       </el-table-column>
+      <!-- 文章类型 -->
+      <el-table-column prop="type" label="类型" width="80" align="center">
+        <template slot-scope="scope">
+          <el-tag :type="articleType(scope.row.type).tagType">
+            {{ articleType(scope.row.type).name }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <!-- 文章发表时间 -->
       <el-table-column
         prop="createTime"
         label="发表时间"
-        width="140"
+        width="130"
         align="center"
       >
         <template slot-scope="scope">
@@ -131,29 +223,14 @@
           {{ scope.row.createTime | date }}
         </template>
       </el-table-column>
-      <!-- 文章修改时间 -->
-      <el-table-column
-        prop="updateTime"
-        label="更新时间"
-        width="140"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <span v-if="scope.row.updateTime">
-            <i class="el-icon-time" style="margin-right:5px" />
-            {{ scope.row.updateTime | date }}
-          </span>
-          <span v-else>无</span>
-        </template>
-      </el-table-column>
       <!-- 文章置顶 -->
-      <el-table-column prop="isTop" label="置顶" width="100" align="center">
+      <el-table-column prop="isTop" label="置顶" width="80" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isTop"
             active-color="#13ce66"
             inactive-color="#F4F4F5"
-            :disabled="scope.row.isDelete == 1 || scope.row.isDraft == 1"
+            :disabled="scope.row.isDelete == 1"
             :active-value="1"
             :inactive-value="0"
             @change="changeTop(scope.row)"
@@ -161,7 +238,7 @@
         </template>
       </el-table-column>
       <!-- 列操作 -->
-      <el-table-column label="操作" align="center" width="160">
+      <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -174,7 +251,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:10px"
-            @onConfirm="updateArticleStatus(scope.row.id)"
+            @confirm="updateArticleDelete(scope.row.id)"
             v-if="scope.row.isDelete == 0"
           >
             <el-button size="mini" type="danger" slot="reference">
@@ -184,7 +261,7 @@
           <el-popconfirm
             title="确定恢复吗？"
             v-if="scope.row.isDelete == 1"
-            @onConfirm="updateArticleStatus(scope.row.id)"
+            @confirm="updateArticleDelete(scope.row.id)"
           >
             <el-button size="mini" type="success" slot="reference">
               恢复
@@ -194,7 +271,7 @@
             style="margin-left:10px"
             v-if="scope.row.isDelete == 1"
             title="确定彻底删除吗？"
-            @onConfirm="deleteArticles(scope.row.id)"
+            @confirm="deleteArticles(scope.row.id)"
           >
             <el-button size="mini" type="danger" slot="reference">
               删除
@@ -223,7 +300,7 @@
       <div style="font-size:1rem">是否删除选中项？</div>
       <div slot="footer">
         <el-button @click="updateIsDelete = false">取 消</el-button>
-        <el-button type="primary" @click="updateArticleStatus(null)">
+        <el-button type="primary" @click="updateArticleDelete(null)">
           确 定
         </el-button>
       </div>
@@ -248,32 +325,39 @@
 export default {
   created() {
     this.listArticles();
+    this.listCategories();
+    this.listTags();
   },
   data: function() {
     return {
       loading: true,
       updateIsDelete: false,
       remove: false,
-      options: [
+      typeList: [
         {
-          value: '{"isDelete":0,"isDraft":0}',
-          label: "已发布"
+          value: 1,
+          label: "原创"
         },
         {
-          value: '{"isDelete":1,"isDraft":null}',
-          label: "回收站"
+          value: 2,
+          label: "转载"
         },
         {
-          value: '{"isDelete":0,"isDraft":1}',
-          label: "草稿箱"
+          value: 3,
+          label: "翻译"
         }
       ],
-      condition: '{"isDelete":0,"isDraft":0}',
+      activeStatus: "all",
       articleList: [],
       articleIdList: [],
+      categoryList: [],
+      tagList: [],
       keywords: null,
+      type: null,
+      categoryId: null,
+      tagId: null,
       isDelete: 0,
-      isDraft: 0,
+      status: null,
       current: 1,
       size: 10,
       count: 0
@@ -289,14 +373,14 @@ export default {
     editArticle(id) {
       this.$router.push({ path: "/articles/" + id });
     },
-    updateArticleStatus(id) {
-      let param = new URLSearchParams();
+    updateArticleDelete(id) {
+      let param = {};
       if (id != null) {
-        param.append("idList", [id]);
+        param.idList = [id];
       } else {
-        param.append("idList", this.articleIdList);
+        param.idList = this.articleIdList;
       }
-      param.append("isDelete", this.isDelete == 0 ? 1 : 0);
+      param.isDelete = this.isDelete == 0 ? 1 : 0;
       this.axios.put("/api/admin/articles", param).then(({ data }) => {
         if (data.flag) {
           this.$notify.success({
@@ -344,6 +428,31 @@ export default {
       this.current = current;
       this.listArticles();
     },
+    changeStauts(status) {
+      switch (status) {
+        case "all":
+          this.isDelete = 0;
+          this.status = null;
+          break;
+        case "public":
+          this.isDelete = 0;
+          this.status = 1;
+          break;
+        case "secret":
+          this.isDelete = 0;
+          this.status = 2;
+          break;
+        case "draft":
+          this.isDelete = 0;
+          this.status = 3;
+          break;
+        case "delete":
+          this.isDelete = 1;
+          this.status = null;
+          break;
+      }
+      this.activeStatus = status;
+    },
     changeTop(article) {
       let param = new URLSearchParams();
       param.append("isTop", article.isTop);
@@ -356,8 +465,11 @@ export default {
             current: this.current,
             size: this.size,
             keywords: this.keywords,
-            isDelete: this.isDelete,
-            isDraft: this.isDraft
+            categoryId: this.categoryId,
+            status: this.status,
+            tagId: this.tagId,
+            type: this.type,
+            isDelete: this.isDelete
           }
         })
         .then(({ data }) => {
@@ -365,15 +477,109 @@ export default {
           this.count = data.data.count;
           this.loading = false;
         });
+    },
+    listCategories() {
+      this.axios.get("/api/admin/categories/search").then(({ data }) => {
+        this.categoryList = data.data;
+      });
+    },
+    listTags() {
+      this.axios.get("/api/admin/tags/search").then(({ data }) => {
+        this.tagList = data.data;
+      });
     }
   },
   watch: {
-    condition() {
-      const condition = JSON.parse(this.condition);
-      this.isDelete = condition.isDelete;
-      this.isDraft = condition.isDraft;
+    type() {
       this.listArticles();
+    },
+    categoryId() {
+      this.listArticles();
+    },
+    tagId() {
+      this.listArticles();
+    },
+    status() {
+      this.listArticles();
+    },
+    isDelete() {
+      this.listArticles();
+    }
+  },
+  computed: {
+    articleType() {
+      return function(type) {
+        var tagType = "";
+        var name = "";
+        switch (type) {
+          case 1:
+            tagType = "danger";
+            name = "原创";
+            break;
+          case 2:
+            tagType = "success";
+            name = "转载";
+            break;
+          case 3:
+            tagType = "primary";
+            name = "翻译";
+            break;
+        }
+        return {
+          tagType: tagType,
+          name: name
+        };
+      };
+    },
+    isActive() {
+      return function(status) {
+        return this.activeStatus == status ? "active-status" : "status";
+      };
     }
   }
 };
 </script>
+
+<style scoped>
+.operation-container {
+  margin-top: 1.5rem;
+}
+.article-status-menu {
+  font-size: 14px;
+  margin-top: 40px;
+  color: #999;
+}
+.article-status-menu span {
+  margin-right: 24px;
+}
+.status {
+  cursor: pointer;
+}
+.active-status {
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+}
+.article-cover {
+  position: relative;
+  width: 100%;
+  height: 90px;
+  border-radius: 4px;
+}
+.article-cover::after {
+  content: "";
+  background: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.article-status-icon {
+  color: #fff;
+  font-size: 1.5rem;
+  position: absolute;
+  right: 1rem;
+  bottom: 1.4rem;
+}
+</style>

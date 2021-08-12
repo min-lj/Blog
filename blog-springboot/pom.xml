@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.3.0</version>
+            <version>3.4.0</version>
         </dependency>
         <!-- 阿里云oss-->
         <dependency>
@@ -102,6 +102,17 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>7.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.5</version>
+        </dependency>
+        <!-- 图片压缩 -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
         </dependency>
         <dependency>
             <groupId>eu.bitwalker</groupId>

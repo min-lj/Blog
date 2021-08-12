@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+
 /**
- * 后台用户列表
+ * 后台用户
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -52,7 +54,7 @@ public class UserBackDTO {
     /**
      * 用户登录ip
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源

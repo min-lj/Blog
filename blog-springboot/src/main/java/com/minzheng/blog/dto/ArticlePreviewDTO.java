@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
+
 /**
- * 分类或标签下的文章
- * @author 11921
+ * 预览文章
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder

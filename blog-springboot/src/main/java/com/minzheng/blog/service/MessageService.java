@@ -1,19 +1,21 @@
 package com.minzheng.blog.service;
 
 import com.minzheng.blog.dto.MessageBackDTO;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.MessageVO;
 import com.minzheng.blog.dto.MessageDTO;
 import com.minzheng.blog.entity.Message;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzheng.blog.vo.DeleteVO;
+import com.minzheng.blog.vo.ReviewVO;
 
 import java.util.List;
 
 /**
- * @author xiaojie
- * @since 2020-05-18
+ * 留言服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 public interface MessageService extends IService<Message> {
 
@@ -32,11 +34,18 @@ public interface MessageService extends IService<Message> {
     List<MessageDTO> listMessages();
 
     /**
+     * 审核留言
+     *
+     * @param reviewVO 审查签证官
+     */
+    void updateMessagesReview(ReviewVO reviewVO);
+
+    /**
      * 查看后台留言
      *
      * @param condition 条件
      * @return 留言列表
      */
-    PageDTO<MessageBackDTO> listMessageBackDTO(ConditionVO condition);
+    PageResult<MessageBackDTO> listMessageBackDTO(ConditionVO condition);
 
 }

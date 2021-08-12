@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minzheng.blog.dao.PageDao">
+
+    <resultMap id="BaseResultMap" type="com.minzheng.blog.entity.Page">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="pageName" column="page_name" jdbcType="VARCHAR"/>
+            <result property="pageLabel" column="page_label" jdbcType="VARCHAR"/>
+            <result property="pageCover" column="page_cover" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,page_name,page_label,
+        page_cover,create_time,update_time
+    </sql>
+</mapper>

@@ -89,7 +89,7 @@ export default {
             })
             .then(({ data }) => {
               if (data.flag) {
-                that.$toast({ type: "success", message: data.message });
+                that.$toast({ type: "success", message: "发送成功" });
               } else {
                 that.$toast({ type: "error", message: data.message });
               }
@@ -131,7 +131,7 @@ export default {
         password: this.password,
         code: this.code
       };
-      this.axios.post("/api/users", user).then(({ data }) => {
+      this.axios.post("/api/register", user).then(({ data }) => {
         if (data.flag) {
           let param = new URLSearchParams();
           param.append("username", user.username);
@@ -142,7 +142,7 @@ export default {
             this.$store.commit("login", data.data);
             this.$store.commit("closeModel");
           });
-          this.$toast({ type: "success", message: data.message });
+          this.$toast({ type: "success", message: "登录成功" });
         } else {
           this.$toast({ type: "error", message: data.message });
         }

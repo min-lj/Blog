@@ -10,13 +10,16 @@ import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 /**
@@ -134,6 +137,35 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public Double zIncr(String key, Object value, Double score) {
+        return redisTemplate.opsForZSet().incrementScore(key, value, score);
+    }
+
+    @Override
+    public Double zDecr(String key, Object value, Double score) {
+        return redisTemplate.opsForZSet().incrementScore(key, value, -score);
+    }
+
+    @Override
+    public Map<Object, Double> zReverseRangeWithScore(String key, long start, long end) {
+        return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end)
+                .stream()
+                .collect(Collectors.toMap(ZSetOperations.TypedTuple::getValue, ZSetOperations.TypedTuple::getScore));
+    }
+
+    @Override
+    public Double zScore(String key, Object value) {
+        return redisTemplate.opsForZSet().score(key, value);
+    }
+
+    @Override
+    public Map<Object, Double> zAllScore(String key) {
+        return Objects.requireNonNull(redisTemplate.opsForZSet().rangeWithScores(key, 0, -1))
+                .stream()
+                .collect(Collectors.toMap(ZSetOperations.TypedTuple::getValue, ZSetOperations.TypedTuple::getScore));
+    }
+
+    @Override
     public Set<Object> sMembers(String key) {
         return redisTemplate.opsForSet().members(key);
     }
@@ -144,7 +176,7 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public Long sAdd(String key, long time, Object... values) {
+    public Long sAddExpire(String key, long time, Object... values) {
         Long count = redisTemplate.opsForSet().add(key, values);
         expire(key, time);
         return count;
@@ -234,6 +266,21 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public byte[] bitGetAll(String key) {
         return redisTemplate.execute((RedisCallback<byte[]>) con -> con.get(key.getBytes()));
+    }
+
+    @Override
+    public Long hyperAdd(String key, Object... value) {
+        return redisTemplate.opsForHyperLogLog().add(key, value);
+    }
+
+    @Override
+    public Long hyperGet(String... key) {
+        return redisTemplate.opsForHyperLogLog().size(key);
+    }
+
+    @Override
+    public void hyperDel(String key) {
+        redisTemplate.opsForHyperLogLog().delete(key);
     }
 
     @Override

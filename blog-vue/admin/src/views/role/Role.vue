@@ -14,7 +14,7 @@
       <el-button
         type="danger"
         size="small"
-        icon="el-icon-deleteItem"
+        icon="el-icon-delete"
         :disabled="this.roleIdList.length == 0"
         @click="isDelete = true"
       >
@@ -82,10 +82,10 @@
         </template>
       </el-table-column>
       <!-- 列操作 -->
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="220">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="openMenuModel(scope.row)">
-            <i class="el-icon-edit" /> 修改
+            <i class="el-icon-edit" /> 菜单权限
           </el-button>
           <el-button
             type="text"
@@ -97,7 +97,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:10px"
-            @onConfirm="deleteRoles(scope.row.id)"
+            @confirm="deleteRoles(scope.row.id)"
           >
             <el-button size="mini" type="text" slot="reference">
               <i class="el-icon-delete" /> 删除
@@ -151,10 +151,10 @@
       <div class="dialog-title-container" slot="title">修改资源权限</div>
       <el-form label-width="80px" size="medium" :model="roleForm">
         <el-form-item label="角色名">
-          <el-input v-model="roleForm.roleName" style="width:250px" disabled />
+          <el-input v-model="roleForm.roleName" style="width:250px" />
         </el-form-item>
         <el-form-item label="权限标签">
-          <el-input v-model="roleForm.roleLabel" style="width:250px" disabled />
+          <el-input v-model="roleForm.roleLabel" style="width:250px" />
         </el-form-item>
         <el-form-item label="资源权限">
           <el-tree

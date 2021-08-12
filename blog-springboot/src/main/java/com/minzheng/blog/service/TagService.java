@@ -1,6 +1,7 @@
 package com.minzheng.blog.service;
 
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.dto.TagBackDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.dto.TagDTO;
 import com.minzheng.blog.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -10,9 +11,10 @@ import com.minzheng.blog.vo.TagVO;
 import java.util.List;
 
 /**
+ * 标签服务
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/07/29
  */
 public interface TagService extends IService<Tag> {
 
@@ -21,15 +23,23 @@ public interface TagService extends IService<Tag> {
      *
      * @return 标签列表
      */
-    PageDTO<TagDTO> listTags();
+    PageResult<TagDTO> listTags();
 
     /**
      * 查询后台标签
      *
      * @param condition 条件
-     * @return 标签列表
+     * @return {@link PageResult<TagBackDTO>} 标签列表
      */
-    PageDTO<Tag> listTagBackDTO(ConditionVO condition);
+    PageResult<TagBackDTO> listTagBackDTO(ConditionVO condition);
+
+    /**
+     * 搜索文章标签
+     *
+     * @param condition 条件
+     * @return {@link List<TagDTO>} 标签列表
+     */
+    List<TagDTO> listTagsBySearch(ConditionVO condition);
 
     /**
      * 删除标签
@@ -40,6 +50,7 @@ public interface TagService extends IService<Tag> {
 
     /**
      * 保存或更新标签
+     *
      * @param tagVO 标签
      */
     void saveOrUpdateTag(TagVO tagVO);

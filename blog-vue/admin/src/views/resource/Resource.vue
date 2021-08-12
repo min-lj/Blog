@@ -29,19 +29,6 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="isDisable" label="禁用" align="center" width="80">
-        <template slot-scope="scope">
-          <el-switch
-            v-if="scope.row.url"
-            v-model="scope.row.isDisable"
-            active-color="#13ce66"
-            inactive-color="#F4F4F5"
-            :active-value="1"
-            :inactive-value="0"
-            @change="changeResource(scope.row)"
-          />
-        </template>
-      </el-table-column>
       <el-table-column prop="isAnonymous" label="匿名访问" align="center">
         <template slot-scope="scope">
           <el-switch
@@ -81,7 +68,7 @@
           <el-popconfirm
             title="确定删除吗？"
             style="margin-left:10px"
-            @onConfirm="deleteResource(scope.row.id)"
+            @confirm="deleteResource(scope.row.id)"
           >
             <el-button size="mini" type="text" slot="reference">
               <i class="el-icon-delete" /> 删除
@@ -143,19 +130,12 @@ export default {
     return {
       loading: true,
       resourceList: [],
-      resourceIdList: [],
       addModule: false,
       addResource: false,
       resourceForm: {}
     };
   },
   methods: {
-    selectionChange(resourceList) {
-      this.resourceIdList = [];
-      resourceList.forEach(item => {
-        this.resourceIdList.push(item.id);
-      });
-    },
     listResources() {
       this.axios.get("/api/admin/resources").then(({ data }) => {
         this.resourceList = data.data;
@@ -205,13 +185,7 @@ export default {
       this.addResource = true;
     },
     deleteResource(id) {
-      var param = {};
-      if (id != null) {
-        param = { data: [id] };
-      } else {
-        param = { data: this.resourceIdList };
-      }
-      this.axios.delete("/api/admin/resources", param).then(({ data }) => {
+      this.axios.delete("/api/admin/resources/" + id).then(({ data }) => {
         if (data.flag) {
           this.$notify.success({
             title: "成功",

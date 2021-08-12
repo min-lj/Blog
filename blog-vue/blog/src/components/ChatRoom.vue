@@ -176,7 +176,7 @@ export default {
       chatRecordList: [],
       voiceList: [],
       rc: null,
-      ipAddr: "",
+      ipAddress: "",
       ipSource: "",
       count: 0,
       unreadCount: 0,
@@ -204,8 +204,7 @@ export default {
     },
     connect() {
       var that = this;
-      console.log("建立连接");
-      this.websocket = new WebSocket("ws://127.0.0.1:8080/websocket");
+      this.websocket = new WebSocket(this.blogInfo.websiteConfig.websocketUrl);
       // 连接发生错误的回调方法
       this.websocket.onerror = function(event) {
         console.log(event);
@@ -239,7 +238,7 @@ export default {
                 that.voiceList.push(item.id);
               }
             });
-            that.ipAddr = data.data.ipAddr;
+            that.ipAddress = data.data.ipAddress;
             that.ipSource = data.data.ipSource;
             break;
           case 3:
@@ -295,7 +294,7 @@ export default {
         content: this.content,
         userId: this.userId,
         type: 3,
-        ipAddr: this.ipAddr,
+        ipAddress: this.ipAddress,
         ipSource: this.ipSource,
         createTime: new Date()
       };
@@ -315,7 +314,7 @@ export default {
         item.style.display = "none";
       });
       if (
-        item.ipAddr == this.ipAddr ||
+        item.ipAddress == this.ipAddress ||
         (item.userId != null && item.userId == this.userId)
       ) {
         this.$refs.backBtn[index].style.left = e.offsetX + "px";
@@ -382,7 +381,7 @@ export default {
       if (this.userId != null) {
         formData.append("userId", this.userId);
       }
-      formData.append("ipAddr", this.ipAddr);
+      formData.append("ipAddress", this.ipAddress);
       formData.append("ipSource", this.ipSource);
       formData.append("createTime", new Date());
       var options = {
@@ -438,7 +437,7 @@ export default {
     isSelf() {
       return function(item) {
         return (
-          item.ipAddr == this.ipAddr ||
+          item.ipAddress == this.ipAddress ||
           (item.userId != null && item.userId == this.userId)
         );
       };
@@ -460,15 +459,18 @@ export default {
         return this.isSelf(item) ? "my-message" : "user-message";
       };
     },
+    blogInfo() {
+      return this.$store.state.blogInfo;
+    },
     nickname() {
       return this.$store.state.nickname != null
         ? this.$store.state.nickname
-        : this.ipAddr;
+        : this.ipAddress;
     },
     avatar() {
       return this.$store.state.avatar != null
         ? this.$store.state.avatar
-        : "https://gravatar.loli.net/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mp&v=1.4.14";
+        : this.$store.state.blogInfo.websiteConfig.touristAvatar;
     },
     userId() {
       return this.$store.state.userId;

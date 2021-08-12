@@ -1,11 +1,12 @@
 package com.minzheng.blog.constant;
 
 /**
+ * mqprefix常量
  * mq常量
  *
- * @author: yezhiqiu
- * @date: 2021-04-16
- **/
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 public class MQPrefixConst {
 
     /**

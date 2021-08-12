@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
+
 /**
- * 首页文章列表
- * @author 11921
+ * 首页文章
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -41,12 +44,17 @@ public class ArticleHomeDTO {
     /**
      * 发表时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 是否置顶
      */
-    private Boolean isTop;
+    private Integer isTop;
+
+    /**
+     * 文章类型
+     */
+    private Integer type;
 
     /**
      * 文章分类id

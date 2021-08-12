@@ -1,19 +1,19 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-31
- **/
+ * 操作日志
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -80,7 +80,7 @@ public class OperationLog {
     /**
      * 用户登录ip
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源
@@ -90,5 +90,13 @@ public class OperationLog {
     /**
      * 创建时间
      */
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
+
 }

@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-29
- **/
+ * 文件路径枚举
+ *
+ * @author yezhiqiu
+ * @date 2021/08/04
+ */
 @Getter
 @AllArgsConstructor
 public enum FilePathEnum {
@@ -21,7 +23,15 @@ public enum FilePathEnum {
     /**
      * 音频路径
      */
-    VOICE("voice/", "音频路径");
+    VOICE("voice/", "音频路径"),
+    /**
+     * 照片路径
+     */
+    PHOTO("photos/","相册路径"),
+    /**
+     * 配置图片路径
+     */
+    CONFIG("config/","配置图片路径");
 
     /**
      * 路径

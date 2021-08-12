@@ -15,4 +15,25 @@
 		c.id
     </select>
 
+	<select id="listCategoryBackDTO" resultType="com.minzheng.blog.dto.CategoryBackDTO">
+		SELECT
+		  c.id,
+		  c.category_name,
+		  COUNT( a.id ) AS article_count,
+		  c.create_time
+		FROM
+		  tb_category c
+		  LEFT JOIN tb_article a ON c.id = a.category_id
+		<where>
+			<if test="condition.keywords != null">
+			     category_name like concat('%',#{condition.keywords},'%')
+			</if>
+		</where>
+		GROUP BY
+		  c.id
+		ORDER BY
+		  c.id DESC
+        LIMIT #{current},#{size}
+	</select>
+
 </mapper>

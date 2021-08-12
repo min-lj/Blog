@@ -1,11 +1,8 @@
 package com.minzheng.blog.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.minzheng.blog.vo.MessageVO;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +11,8 @@ import lombok.NoArgsConstructor;
 /**
  * 留言
  *
- * @author xiaojie
- * @since 2020-05-18
+ * @author yezhiqiu
+ * @date 2021/08/01
  */
 @Data
 @Builder
@@ -61,8 +58,20 @@ public class Message {
     private Integer time;
 
     /**
-     * 留言时间
+     * 是否审核
      */
-    private Date createTime;
+    private Integer isReview;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
 }

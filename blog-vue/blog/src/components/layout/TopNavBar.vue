@@ -4,7 +4,7 @@
     <div class="d-md-none nav-mobile-container">
       <div style="font-size:18px;font-weight:bold">
         <router-link to="/">
-          风丶宇
+          {{ blogInfo.websiteConfig.websiteAuthor }}
         </router-link>
       </div>
       <div style="margin-left:auto">
@@ -18,50 +18,77 @@
     <div class="d-md-block d-none nav-container">
       <div class="float-left blog-title">
         <router-link to="/">
-          风丶宇
+          {{ blogInfo.websiteConfig.websiteAuthor }}
         </router-link>
       </div>
       <div class="float-right nav-title">
-        <div class="menus-btn">
-          <a @click="openSearch"><i class="iconfont iconsousuo" /> 搜索</a>
+        <div class="menus-item">
+          <a class="menu-btn" @click="openSearch">
+            <i class="iconfont iconsousuo" /> 搜索
+          </a>
         </div>
         <div class="menus-item">
-          <router-link to="/">
+          <router-link class="menu-btn" to="/">
             <i class="iconfont iconzhuye" /> 首页
           </router-link>
         </div>
         <div class="menus-item">
-          <router-link to="/archives">
-            <i class="iconfont iconguidang" /> 归档
-          </router-link>
+          <a class="menu-btn">
+            <i class="iconfont iconfaxian" /> 发现
+            <i class="iconfont iconxiangxia2 expand" />
+          </a>
+          <ul class="menus-submenu">
+            <li>
+              <router-link to="/archives">
+                <i class="iconfont iconguidang" /> 归档
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/categories">
+                <i class="iconfont iconfenlei" /> 分类
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/tags">
+                <i class="iconfont iconbiaoqian" /> 标签
+              </router-link>
+            </li>
+          </ul>
         </div>
         <div class="menus-item">
-          <router-link to="/categories">
-            <i class="iconfont iconfenlei" /> 分类
-          </router-link>
+          <a class="menu-btn">
+            <i class="iconfont iconqita" /> 娱乐
+            <i class="iconfont iconxiangxia2 expand" />
+          </a>
+          <ul class="menus-submenu">
+            <li>
+              <router-link to="/albums">
+                <i class="iconfont iconxiangce1" /> 相册
+              </router-link>
+            </li>
+          </ul>
         </div>
         <div class="menus-item">
-          <router-link to="/tags">
-            <i class="iconfont iconbiaoqian" /> 标签
-          </router-link>
-        </div>
-        <div class="menus-item">
-          <router-link to="/links">
+          <router-link class="menu-btn" to="/links">
             <i class="iconfont iconlianjie" /> 友链
           </router-link>
         </div>
         <div class="menus-item">
-          <router-link to="/about">
+          <router-link class="menu-btn" to="/about">
             <i class="iconfont iconzhifeiji" /> 关于
           </router-link>
         </div>
         <div class="menus-item">
-          <router-link to="/message">
+          <router-link class="menu-btn" to="/message">
             <i class="iconfont iconpinglunzu" /> 留言
           </router-link>
         </div>
-        <div class="user-btn">
-          <a v-if="!this.$store.state.avatar" @click="openLogin">
+        <div class="menus-item">
+          <a
+            class="menu-btn"
+            v-if="!this.$store.state.avatar"
+            @click="openLogin"
+          >
             <i class="iconfont icondenglu" /> 登录
           </a>
           <template v-else>
@@ -71,7 +98,7 @@
               height="30"
               width="30"
             />
-            <ul class="user-submenu">
+            <ul class="menus-submenu">
               <li>
                 <router-link to="/user">
                   <i class="iconfont icongerenzhongxin" /> 个人中心
@@ -129,7 +156,7 @@ export default {
       this.axios.get("/api/logout").then(({ data }) => {
         if (data.flag) {
           this.$store.commit("logout");
-          this.$toast({ type: "success", message: data.message });
+          this.$toast({ type: "success", message: "注销成功" });
         } else {
           this.$toast({ type: "error", message: data.message });
         }
@@ -139,6 +166,9 @@ export default {
   computed: {
     avatar() {
       return this.$store.state.avatar;
+    },
+    blogInfo() {
+      return this.$store.state.blogInfo;
     }
   }
 };
@@ -157,7 +187,7 @@ ul {
 .nav a {
   color: #eee !important;
 }
-.nav .menus-item a {
+.nav .menu-btn {
   text-shadow: 0.05rem 0.05rem 0.1rem rgba(0, 0, 0, 0.3);
 }
 .nav .blog-title a {
@@ -177,7 +207,6 @@ ul {
   color: #4c4948 !important;
 }
 .nav-fixed .menus-item a,
-.nav-fixed .menus-btn a,
 .nav-fixed .blog-title a {
   text-shadow: none;
 }
@@ -201,22 +230,18 @@ ul {
   font-size: 18px;
   font-weight: bold;
 }
-.user-btn,
-.menus-btn,
 .menus-item {
   position: relative;
   display: inline-block;
   margin: 0 0 0 0.875rem;
 }
-.menus-btn a,
 .menus-item a {
   transition: all 0.2s;
 }
-.nav-fixed .menus-btn a:hover,
-.nav-fixed .menus-item a:hover {
+.nav-fixed .menu-btn:hover {
   color: #49b1f5 !important;
 }
-.menus-item a:hover:after {
+.menu-btn:hover:after {
   width: 100%;
 }
 .menus-item a:after {
@@ -230,17 +255,14 @@ ul {
   content: "";
   transition: all 0.3s ease-in-out;
 }
-.user-btn a {
-  transition: all 0.2s;
-}
 .user-avatar {
   cursor: pointer;
   border-radius: 50%;
 }
-.user-btn:hover .user-submenu {
+.menus-item:hover .menus-submenu {
   display: block;
 }
-.user-submenu {
+.menus-submenu {
   position: absolute;
   display: none;
   right: 0;
@@ -250,7 +272,7 @@ ul {
   background-color: #fff;
   animation: submenu 0.3s 0.1s ease both;
 }
-.user-submenu:before {
+.menus-submenu:before {
   position: absolute;
   top: -8px;
   left: 0;
@@ -258,14 +280,14 @@ ul {
   height: 20px;
   content: "";
 }
-.user-submenu a {
+.menus-submenu a {
   line-height: 2;
   color: #4c4948 !important;
   text-shadow: none;
   display: block;
   padding: 6px 14px;
 }
-.user-submenu a:hover {
+.menus-submenu a:hover {
   background: #4ab1f4;
 }
 @keyframes submenu {

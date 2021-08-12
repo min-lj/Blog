@@ -1,5 +1,4 @@
 module.exports = {
-  productionSourceMap: false,
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
@@ -12,5 +11,10 @@ module.exports = {
       }
     },
     disableHostCheck: true
+  },
+  productionSourceMap: false,
+  css: {
+    extract: true,
+    sourceMap: false
   }
 };

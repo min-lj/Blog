@@ -9,22 +9,18 @@ import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.entity.ArticleTag;
 import com.minzheng.blog.entity.Category;
 import com.minzheng.blog.entity.Tag;
+import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.ArticleTagService;
 import com.minzheng.blog.service.RedisService;
-import com.minzheng.blog.utils.BeanCopyUtil;
-import com.minzheng.blog.utils.UserUtil;
-import com.minzheng.blog.vo.ArticleVO;
-import com.minzheng.blog.vo.ConditionVO;
-import com.minzheng.blog.vo.DeleteVO;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import com.minzheng.blog.service.TagService;
+import com.minzheng.blog.strategy.context.SearchStrategyContext;
+import com.minzheng.blog.util.BeanCopyUtils;
+import com.minzheng.blog.util.PageUtils;
+import com.minzheng.blog.util.UserUtils;
+import com.minzheng.blog.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +33,15 @@ import java.util.stream.Collectors;
 import static com.minzheng.blog.constant.CommonConst.ARTICLE_SET;
 import static com.minzheng.blog.constant.CommonConst.FALSE;
 import static com.minzheng.blog.constant.RedisPrefixConst.*;
+import static com.minzheng.blog.enums.ArticleStatusEnum.DRAFT;
+import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
+
 
 /**
- * @author xiaojie
- * @since 2020-05-18
+ * 文章服务
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> implements ArticleService {
@@ -51,9 +52,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Autowired
     private TagDao tagDao;
     @Autowired
+    private TagService tagService;
+    @Autowired
     private ArticleTagDao articleTagDao;
     @Autowired
-    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+    private SearchStrategyContext searchStrategyContext;
     @Autowired
     private HttpSession session;
     @Autowired
@@ -64,64 +67,61 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     private ArticleTagService articleTagService;
 
     @Override
-    public PageDTO<ArchiveDTO> listArchives(Long current) {
-        Page<Article> page = new Page<>(current, 10);
+    public PageResult<ArchiveDTO> listArchives() {
+        Page<Article> page = new Page<>(PageUtils.getCurrent(), PageUtils.getSize());
         // 获取分页数据
         Page<Article> articlePage = articleDao.selectPage(page, new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getCreateTime)
                 .orderByDesc(Article::getCreateTime)
                 .eq(Article::getIsDelete, FALSE)
-                .eq(Article::getIsDraft, FALSE));
-        // 拷贝dto集合
-        List<ArchiveDTO> archiveDTOList = BeanCopyUtil.copyList(articlePage.getRecords(), ArchiveDTO.class);
-        return new PageDTO<>(archiveDTOList, (int) articlePage.getTotal());
+                .eq(Article::getStatus, PUBLIC.getStatus()));
+        List<ArchiveDTO> archiveDTOList = BeanCopyUtils.copyList(articlePage.getRecords(), ArchiveDTO.class);
+        return new PageResult<>(archiveDTOList, (int) articlePage.getTotal());
     }
 
     @Override
-    public PageDTO<ArticleBackDTO> listArticleBackDTO(ConditionVO condition) {
-        // 转换页码
-        condition.setCurrent((condition.getCurrent() - 1) * condition.getSize());
+    public PageResult<ArticleBackDTO> listArticleBacks(ConditionVO condition) {
         // 查询文章总量
         Integer count = articleDao.countArticleBacks(condition);
         if (count == 0) {
-            return new PageDTO<>();
+            return new PageResult<>();
         }
         // 查询后台文章
-        List<ArticleBackDTO> articleBackDTOList = articleDao.listArticleBacks(condition);
+        List<ArticleBackDTO> articleBackDTOList = articleDao.listArticleBacks(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
         // 查询文章点赞量和浏览量
-        Map<String, Integer> viewsCountMap = redisService.hGetAll(ARTICLE_VIEWS_COUNT);
-        Map<String, Integer> likeCountMap = redisService.hGetAll(ARTICLE_LIKE_COUNT);
+        Map<Object, Double> viewsCountMap = redisService.zAllScore(ARTICLE_VIEWS_COUNT);
+        Map<String, Object> likeCountMap = redisService.hGetAll(ARTICLE_LIKE_COUNT);
         // 封装点赞量和浏览量
         articleBackDTOList.forEach(item -> {
-            item.setViewsCount(Objects.requireNonNull(viewsCountMap).get(item.getId().toString()));
-            item.setLikeCount(Objects.requireNonNull(likeCountMap).get(item.getId().toString()));
+            Double viewsCount = viewsCountMap.get(item.getId());
+            if (Objects.nonNull(viewsCount)) {
+                item.setViewsCount(viewsCount.intValue());
+            }
+            item.setLikeCount((Integer) likeCountMap.get(item.getId().toString()));
         });
-        return new PageDTO<>(articleBackDTOList, count);
+        return new PageResult<>(articleBackDTOList, count);
     }
 
     @Override
-    public List<ArticleHomeDTO> listArticles(Long current) {
-        // 转换页码分页查询文章
-        return articleDao.listArticles((current - 1) * 10);
+    public List<ArticleHomeDTO> listArticles() {
+        return articleDao.listArticles(PageUtils.getLimitCurrent(), PageUtils.getSize());
     }
 
     @Override
     public ArticlePreviewListDTO listArticlesByCondition(ConditionVO condition) {
-        // 转换页码
-        condition.setCurrent((condition.getCurrent() - 1) * 9);
-        // 搜索条件对应数据
-        List<ArticlePreviewDTO> articlePreviewDTOList = articleDao.listArticlesByCondition(condition);
+        // 搜索文章
+        List<ArticlePreviewDTO> articlePreviewDTOList = articleDao.listArticlesByCondition(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
         // 搜索条件对应名(标签或分类名)
         String name;
         if (Objects.nonNull(condition.getCategoryId())) {
             name = categoryDao.selectOne(new LambdaQueryWrapper<Category>()
-                    .select(Category::getCategoryName)
-                    .eq(Category::getId, condition.getCategoryId()))
+                            .select(Category::getCategoryName)
+                            .eq(Category::getId, condition.getCategoryId()))
                     .getCategoryName();
         } else {
-            name = tagDao.selectOne(new LambdaQueryWrapper<Tag>()
-                    .select(Tag::getTagName)
-                    .eq(Tag::getId, condition.getTagId()))
+            name = tagService.getOne(new LambdaQueryWrapper<Tag>()
+                            .select(Tag::getTagName)
+                            .eq(Tag::getId, condition.getTagId()))
                     .getTagName();
         }
         return ArticlePreviewListDTO.builder()
@@ -133,50 +133,57 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public ArticleDTO getArticleById(Integer articleId) {
         // 查询推荐文章
-        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture.supplyAsync(() -> articleDao.listArticleRecommends(articleId));
+        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture
+                .supplyAsync(() -> articleDao.listRecommendArticles(articleId));
+        // 查询最新文章
+        CompletableFuture<List<ArticleRecommendDTO>> newestArticleList = CompletableFuture
+                .supplyAsync(() -> {
+                    List<Article> articleList = articleDao.selectList(new LambdaQueryWrapper<Article>()
+                            .select(Article::getId, Article::getArticleTitle, Article::getArticleCover, Article::getCreateTime)
+                            .eq(Article::getIsDelete, FALSE)
+                            .eq(Article::getStatus, PUBLIC.getStatus())
+                            .orderByDesc(Article::getId)
+                            .last("limit 5"));
+                    return BeanCopyUtils.copyList(articleList, ArticleRecommendDTO.class);
+                });
+        // 查询id对应文章
+        ArticleDTO article = articleDao.getArticleById(articleId);
+        if (Objects.isNull(article)) {
+            throw new BizException("文章不存在");
+        }
         // 更新文章浏览量
         updateArticleViewsCount(articleId);
-        // 查询id对应的文章
-        ArticleDTO article = articleDao.getArticleById(articleId);
         // 查询上一篇下一篇文章
         Article lastArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
                 .eq(Article::getIsDelete, FALSE)
-                .eq(Article::getIsDraft, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus())
                 .lt(Article::getId, articleId)
                 .orderByDesc(Article::getId)
                 .last("limit 1"));
         Article nextArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
                 .eq(Article::getIsDelete, FALSE)
-                .eq(Article::getIsDraft, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus())
                 .gt(Article::getId, articleId)
                 .orderByAsc(Article::getId)
                 .last("limit 1"));
-        article.setLastArticle(BeanCopyUtil.copyObject(lastArticle, ArticlePaginationDTO.class));
-        article.setNextArticle(BeanCopyUtil.copyObject(nextArticle, ArticlePaginationDTO.class));
+        article.setLastArticle(BeanCopyUtils.copyObject(lastArticle, ArticlePaginationDTO.class));
+        article.setNextArticle(BeanCopyUtils.copyObject(nextArticle, ArticlePaginationDTO.class));
         // 封装点赞量和浏览量
-        article.setViewsCount((Integer) redisService.hGet(ARTICLE_VIEWS_COUNT, articleId.toString()));
+        Double score = redisService.zScore(ARTICLE_VIEWS_COUNT, articleId);
+        if (Objects.nonNull(score)) {
+            article.setViewsCount(score.intValue());
+        }
         article.setLikeCount((Integer) redisService.hGet(ARTICLE_LIKE_COUNT, articleId.toString()));
-        // 封装相关推荐文章
+        // 封装文章信息
         try {
-            article.setArticleRecommendList(recommendArticleList.get());
+            article.setRecommendArticleList(recommendArticleList.get());
+            article.setNewestArticleList(newestArticleList.get());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return article;
-    }
-
-    @Override
-    public List<ArticleRecommendDTO> listNewestArticles() {
-        // 查询最新文章
-        List<Article> articleList = articleDao.selectList(new LambdaQueryWrapper<Article>()
-                .select(Article::getId, Article::getArticleTitle, Article::getArticleCover, Article::getCreateTime)
-                .eq(Article::getIsDelete, FALSE)
-                .eq(Article::getIsDraft, FALSE)
-                .orderByDesc(Article::getId)
-                .last("limit 5"));
-        return BeanCopyUtil.copyList(articleList, ArticleRecommendDTO.class);
     }
 
     /**
@@ -187,86 +194,111 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Async
     public void updateArticleViewsCount(Integer articleId) {
         // 判断是否第一次访问，增加浏览量
-        Set<Integer> set = (Set<Integer>) session.getAttribute(ARTICLE_SET);
-        if (Objects.isNull(set)) {
-            set = new HashSet<>();
-        }
-        if (!set.contains(articleId)) {
-            set.add(articleId);
-            session.setAttribute(ARTICLE_SET, set);
+        Set<Integer> articleSet = (Set<Integer>) Optional.ofNullable(session.getAttribute(ARTICLE_SET))
+                .orElse(new HashSet<>());
+        if (!articleSet.contains(articleId)) {
+            articleSet.add(articleId);
+            session.setAttribute(ARTICLE_SET, articleSet);
             // 浏览量+1
-            redisService.hIncr(ARTICLE_VIEWS_COUNT, articleId.toString(), 1L);
+            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
         }
     }
 
-    @Override
-    public ArticleOptionDTO listArticleOptionDTO() {
-        // 查询文章分类选项
-        List<Category> categoryList = categoryDao.selectList(new LambdaQueryWrapper<Category>()
-                .select(Category::getId, Category::getCategoryName));
-        List<CategoryBackDTO> categoryDTOList = BeanCopyUtil.copyList(categoryList, CategoryBackDTO.class);
-        // 查询文章标签选项
-        List<Tag> tagList = tagDao.selectList(new LambdaQueryWrapper<Tag>()
-                .select(Tag::getId, Tag::getTagName));
-        List<TagDTO> tagDTOList = BeanCopyUtil.copyList(tagList, TagDTO.class);
-        return ArticleOptionDTO.builder()
-                .categoryDTOList(categoryDTOList)
-                .tagDTOList(tagDTOList)
-                .build();
-    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveArticleLike(Integer articleId) {
-        // 查询当前用户点赞过的文章id集合
-        Set<Integer> articleLikeSet = (Set<Integer>) redisService.hGet(ARTICLE_USER_LIKE, UserUtil.getUserInfoId().toString());
-        // 第一次点赞则创建
-        if (CollectionUtils.isEmpty(articleLikeSet)) {
-            articleLikeSet = new HashSet<>();
-        }
         // 判断是否点赞
-        if (articleLikeSet.contains(articleId)) {
+        String articleLikeKey = ARTICLE_USER_LIKE + UserUtils.getLoginUser().getUserInfoId();
+        if (redisService.sIsMember(articleLikeKey, articleId)) {
             // 点过赞则删除文章id
-            articleLikeSet.remove(articleId);
+            redisService.sRemove(articleLikeKey, articleId);
             // 文章点赞量-1
             redisService.hDecr(ARTICLE_LIKE_COUNT, articleId.toString(), 1L);
         } else {
             // 未点赞则增加文章id
-            articleLikeSet.add(articleId);
+            redisService.sAdd(articleLikeKey, articleId);
             // 文章点赞量+1
             redisService.hIncr(ARTICLE_LIKE_COUNT, articleId.toString(), 1L);
         }
-        // 保存点赞记录
-        redisService.hSet(ARTICLE_USER_LIKE, UserUtil.getLoginUser().getUserInfoId().toString(), articleLikeSet);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveOrUpdateArticle(ArticleVO articleVO) {
+        // 保存文章分类
+        Category category = saveArticleCategory(articleVO);
         // 保存或修改文章
-        Article article = Article.builder()
-                .id(articleVO.getId())
-                .userId(UserUtil.getLoginUser().getUserInfoId())
-                .categoryId(articleVO.getCategoryId())
-                .articleCover(articleVO.getArticleCover())
-                .articleTitle(articleVO.getArticleTitle())
-                .articleContent(articleVO.getArticleContent())
-                .createTime(Objects.isNull(articleVO.getId()) ? new Date() : null)
-                .updateTime(Objects.nonNull(articleVO.getId()) ? new Date() : null)
-                .isTop(articleVO.getIsTop())
-                .isDraft(articleVO.getIsDraft())
-                .build();
+        Article article = BeanCopyUtils.copyObject(articleVO, Article.class);
+        if (Objects.nonNull(category)) {
+            article.setCategoryId(category.getId());
+        }
+        article.setUserId(UserUtils.getLoginUser().getUserInfoId());
         articleService.saveOrUpdate(article);
+        // 保存文章标签
+        saveArticleTag(articleVO, article.getId());
+    }
+
+    /**
+     * 保存文章分类
+     *
+     * @param articleVO 文章信息
+     * @return {@link Category} 文章分类
+     */
+    private Category saveArticleCategory(ArticleVO articleVO) {
+        // 判断分类是否存在
+        Category category = categoryDao.selectOne(new LambdaQueryWrapper<Category>()
+                .eq(Category::getCategoryName, articleVO.getCategoryName()));
+        if (Objects.isNull(category) && !articleVO.getStatus().equals(DRAFT.getStatus())) {
+            category = Category.builder()
+                    .categoryName(articleVO.getCategoryName())
+                    .build();
+            categoryDao.insert(category);
+        }
+        return category;
+    }
+
+    /**
+     * 保存文章标签
+     *
+     * @param articleVO 文章信息
+     */
+    private void saveArticleTag(ArticleVO articleVO, Integer articleId) {
         // 编辑文章则删除文章所有标签
-        if (Objects.nonNull(articleVO.getId()) && articleVO.getIsDraft().equals(FALSE)) {
-            articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, articleVO.getId()));
+        if (Objects.nonNull(articleVO.getId())) {
+            articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>()
+                    .eq(ArticleTag::getArticleId, articleVO.getId()));
         }
         // 添加文章标签
-        if (!articleVO.getTagIdList().isEmpty()) {
-            List<ArticleTag> articleTagList = articleVO.getTagIdList().stream().map(tagId -> ArticleTag.builder()
-                    .articleId(article.getId())
-                    .tagId(tagId)
-                    .build())
+        List<String> tagNameList = articleVO.getTagNameList();
+        if (CollectionUtils.isNotEmpty(tagNameList)) {
+            // 查询已存在的标签
+            List<Tag> existTagList = tagService.list(new LambdaQueryWrapper<Tag>()
+                    .in(Tag::getTagName, tagNameList));
+            List<String> existTagNameList = existTagList.stream()
+                    .map(Tag::getTagName)
+                    .collect(Collectors.toList());
+            List<Integer> existTagIdList = existTagList.stream()
+                    .map(Tag::getId)
+                    .collect(Collectors.toList());
+            // 对比新增不存在的标签
+            tagNameList.removeAll(existTagNameList);
+            if (CollectionUtils.isNotEmpty(tagNameList)) {
+                List<Tag> tagList = tagNameList.stream().map(item -> Tag.builder()
+                                .tagName(item)
+                                .build())
+                        .collect(Collectors.toList());
+                tagService.saveBatch(tagList);
+                List<Integer> tagIdList = tagList.stream()
+                        .map(Tag::getId)
+                        .collect(Collectors.toList());
+                existTagIdList.addAll(tagIdList);
+            }
+            // 提取标签id绑定文章
+            List<ArticleTag> articleTagList = existTagIdList.stream().map(item -> ArticleTag.builder()
+                            .articleId(articleId)
+                            .tagId(item)
+                            .build())
                     .collect(Collectors.toList());
             articleTagService.saveBatch(articleTagList);
         }
@@ -274,11 +306,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateArticleTop(Integer articleId, Integer isTop) {
+    public void updateArticleTop(ArticleTopVO articleTopVO) {
         // 修改文章置顶状态
         Article article = Article.builder()
-                .id(articleId)
-                .isTop(isTop)
+                .id(articleTopVO.getId())
+                .isTop(articleTopVO.getIsTop())
                 .build();
         articleDao.updateById(article);
     }
@@ -287,11 +319,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public void updateArticleDelete(DeleteVO deleteVO) {
         // 修改文章逻辑删除状态
-        List<Article> articleList = deleteVO.getIdList().stream().map(id -> Article.builder()
-                .id(id)
-                .isTop(FALSE)
-                .isDelete(deleteVO.getIsDelete())
-                .build())
+        List<Article> articleList = deleteVO.getIdList().stream()
+                .map(id -> Article.builder()
+                        .id(id)
+                        .isTop(FALSE)
+                        .isDelete(deleteVO.getIsDelete())
+                        .build())
                 .collect(Collectors.toList());
         articleService.updateBatchById(articleList);
     }
@@ -300,96 +333,34 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public void deleteArticles(List<Integer> articleIdList) {
         // 删除文章标签关联
-        articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>().in(ArticleTag::getArticleId, articleIdList));
+        articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>()
+                .in(ArticleTag::getArticleId, articleIdList));
         // 删除文章
         articleDao.deleteBatchIds(articleIdList);
     }
 
     @Override
     public List<ArticleSearchDTO> listArticlesBySearch(ConditionVO condition) {
-        return searchArticle(buildQuery(condition));
+        return searchStrategyContext.executeSearchStrategy(condition.getKeywords());
     }
 
     @Override
     public ArticleVO getArticleBackById(Integer articleId) {
         // 查询文章信息
-        Article article = articleDao.selectOne(new LambdaQueryWrapper<Article>()
-                .select(Article::getId, Article::getArticleTitle, Article::getArticleContent, Article::getArticleCover, Article::getCategoryId, Article::getIsTop, Article::getIsDraft)
-                .eq(Article::getId, articleId));
-        // 查询文章标签
-        List<Integer> tagIdList = articleTagDao.selectList(new LambdaQueryWrapper<ArticleTag>()
-                .select(ArticleTag::getTagId)
-                .eq(ArticleTag::getArticleId, article.getId()))
-                .stream()
-                .map(ArticleTag::getTagId).collect(Collectors.toList());
-        return ArticleVO.builder()
-                .id(article.getId())
-                .articleTitle(article.getArticleTitle())
-                .articleContent(article.getArticleContent())
-                .articleCover(article.getArticleCover())
-                .categoryId(article.getCategoryId())
-                .isTop(article.getIsTop())
-                .tagIdList(tagIdList)
-                .isDraft(article.getIsDraft())
-                .build();
-    }
-
-    /**
-     * 搜索文章构造
-     *
-     * @param condition 条件
-     * @return es条件构造器
-     */
-    private NativeSearchQueryBuilder buildQuery(ConditionVO condition) {
-        // 条件构造器
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        // 根据关键词搜索文章标题或内容
-        if (Objects.nonNull(condition.getKeywords())) {
-            boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", condition.getKeywords()))
-                    .should(QueryBuilders.matchQuery("articleContent", condition.getKeywords())))
-                    .must(QueryBuilders.termQuery("isDelete", FALSE));
+        Article article = articleDao.selectById(articleId);
+        // 查询文章分类
+        Category category = categoryDao.selectById(article.getCategoryId());
+        String categoryName = null;
+        if (Objects.nonNull(category)) {
+            categoryName = category.getCategoryName();
         }
-        // 查询
-        nativeSearchQueryBuilder.withQuery(boolQueryBuilder);
-        return nativeSearchQueryBuilder;
-    }
-
-    /**
-     * 文章搜索结果高亮
-     *
-     * @param nativeSearchQueryBuilder es条件构造器
-     * @return 搜索结果
-     */
-    private List<ArticleSearchDTO> searchArticle(NativeSearchQueryBuilder nativeSearchQueryBuilder) {
-        // 添加文章标题高亮
-        HighlightBuilder.Field titleField = new HighlightBuilder.Field("articleTitle");
-        titleField.preTags("<span style='color:#f47466'>");
-        titleField.postTags("</span>");
-        // 添加文章内容高亮
-        HighlightBuilder.Field contentField = new HighlightBuilder.Field("articleContent");
-        contentField.preTags("<span style='color:#f47466'>");
-        contentField.postTags("</span>");
-        contentField.fragmentSize(200);
-        nativeSearchQueryBuilder.withHighlightFields(titleField, contentField);
-        // 搜索
-        SearchHits<ArticleSearchDTO> search = elasticsearchRestTemplate.search(nativeSearchQueryBuilder.build(), ArticleSearchDTO.class);
-        return search.getSearchHits().stream().map(hit -> {
-            ArticleSearchDTO article = hit.getContent();
-            // 获取文章标题高亮数据
-            List<String> titleHighLightList = hit.getHighlightFields().get("articleTitle");
-            if (CollectionUtils.isNotEmpty(titleHighLightList)) {
-                // 替换标题数据
-                article.setArticleTitle(titleHighLightList.get(0));
-            }
-            // 获取文章内容高亮数据
-            List<String> contentHighLightList = hit.getHighlightFields().get("articleContent");
-            if (CollectionUtils.isNotEmpty(contentHighLightList)) {
-                // 替换内容数据
-                article.setArticleContent(contentHighLightList.get(0));
-            }
-            return article;
-        }).collect(Collectors.toList());
+        // 查询文章标签
+        List<String> tagNameList = tagDao.listTagNameByArticleId(articleId);
+        // 封装数据
+        ArticleVO articleVO = BeanCopyUtils.copyObject(article, ArticleVO.class);
+        articleVO.setCategoryName(categoryName);
+        articleVO.setTagNameList(tagNameList);
+        return articleVO;
     }
 
 }

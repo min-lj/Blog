@@ -6,10 +6,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    component: resolve => require(["../views/home/Home.vue"], resolve),
-    meta: {
-      title: "风丶宇的个人博客"
-    }
+    component: resolve => require(["../views/home/Home.vue"], resolve)
   },
   {
     path: "/articles/:articleId",
@@ -21,6 +18,17 @@ const routes = [
     meta: {
       title: "归档"
     }
+  },
+  {
+    path: "/albums",
+    component: resolve => require(["../views/album/Album.vue"], resolve),
+    meta: {
+      title: "相册"
+    }
+  },
+  {
+    path: "/albums/:albumId",
+    component: resolve => require(["../views/album/Photo.vue"], resolve)
   },
   {
     path: "/tags",
@@ -37,12 +45,12 @@ const routes = [
     }
   },
   {
-    path: "/categories/*",
-    component: resolve => require(["../components/ArticleList.vue"], resolve)
+    path: "/categories/:categoryId",
+    component: resolve => require(["../views/article/ArticleList.vue"], resolve)
   },
   {
-    path: "/tags/*",
-    component: resolve => require(["../components/ArticleList.vue"], resolve)
+    path: "/tags/:tagId",
+    component: resolve => require(["../views/article/ArticleList.vue"], resolve)
   },
   {
     path: "/links",
@@ -60,7 +68,7 @@ const routes = [
   },
   {
     path: "/message",
-    component: resolve => require(["../views/message/Messsage.vue"], resolve),
+    component: resolve => require(["../views/message/Message.vue"], resolve),
     meta: {
       title: "留言板"
     }

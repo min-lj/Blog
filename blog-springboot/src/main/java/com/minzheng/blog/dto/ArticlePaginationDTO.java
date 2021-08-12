@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 文章上下篇DTO
- * @author: yezhiqiu
- * @date: 2021-01-18
- **/
+ * 文章上下篇
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

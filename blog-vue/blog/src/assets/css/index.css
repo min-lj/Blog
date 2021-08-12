@@ -147,7 +147,7 @@ p {
   }
   .banner {
     position: absolute;
-    background-color: #49b1f5;
+    background-color: #49b1f5 !important;
     top: -60px;
     left: 0;
     right: 0;
@@ -199,6 +199,7 @@ p {
     left: 0;
     right: 0;
     height: 280px;
+    background-color: #49b1f5 !important;
     animation: header-effect 1s;
   }
   .blog-container {

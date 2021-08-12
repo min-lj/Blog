@@ -1,5 +1,6 @@
 package com.minzheng.blog.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzheng.blog.dao.ChatRecordDao;
@@ -8,8 +9,10 @@ import com.minzheng.blog.dto.RecallMessageDTO;
 import com.minzheng.blog.dto.WebsocketMessageDTO;
 import com.minzheng.blog.entity.ChatRecord;
 import com.minzheng.blog.enums.FilePathEnum;
-import com.minzheng.blog.utils.*;
+import com.minzheng.blog.strategy.context.UploadStrategyContext;
+import com.minzheng.blog.util.*;
 import com.minzheng.blog.vo.VoiceVO;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -26,11 +30,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import static com.minzheng.blog.enums.ChatTypeEnum.*;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-02-19
- **/
-@ServerEndpoint(value = "/websocket", configurator = WebSocketServiceImpl.ChatConfigurator.class)
+ * websocket服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
+@Data
 @Service
+@ServerEndpoint(value = "/websocket", configurator = WebSocketServiceImpl.ChatConfigurator.class)
 public class WebSocketServiceImpl {
 
     /**
@@ -43,12 +50,19 @@ public class WebSocketServiceImpl {
      */
     private static CopyOnWriteArraySet<WebSocketServiceImpl> webSocketSet = new CopyOnWriteArraySet<>();
 
-    private static ChatRecordDao chatRecordDao;
-
     @Autowired
     public void setChatRecordDao(ChatRecordDao chatRecordDao) {
         WebSocketServiceImpl.chatRecordDao = chatRecordDao;
     }
+
+    @Autowired
+    public void setUploadStrategyContext(UploadStrategyContext uploadStrategyContext) {
+        WebSocketServiceImpl.uploadStrategyContext = uploadStrategyContext;
+    }
+
+    private static ChatRecordDao chatRecordDao;
+
+    private static UploadStrategyContext uploadStrategyContext;
 
     /**
      * 获取客户端真实ip
@@ -66,7 +80,6 @@ public class WebSocketServiceImpl {
                 sec.getUserProperties().put(HEADER_NAME, "未知ip");
             }
         }
-
     }
 
     /**
@@ -104,25 +117,19 @@ public class WebSocketServiceImpl {
                 // 发送消息
                 ChatRecord chatRecord = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), ChatRecord.class);
                 // 过滤html标签
-                chatRecord.setContent(HTMLUtil.deleteCommentTag(chatRecord.getContent()));
+                chatRecord.setContent(HTMLUtils.deleteTag(chatRecord.getContent()));
                 chatRecordDao.insert(chatRecord);
                 messageDTO.setData(chatRecord);
-                for (WebSocketServiceImpl webSocketService : webSocketSet) {
-                    synchronized (webSocketService.session) {
-                        webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
-                    }
-                }
+                // 广播消息
+                broadcastMessage(messageDTO);
                 break;
             case RECALL_MESSAGE:
                 // 撤回消息
                 RecallMessageDTO recallMessage = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), RecallMessageDTO.class);
                 // 删除记录
-                deleteRecord(recallMessage.getId());
-                for (WebSocketServiceImpl webSocketService : webSocketSet) {
-                    synchronized (webSocketService.session) {
-                        webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
-                    }
-                }
+                chatRecordDao.deleteById(recallMessage.getId());
+                // 广播消息
+                broadcastMessage(messageDTO);
                 break;
             case HEART_BEAT:
                 // 心跳消息
@@ -131,15 +138,6 @@ public class WebSocketServiceImpl {
             default:
                 break;
         }
-
-    }
-
-    /**
-     * 发生错误时调用
-     */
-    @OnError
-    public void onError(Session session, Throwable error) {
-        error.printStackTrace();
     }
 
     /**
@@ -159,13 +157,15 @@ public class WebSocketServiceImpl {
      * @return 加载历史聊天记录
      */
     private ChatRecordDTO listChartRecords(EndpointConfig endpointConfig) {
+        // 获取聊天历史记录
         List<ChatRecord> chatRecordList = chatRecordDao.selectList(new LambdaQueryWrapper<ChatRecord>()
-                .ge(ChatRecord::getCreateTime, DateUtil.getBeforeHourTime(12)));
-        String ipAddr = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
+                .ge(ChatRecord::getCreateTime, DateUtil.offsetHour(new Date(), -12)));
+        // 获取当前用户ip
+        String ipAddress = endpointConfig.getUserProperties().get(ChatConfigurator.HEADER_NAME).toString();
         return ChatRecordDTO.builder()
                 .chatRecordList(chatRecordList)
-                .ipAddr(ipAddr)
-                .ipSource(IpUtil.getIpSource(ipAddr))
+                .ipAddress(ipAddress)
+                .ipSource(IpUtils.getIpSource(ipAddress))
                 .build();
     }
 
@@ -176,25 +176,13 @@ public class WebSocketServiceImpl {
      */
     @Async
     public void updateOnlineCount() throws IOException {
+        // 获取当前在线人数
         WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
                 .type(ONLINE_COUNT.getType())
                 .data(webSocketSet.size())
                 .build();
-        for (WebSocketServiceImpl webSocketService : webSocketSet) {
-            synchronized (webSocketService.session) {
-                webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));
-            }
-        }
-    }
-
-    /**
-     * 删除记录
-     *
-     * @param id ID
-     */
-    @Async
-    public void deleteRecord(Integer id) {
-        chatRecordDao.deleteById(id);
+        // 广播消息
+        broadcastMessage(messageDTO);
     }
 
     /**
@@ -202,18 +190,33 @@ public class WebSocketServiceImpl {
      *
      * @param voiceVO 语音路径
      */
-    public void sendVoice(VoiceVO voiceVO) throws IOException {
+    public void sendVoice(VoiceVO voiceVO) {
         // 上传语音文件
-        String content = OSSUtil.upload(voiceVO.getFile(), FilePathEnum.VOICE.getPath());
+        String content = uploadStrategyContext.executeUploadStrategy(voiceVO.getFile(), FilePathEnum.VOICE.getPath());
         voiceVO.setContent(content);
         // 保存记录
-        ChatRecord chatRecord = BeanCopyUtil.copyObject(voiceVO, ChatRecord.class);
+        ChatRecord chatRecord = BeanCopyUtils.copyObject(voiceVO, ChatRecord.class);
         chatRecordDao.insert(chatRecord);
         // 发送消息
         WebsocketMessageDTO messageDTO = WebsocketMessageDTO.builder()
                 .type(VOICE_MESSAGE.getType())
                 .data(chatRecord)
                 .build();
+        // 广播消息
+        try {
+            broadcastMessage(messageDTO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 广播消息
+     *
+     * @param messageDTO 消息dto
+     * @throws IOException io异常
+     */
+    private void broadcastMessage(WebsocketMessageDTO messageDTO) throws IOException {
         for (WebSocketServiceImpl webSocketService : webSocketSet) {
             synchronized (webSocketService.session) {
                 webSocketService.session.getBasicRemote().sendText(JSON.toJSONString(messageDTO));

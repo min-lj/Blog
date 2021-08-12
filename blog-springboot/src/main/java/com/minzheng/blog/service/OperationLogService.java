@@ -2,14 +2,16 @@ package com.minzheng.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.minzheng.blog.dto.OperationLogDTO;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.entity.OperationLog;
 import com.minzheng.blog.vo.ConditionVO;
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-31
- **/
+ * 操作日志服务
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
+ */
 public interface OperationLogService extends IService<OperationLog> {
 
     /**
@@ -18,6 +20,6 @@ public interface OperationLogService extends IService<OperationLog> {
      * @param conditionVO 条件
      * @return 日志列表
      */
-    PageDTO<OperationLogDTO> listOperationLogs(ConditionVO conditionVO);
+    PageResult<OperationLogDTO> listOperationLogs(ConditionVO conditionVO);
 
 }

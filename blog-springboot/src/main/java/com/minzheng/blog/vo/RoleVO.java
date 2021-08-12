@@ -11,11 +11,11 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
- * 角色VO
+ * 角色
  *
- * @author: yezhiqiu
- * @date: 2021-01-24
- **/
+ * @author yezhiqiu
+ * @date 2021/08/03
+ */
 @Data
 @Builder
 @AllArgsConstructor

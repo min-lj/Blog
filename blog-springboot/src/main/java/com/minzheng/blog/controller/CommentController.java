@@ -1,16 +1,14 @@
 package com.minzheng.blog.controller;
 
 import com.minzheng.blog.annotation.OptLog;
-import com.minzheng.blog.constant.StatusConst;
 import com.minzheng.blog.dto.CommentBackDTO;
 import com.minzheng.blog.dto.CommentDTO;
-import com.minzheng.blog.dto.PageDTO;
+import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.dto.ReplyDTO;
 import com.minzheng.blog.service.CommentService;
 import com.minzheng.blog.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,69 +19,107 @@ import java.util.List;
 import static com.minzheng.blog.constant.OptTypeConst.*;
 
 /**
+ * 评论控制器
+ *
  * @author xiaojie
- * @since 2020-05-18
+ * @date 2021/07/29
  */
-@RestController
 @Api(tags = "评论模块")
+@RestController
 public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    /**
+     * 查询评论
+     *
+     * @param articleId 文章id
+     * @return {@link Result<CommentDTO>} 评论列表
+     */
     @ApiOperation(value = "查询评论")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "articleId", value = "文章id", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "current", value = "当前页码", required = true, dataType = "Long")
-    })
+    @ApiImplicitParam(name = "articleId", value = "文章id", required = true, dataType = "Integer")
     @GetMapping("/comments")
-    public Result<PageDTO<CommentDTO>> listComments(Integer articleId, Long current) {
-        return new Result<>(true, StatusConst.OK, "查询成功！", commentService.listComments(articleId, current));
+    public Result<PageResult<CommentDTO>> listComments(Integer articleId) {
+        return Result.ok(commentService.listComments(articleId));
     }
 
-    @ApiOperation(value = "添加评论或回复")
+    /**
+     * 添加评论
+     *
+     * @param commentVO 评论信息
+     * @return {@link Result<>}
+     */
+    @ApiOperation(value = "添加评论")
     @PostMapping("/comments")
     public Result<?> saveComment(@Valid @RequestBody CommentVO commentVO) {
         commentService.saveComment(commentVO);
-        return new Result<>(true, StatusConst.OK, "评论成功！");
+        return Result.ok();
     }
 
+    /**
+     * 查询评论下的回复
+     *
+     * @param commentId 评论id
+     * @return {@link Result<ReplyDTO>} 回复列表
+     */
     @ApiOperation(value = "查询评论下的回复")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "commentId", value = "文章id", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "current", value = "当前页码", required = true, dataType = "Long")
-    })
-    @GetMapping("/comments/replies/{commentId}")
-    public Result<List<ReplyDTO>> listRepliesByCommentId(@PathVariable("commentId") Integer commentId, Long current) {
-        return new Result<>(true, StatusConst.OK, "查询成功！", commentService.listRepliesByCommentId(commentId, current));
+    @ApiImplicitParam(name = "commentId", value = "评论id", required = true, dataType = "Integer")
+    @GetMapping("/comments/{commentId}/replies")
+    public Result<List<ReplyDTO>> listRepliesByCommentId(@PathVariable("commentId") Integer commentId) {
+        return Result.ok(commentService.listRepliesByCommentId(commentId));
     }
 
+    /**
+     * 评论点赞
+     *
+     * @param commentId 评论id
+     * @return {@link Result<>}
+     */
     @ApiOperation(value = "评论点赞")
-    @PostMapping("/comments/like")
-    public Result<?> saveCommentList(Integer commentId) {
+    @PostMapping("/comments/{commentId}/like")
+    public Result<?> saveCommentLike(@PathVariable("commentId") Integer commentId) {
         commentService.saveCommentLike(commentId);
-        return new Result<>(true, StatusConst.OK, "点赞成功！");
+        return Result.ok();
     }
 
+    /**
+     * 审核评论
+     *
+     * @param reviewVO 审核信息
+     * @return {@link Result<>}
+     */
     @OptLog(optType = UPDATE)
-    @ApiOperation(value = "删除或恢复评论")
-    @PutMapping("/admin/comments")
-    public Result<?> deleteComment(DeleteVO deleteVO) {
-        commentService.updateCommentDelete(deleteVO);
-        return new Result<>(true, StatusConst.OK, "操作成功！");
+    @ApiOperation(value = "审核评论")
+    @PutMapping("/admin/comments/review")
+    public Result<?> updateCommentsReview(@Valid @RequestBody ReviewVO reviewVO) {
+        commentService.updateCommentsReview(reviewVO);
+        return Result.ok();
     }
 
+    /**
+     * 删除评论
+     *
+     * @param commentIdList 评论id列表
+     * @return {@link Result<>}
+     */
     @OptLog(optType = REMOVE)
-    @ApiOperation(value = "物理删除评论")
+    @ApiOperation(value = "删除评论")
     @DeleteMapping("/admin/comments")
     public Result<?> deleteComments(@RequestBody List<Integer> commentIdList) {
         commentService.removeByIds(commentIdList);
-        return new Result<>(true, StatusConst.OK, "操作成功！");
+        return Result.ok();
     }
 
+    /**
+     * 查询后台评论
+     *
+     * @param condition 条件
+     * @return {@link Result<CommentBackDTO>} 后台评论
+     */
     @ApiOperation(value = "查询后台评论")
     @GetMapping("/admin/comments")
-    public Result<PageDTO<CommentBackDTO>> listCommentBackDTO(ConditionVO condition) {
-        return new Result<>(true, StatusConst.OK, "查询成功", commentService.listCommentBackDTO(condition));
+    public Result<PageResult<CommentBackDTO>> listCommentBackDTO(ConditionVO condition) {
+        return Result.ok(commentService.listCommentBackDTO(condition));
     }
 
 }

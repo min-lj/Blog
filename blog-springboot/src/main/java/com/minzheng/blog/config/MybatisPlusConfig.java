@@ -1,24 +1,27 @@
 package com.minzheng.blog.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import org.mybatis.spring.annotation.MapperScan;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * mybatis plus配置类
- * @author xiaojie
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @EnableTransactionManagement
 @Configuration
-@MapperScan("com.baomidou.cloud.service.*.mapper*")
 public class MybatisPlusConfig {
 
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        return paginationInterceptor;
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        return interceptor;
     }
 
 }

@@ -4,8 +4,10 @@ import com.minzheng.blog.entity.ArticleTag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
+ * 文章标签服务
+ *
  * @author xiaojie
- * @since 2020-05-18
+ * @date 2021/07/29
  */
 public interface ArticleTagService extends IService<ArticleTag> {
 

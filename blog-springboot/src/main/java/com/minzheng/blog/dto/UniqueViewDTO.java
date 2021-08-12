@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 /**
- * 访问量DTO
- * @author: yezhiqiu
- * @date: 2021-01-16
- **/
+ * 访问量
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

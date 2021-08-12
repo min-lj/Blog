@@ -1,22 +1,24 @@
 package com.minzheng.blog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.NoArgsConstructor;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
- * 用户登录信息
+ * 用户信息
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/07/27
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class UserInfoDTO implements UserDetails {
+public class UserInfoDTO {
 
     /**
      * 用户账号id
@@ -44,16 +46,6 @@ public class UserInfoDTO implements UserDetails {
     private String username;
 
     /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 用户角色
-     */
-    private List<String> roleList;
-
-    /**
      * 用户昵称
      */
     private String nickname;
@@ -76,17 +68,17 @@ public class UserInfoDTO implements UserDetails {
     /**
      * 点赞文章集合
      */
-    private Set<Integer> articleLikeSet;
+    private Set<Object> articleLikeSet;
 
     /**
      * 点赞评论集合
      */
-    private Set<Integer> commentLikeSet;
+    private Set<Object> commentLikeSet;
 
     /**
      * 用户登录ip
      */
-    private String ipAddr;
+    private String ipAddress;
 
     /**
      * ip来源
@@ -94,55 +86,8 @@ public class UserInfoDTO implements UserDetails {
     private String ipSource;
 
     /**
-     * 浏览器
-     */
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    private String os;
-
-    /**
      * 最近登录时间
      */
-    private Date lastLoginTime;
-
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roleList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    private LocalDateTime lastLoginTime;
 
 }

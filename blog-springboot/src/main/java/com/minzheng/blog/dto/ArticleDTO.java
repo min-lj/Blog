@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+
 
 /**
  * 文章
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -50,14 +52,24 @@ public class ArticleDTO {
     private Integer viewsCount;
 
     /**
+     * 文章类型
+     */
+    private Integer type;
+
+    /**
+     * 原文链接
+     */
+    private String originalUrl;
+
+    /**
      * 发表时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 文章分类id
@@ -85,9 +97,13 @@ public class ArticleDTO {
     private ArticlePaginationDTO nextArticle;
 
     /**
-     * 推荐文章
+     * 推荐文章列表
      */
-    private List<ArticleRecommendDTO> articleRecommendList;
+    private List<ArticleRecommendDTO> recommendArticleList;
 
+    /**
+     * 最新文章列表
+     */
+    private List<ArticleRecommendDTO> newestArticleList;
 
 }

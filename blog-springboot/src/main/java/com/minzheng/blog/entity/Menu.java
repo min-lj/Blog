@@ -1,19 +1,20 @@
 package com.minzheng.blog.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 /**
- * @author: yezhiqiu
- * @date: 2021-01-23
- **/
+ * 菜单
+ *
+ * @author yezhiqiu
+ * @date 2021/08/01
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -48,16 +49,6 @@ public class Menu {
     private String icon;
 
     /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
      * 排序
      */
     private Integer orderNum;
@@ -68,14 +59,21 @@ public class Menu {
     private Integer parentId;
 
     /**
-     * 是否禁用
-     */
-    private Integer isDisable;
-
-    /**
      * 是否隐藏
      */
     private Integer isHidden;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updateTime;
 
 }
 

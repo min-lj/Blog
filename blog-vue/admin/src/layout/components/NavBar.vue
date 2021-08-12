@@ -36,22 +36,24 @@
     </div>
     <!-- 历史标签栏 -->
     <div class="tabs-view-container">
-      <span
-        :class="isActive(item)"
-        v-for="item of this.$store.state.tabList"
-        :key="item.path"
-        @click="goTo(item)"
-      >
-        {{ item.name }}
-        <i
-          class="el-icon-close"
-          v-if="item.path != '/'"
-          @click.stop="removeTab(item)"
-        />
-      </span>
-      <span class="tabs-view-item" style="float:right" @click="closeAllTab">
+      <div class="tabs-wrapper">
+        <span
+          :class="isActive(item)"
+          v-for="item of this.$store.state.tabList"
+          :key="item.path"
+          @click="goTo(item)"
+        >
+          {{ item.name }}
+          <i
+            class="el-icon-close"
+            v-if="item.path != '/'"
+            @click.stop="removeTab(item)"
+          />
+        </span>
+      </div>
+      <div class="tabs-close-item" style="float:right" @click="closeAllTab">
         全部关闭
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -170,7 +172,15 @@ export default {
   cursor: pointer;
   margin-right: 24px;
 }
+.tabs-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 95%;
+}
 .tabs-view-container {
+  display: flex;
+  position: relative;
   padding-left: 10px;
   padding-right: 10px;
   height: 33px;
@@ -179,6 +189,21 @@ export default {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
 }
 .tabs-view-item {
+  display: inline-block;
+  cursor: pointer;
+  height: 25px;
+  line-height: 25px;
+  border: 1px solid #d8dce5;
+  color: #495060;
+  background: #fff;
+  padding: 0 8px;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 5px;
+}
+.tabs-close-item {
+  position: absolute;
+  right: 10px;
   display: inline-block;
   cursor: pointer;
   height: 25px;
@@ -235,5 +260,13 @@ export default {
   cursor: pointer;
   margin-right: 1rem;
   font-size: 1.25rem;
+}
+*::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 0.5rem;
+  background-color: rgba(144, 147, 153, 0.3);
 }
 </style>

@@ -8,18 +8,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 /**
- * @author: yezhiqiu
- * @date: 2020-12-27
- **/
+ * 用户角色
+ *
+ * @author yezhiqiu
+ * @date 2021/07/29
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("tb_user_role")
 public class UserRole {
+
     /**
      * 主键id
      */

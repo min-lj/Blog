@@ -6,11 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 /**
- * 后台评论列表
- * @author 11921
+ * 后台评论
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -48,18 +51,14 @@ public class CommentBackDTO {
     private String commentContent;
 
     /**
-     * 点赞量
+     * 是否审核
      */
-    private Integer likeCount;
+    private Integer isReview;
 
     /**
      * 发表时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    /**
-     * 状态
-     */
-    private Integer isDelete;
 
 }

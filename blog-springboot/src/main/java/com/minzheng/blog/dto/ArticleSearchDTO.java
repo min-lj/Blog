@@ -1,6 +1,5 @@
 package com.minzheng.blog.dto;
 
-import com.minzheng.blog.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +9,12 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+
 /**
- * 文章搜索结果
+ * 搜索文章
  *
- * @author 11921
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -41,10 +42,15 @@ public class ArticleSearchDTO {
     private String articleContent;
 
     /**
-     * 文章状态
+     * 是否删除
      */
     @Field(type = FieldType.Integer)
     private Integer isDelete;
 
+    /**
+     * 文章状态
+     */
+    @Field(type = FieldType.Integer)
+    private Integer status;
 
 }

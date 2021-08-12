@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 /**
- * @author 11921
+ * 评论
+ *
+ * @author yezhiqiu
+ * @date 2021/08/10
  */
 @Data
 @Builder
@@ -23,8 +25,8 @@ public class CommentVO {
     /**
      * 回复用户id
      */
-    @ApiModelProperty(name = "replyId", value = "回复用户id", dataType = "Integer")
-    private Integer replyId;
+    @ApiModelProperty(name = "replyUserId", value = "回复用户id", dataType = "Integer")
+    private Integer replyUserId;
 
     /**
      * 评论文章id

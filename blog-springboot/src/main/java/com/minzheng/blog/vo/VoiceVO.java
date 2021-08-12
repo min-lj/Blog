@@ -11,10 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 /**
- * 音频VO
- * @author: yezhiqiu
- * @date: 2021-02-21
- **/
+ * 声音签证官
+ *
+ * @author yezhiqiu
+ * @date 2021/07/28
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -67,8 +68,8 @@ public class VoiceVO {
     /**
      * 用户登录ip
      */
-    @ApiModelProperty(name = "ipAddr", value = "用户登录ip", required = true, dataType = "String")
-    private String ipAddr;
+    @ApiModelProperty(name = "ipAddress", value = "用户登录ip", required = true, dataType = "String")
+    private String ipAddress;
 
     /**
      * ip来源

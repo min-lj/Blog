@@ -28,5 +28,4 @@ public class WeiboUserInfoDTO {
      */
     private String avatar_hd;
 
-
 }
