@@ -118,20 +118,6 @@ public class ArticleController {
      */
     @ApiOperation(value = "上传文章图片")
     @ApiImplicitParam(name = "file", value = "文章图片", required = true, dataType = "MultipartFile")
-    @PostMapping("/test")
-    public Result<String> test(MultipartFile file) {
-        return Result.ok(uploadStrategyContext.executeUploadStrategy(file, FilePathEnum.ARTICLE.getPath()));
-    }
-
-
-    /**
-     * 上传文章图片
-     *
-     * @param file 文件
-     * @return {@link Result<String>} 文章图片地址
-     */
-    @ApiOperation(value = "上传文章图片")
-    @ApiImplicitParam(name = "file", value = "文章图片", required = true, dataType = "MultipartFile")
     @PostMapping("/admin/articles/images")
     public Result<String> saveArticleImages(MultipartFile file) {
         return Result.ok(uploadStrategyContext.executeUploadStrategy(file, FilePathEnum.ARTICLE.getPath()));

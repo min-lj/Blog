@@ -15,9 +15,9 @@
     <!-- 相册列表 -->
     <el-row class="page-container" :gutter="12" v-loading="loading">
       <!-- 空状态 -->
-      <el-empty v-if="pageList.length == 0" description="暂无照片" />
+      <el-empty v-if="pageList.length == 0" description="暂无页面" />
       <el-col v-for="item of pageList" :key="item.id" :md="6">
-        <div class="page-item" @click="checkPhoto(item)">
+        <div class="page-item">
           <!-- 相册操作 -->
           <div class="page-opreation">
             <el-dropdown @command="handleCommand">
@@ -148,7 +148,7 @@ export default {
         return false;
       }
       if (this.pageForum.pageCover == null) {
-        this.$message.error("相册封面不能为空");
+        this.$message.error("页面封面不能为空");
         return false;
       }
       this.axios.post("/api/admin/pages", this.pageForum).then(({ data }) => {
@@ -171,7 +171,7 @@ export default {
       this.pageForum.pageCover = response.data;
     },
     handleCommand(command) {
-      const type = command.substring(0, 5);
+      const type = command.substring(0, 6);
       const data = command.substring(6);
       if (type == "delete") {
         this.pageForum.id = data;

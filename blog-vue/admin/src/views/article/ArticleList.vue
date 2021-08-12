@@ -454,9 +454,25 @@ export default {
       this.activeStatus = status;
     },
     changeTop(article) {
-      let param = new URLSearchParams();
-      param.append("isTop", article.isTop);
-      this.axios.put("/api/admin/articles/top/" + article.id, param);
+      this.axios
+        .put("/api/admin/articles/top", {
+          id: article.id,
+          isTop: article.isTop
+        })
+        .then(({ data }) => {
+          if (data.flag) {
+            this.$notify.success({
+              title: "成功",
+              message: "置顶成功"
+            });
+          } else {
+            this.$notify.error({
+              title: "失败",
+              message: data.message
+            });
+          }
+          this.remove = false;
+        });
     },
     listArticles() {
       this.axios
