@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.minzheng.blog.constant.RedisPrefixConst.*;
@@ -97,7 +98,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .isDisable(userInfo.getIsDisable())
                 .browser(userAgent.getBrowser().getName())
                 .os(userAgent.getOperatingSystem().getName())
-                .lastLoginTime(LocalDateTime.now())
+                .lastLoginTime(LocalDateTime.now(ZoneId.of("Asia/Shanghai")))
                 .build();
     }
 

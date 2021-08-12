@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,7 @@ public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView
         Long count = redisService.sSize(UNIQUE_VISITOR);
         // 获取昨天日期插入数据
         UniqueView uniqueView = UniqueView.builder()
-                .createTime(LocalDateTimeUtil.offset(LocalDateTime.now(), -1, ChronoUnit.DAYS))
+                .createTime(LocalDateTimeUtil.offset(LocalDateTime.now(ZoneId.of("Asia/Shanghai")), -1, ChronoUnit.DAYS))
                 .viewsCount(Optional.of(count.intValue()).orElse(0))
                 .build();
         uniqueViewDao.insert(uniqueView);
