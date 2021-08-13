@@ -19,7 +19,15 @@ public enum FileExtEnum {
     /**
      * png文件
      */
-    PNG(".png", "png文件");
+    PNG(".png", "png文件"),
+    /**
+     * Jpeg文件
+     */
+    JPEG(".jpeg", "jpeg文件"),
+    /**
+     * wav文件
+     */
+    WAV(".wav", "wav文件");
 
     /**
      * 获取文件格式

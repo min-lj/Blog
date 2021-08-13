@@ -31,10 +31,11 @@ public abstract class AbstractUploadStrategyImpl implements UploadStrategy {
             // 判断文件是否已经上传
             if (!exists(path + fileName)) {
                 InputStream inputStream;
-                // 判断上传文件类型（压缩包，图片，音频）
+                // 判断上传文件类型（图片，音频）
                 switch (Objects.requireNonNull(FileExtEnum.getFileExt(extName))) {
                     case JPG:
                     case PNG:
+                    case JPEG:
                         // 压缩图片
                         inputStream = FileUtils.compressImage(file.getInputStream(), file.getSize());
                         break;
