@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -57,7 +56,7 @@ public class WebsiteConfigVO {
      * 网站创建时间
      */
     @ApiModelProperty(name = "websiteCreateTime", value = "网站创建时间", required = true, dataType = "LocalDateTime")
-    private LocalDateTime websiteCreateTime;
+    private String websiteCreateTime;
 
     /**
      * 网站备案号
