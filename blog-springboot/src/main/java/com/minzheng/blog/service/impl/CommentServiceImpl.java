@@ -154,6 +154,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCommentsReview(ReviewVO reviewVO) {
+        // 修改评论审核状态
         List<Comment> commentList = reviewVO.getIdList().stream().map(item -> Comment.builder()
                         .id(item)
                         .isReview(reviewVO.getIsReview())

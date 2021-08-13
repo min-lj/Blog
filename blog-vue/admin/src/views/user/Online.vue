@@ -114,6 +114,14 @@ export default {
           this.loading = false;
         });
     },
+    sizeChange(size) {
+      this.size = size;
+      this.listOnlineUsers();
+    },
+    currentChange(current) {
+      this.current = current;
+      this.listOnlineUsers();
+    },
     removeOnlineUser(user) {
       this.axios
         .delete("/api/admin/users/" + user.userInfoId + "/online")

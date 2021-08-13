@@ -3,7 +3,6 @@ package com.minzheng.blog.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzheng.blog.strategy.context.UploadStrategyContext;
-import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.vo.*;
 import com.minzheng.blog.dto.UserDetailDTO;
 import com.minzheng.blog.dto.UserOnlineDTO;
@@ -32,6 +31,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.minzheng.blog.constant.RedisPrefixConst.USER_CODE_KEY;
+import static com.minzheng.blog.util.PageUtils.*;
+import static com.minzheng.blog.util.PageUtils.getLimitCurrent;
 
 
 /**
@@ -129,17 +130,16 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
     @Override
     public PageResult<UserOnlineDTO> listOnlineUsers(ConditionVO conditionVO) {
         // 获取security在线session
-        for (Object allPrincipal : sessionRegistry.getAllPrincipals()) {
-            System.out.println(allPrincipal);
-        }
         List<UserOnlineDTO> userOnlineDTOList = sessionRegistry.getAllPrincipals().stream()
                 .filter(item -> sessionRegistry.getAllSessions(item, false).size() > 0)
                 .map(item -> JSON.parseObject(JSON.toJSONString(item), UserOnlineDTO.class))
                 .sorted(Comparator.comparing(UserOnlineDTO::getLastLoginTime).reversed())
                 .collect(Collectors.toList());
         // 执行分页
-        int size = Math.min(userOnlineDTOList.size(), PageUtils.getSize().intValue());
-        List<UserOnlineDTO> userOnlineList = userOnlineDTOList.subList(PageUtils.getLimitCurrent().intValue(), size);
+        int fromIndex = getLimitCurrent().intValue();
+        int size = getSize().intValue();
+        int toIndex = userOnlineDTOList.size() - fromIndex > size ? fromIndex + size : userOnlineDTOList.size();
+        List<UserOnlineDTO> userOnlineList = userOnlineDTOList.subList(fromIndex, toIndex);
         return new PageResult<>(userOnlineList, userOnlineDTOList.size());
     }
 

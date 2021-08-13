@@ -46,7 +46,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
     @Autowired
     private BlogInfoService blogInfoService;
 
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveMessage(MessageVO messageVO) {
@@ -74,6 +73,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateMessagesReview(ReviewVO reviewVO) {
+        // 修改留言审核状态
         List<Message> messageList = reviewVO.getIdList().stream().map(item -> Message.builder()
                         .id(item)
                         .isReview(reviewVO.getIsReview())
