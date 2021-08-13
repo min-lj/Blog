@@ -90,7 +90,7 @@
         <el-form-item label="相册描述">
           <el-input style="width:220px" v-model="albumForum.albumDesc" />
         </el-form-item>
-        <el-form-item label="页面封面">
+        <el-form-item label="相册封面">
           <el-upload
             class="upload-cover"
             drag
