@@ -22,6 +22,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static com.minzheng.blog.constant.RedisPrefixConst.*;
+import static com.minzheng.blog.enums.ZoneEnum.SHANGHAI;
 
 
 /**
@@ -98,7 +99,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .isDisable(userInfo.getIsDisable())
                 .browser(userAgent.getBrowser().getName())
                 .os(userAgent.getOperatingSystem().getName())
-                .lastLoginTime(LocalDateTime.now(ZoneId.of("Asia/Shanghai")))
+                .lastLoginTime(LocalDateTime.now(ZoneId.of(SHANGHAI.getZone())))
                 .build();
     }
 

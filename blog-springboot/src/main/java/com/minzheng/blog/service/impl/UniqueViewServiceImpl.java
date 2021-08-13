@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.minzheng.blog.constant.RedisPrefixConst.UNIQUE_VISITOR;
+import static com.minzheng.blog.enums.ZoneEnum.SHANGHAI;
 
 
 /**
@@ -50,7 +51,7 @@ public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView
         Long count = redisService.sSize(UNIQUE_VISITOR);
         // 获取昨天日期插入数据
         UniqueView uniqueView = UniqueView.builder()
-                .createTime(LocalDateTimeUtil.offset(LocalDateTime.now(ZoneId.of("Asia/Shanghai")), -1, ChronoUnit.DAYS))
+                .createTime(LocalDateTimeUtil.offset(LocalDateTime.now(ZoneId.of(SHANGHAI.getZone())), -1, ChronoUnit.DAYS))
                 .viewsCount(Optional.of(count.intValue()).orElse(0))
                 .build();
         uniqueViewDao.insert(uniqueView);
