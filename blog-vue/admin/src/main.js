@@ -36,7 +36,7 @@ Vue.filter("date", function(value, formatStr = "YYYY-MM-DD") {
   return dayjs(value).format(formatStr);
 });
 
-Vue.filter("dateTime", function(value, formatStr = "YYYY-MM-DD hh:mm:ss") {
+Vue.filter("dateTime", function(value, formatStr = "YYYY-MM-DD HH:mm:ss") {
   return dayjs(value).format(formatStr);
 });
 

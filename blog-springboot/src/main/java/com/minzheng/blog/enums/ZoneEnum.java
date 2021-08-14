@@ -19,7 +19,7 @@ public enum ZoneEnum {
     SHANGHAI("Asia/Shanghai", "中国上海");
 
     /**
-     * 时区区
+     * 时区
      */
     private final String zone;
 

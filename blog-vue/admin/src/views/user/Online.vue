@@ -34,12 +34,17 @@
       </el-table-column>
       <el-table-column prop="nickname" label="昵称" align="center" />
       <el-table-column prop="ipAddress" label="ip地址" align="center" />
-      <el-table-column prop="ipSource" label="登录地址" align="center" />
+      <el-table-column
+        prop="ipSource"
+        label="登录地址"
+        align="center"
+        width="200"
+      />
       <el-table-column
         prop="browser"
         label="浏览器"
         align="center"
-        width="200"
+        width="160"
       />
       <el-table-column prop="os" label="操作系统" align="center" />
       <el-table-column
