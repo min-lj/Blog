@@ -127,7 +127,7 @@
               <!-- 回复内容 -->
               <p class="comment-content">
                 <!-- 回复用户名 -->
-                <template v-if="reply.replyId != item.userId">
+                <template v-if="reply.replyUserId != item.userId">
                   <span v-if="!reply.replyWebSite" class="ml-1">
                     @{{ reply.replyNickname }}
                   </span>
@@ -232,7 +232,7 @@ export default {
       //传值给回复框
       this.$refs.reply[index].commentContent = "";
       this.$refs.reply[index].nickname = item.nickname;
-      this.$refs.reply[index].replyId = item.userId;
+      this.$refs.reply[index].replyUserId = item.userId;
       this.$refs.reply[index].parentId = this.commentList[index].id;
       this.$refs.reply[index].chooseEmoji = false;
       this.$refs.reply[index].index = index;

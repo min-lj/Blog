@@ -40,7 +40,7 @@ export default {
       index: 0,
       chooseEmoji: false,
       nickname: "",
-      replyId: null,
+      replyUserId: null,
       parentId: null,
       commentContent: ""
     };
@@ -72,7 +72,7 @@ export default {
       const arr = path.split("/");
       var comment = {
         articleId: arr[2],
-        replyId: this.replyId,
+        replyUserId: this.replyUserId,
         parentId: this.parentId,
         commentContent: this.commentContent
       };

@@ -110,7 +110,7 @@ CREATE TABLE `tb_comment`  (
   `user_id` int NOT NULL COMMENT '评论用户Id',
   `article_id` int NULL DEFAULT NULL COMMENT '评论文章id',
   `comment_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
-  `reply_id` int NULL DEFAULT NULL COMMENT '回复用户id',
+  `reply_user_id` int NULL DEFAULT NULL COMMENT '回复用户id',
   `parent_id` int NULL DEFAULT NULL COMMENT '父评论id',
   `is_delete` tinyint NOT NULL DEFAULT 0 COMMENT '是否删除  0否 1是',
   `is_review` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否审核',

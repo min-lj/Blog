@@ -38,7 +38,7 @@
          u.nickname,
          u.avatar,
          u.web_site,
-         c.reply_id,
+         c.reply_user_id,
          r.nickname AS reply_nickname,
          r.web_site AS reply_web_site,
          c.id,
@@ -49,7 +49,7 @@
          FROM
          tb_comment c
          JOIN tb_user_info u ON c.user_id = u.id
-         JOIN tb_user_info r ON c.reply_id = r.id
+         JOIN tb_user_info r ON c.reply_user_id = r.id
          WHERE
          c.is_review = 0
          AND
@@ -89,7 +89,7 @@
         u.nickname,
         u.avatar,
         u.web_site,
-        c.reply_id,
+        c.reply_user_id,
         r.nickname as reply_nickname,
         r.web_site as reply_web_site,
         c.id,
@@ -99,7 +99,7 @@
         FROM
         tb_comment c
         JOIN tb_user_info u ON c.user_id = u.id
-        JOIN tb_user_info r ON c.reply_id = r.id
+        JOIN tb_user_info r ON c.reply_user_id = r.id
         WHERE
         c.is_review = 1
         AND
@@ -123,7 +123,7 @@
          tb_comment c
          LEFT JOIN tb_article a ON c.article_id = a.id
          LEFT JOIN tb_user_info u ON c.user_id = u.id
-         LEFT JOIN tb_user_info r ON c.reply_id = r.id
+         LEFT JOIN tb_user_info r ON c.reply_user_id = r.id
        <where>
            <if test="condition.type != null and condition.type == 1">
                c.article_id IS NOT NULL
