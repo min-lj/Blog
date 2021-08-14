@@ -295,8 +295,7 @@ export default {
         userId: this.userId,
         type: 3,
         ipAddress: this.ipAddress,
-        ipSource: this.ipSource,
-        createTime: new Date()
+        ipSource: this.ipSource
       };
       this.WebsocketMessage.type = 3;
       this.WebsocketMessage.data = socketMsg;
@@ -383,7 +382,6 @@ export default {
       }
       formData.append("ipAddress", this.ipAddress);
       formData.append("ipSource", this.ipSource);
-      formData.append("createTime", new Date());
       var options = {
         url: "/api/voice",
         data: formData,
