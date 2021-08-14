@@ -23,5 +23,4 @@ public class UserUtils {
         return (UserDetailDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-
 }

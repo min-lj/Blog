@@ -22,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel(description = "角色")
 public class RoleVO {
+
     /**
      * id
      */

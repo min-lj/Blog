@@ -1,16 +1,13 @@
 package com.minzheng.blog.strategy.context;
 
-import com.minzheng.blog.dto.ArticleSearchDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.enums.LoginTypeEnum;
 import com.minzheng.blog.strategy.SocialLoginStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
-import static com.minzheng.blog.enums.SearchModeEnum.getStrategy;
 
 /**
  * 第三方登录策略上下文
