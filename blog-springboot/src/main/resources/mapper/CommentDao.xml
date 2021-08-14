@@ -51,7 +51,7 @@
          JOIN tb_user_info u ON c.user_id = u.id
          JOIN tb_user_info r ON c.reply_user_id = r.id
          WHERE
-         c.is_review = 0
+         c.is_review = 1
          AND
          parent_id IN
          (
