@@ -78,7 +78,7 @@ upload:
   mode: oss
   local:
     # nginx映射本地文件路径
-    url: http://你的域名或ip/upload/
+    url: http://你的文件上传子域名/
     # 本地文件存储路径
     path: /usr/local/upload/
   oss:
@@ -90,7 +90,7 @@ upload:
 
 # 网站前台域名（邮件通知用）
 website:
-  url: http://你的域名或ip
+  url: http://你的主域名或ip
 
 #第三方配置信息
 qq:
