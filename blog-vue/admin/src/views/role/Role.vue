@@ -28,14 +28,14 @@
           size="small"
           placeholder="请输入角色名"
           style="width:200px"
-          @keyup.enter.native="listRoles"
+          @keyup.enter.native="searchRoles"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listRoles"
+          @click="searchRoles"
         >
           搜索
         </el-button>
@@ -217,13 +217,17 @@ export default {
     };
   },
   methods: {
+    searchRoles() {
+      this.current = 1;
+      this.listRoles();
+    },
     sizeChange(size) {
       this.size = size;
-      this.listUsers();
+      this.listRoles();
     },
     currentChange(current) {
       this.current = current;
-      this.listUsers();
+      this.listRoles();
     },
     selectionChange(roleList) {
       this.roleIdList = [];

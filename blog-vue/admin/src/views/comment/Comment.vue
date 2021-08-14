@@ -63,14 +63,14 @@
           size="small"
           placeholder="请输入用户昵称"
           style="width:200px"
-          @keyup.enter.native="listComments"
+          @keyup.enter.native="searchComments"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listComments"
+          @click="searchComments"
         >
           搜索
         </el-button>
@@ -240,6 +240,10 @@ export default {
         this.commentIdList.push(item.id);
       });
     },
+    searchComments() {
+      this.current = 1;
+      this.listComments();
+    },
     sizeChange(size) {
       this.size = size;
       this.listComments();
@@ -317,9 +321,11 @@ export default {
   },
   watch: {
     isReview() {
+      this.current = 1;
       this.listComments();
     },
     type() {
+      this.current = 1;
       this.listComments();
     }
   }

@@ -26,14 +26,14 @@
           size="small"
           placeholder="请输入昵称"
           style="width:200px"
-          @keyup.enter.native="listUsers"
+          @keyup.enter.native="searchUsers"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listUsers"
+          @click="searchUsers"
         >
           搜索
         </el-button>
@@ -214,13 +214,17 @@ export default {
           desc: "微博"
         }
       ],
-      keywords: "",
+      keywords: null,
       current: 1,
       size: 10,
       count: 0
     };
   },
   methods: {
+    searchUsers() {
+      this.current = 1;
+      this.listUsers();
+    },
     sizeChange(size) {
       this.size = size;
       this.listUsers();
@@ -285,6 +289,7 @@ export default {
   },
   watch: {
     loginType() {
+      this.current = 1;
       this.listUsers();
     }
   }

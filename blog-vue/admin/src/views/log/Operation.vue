@@ -20,14 +20,14 @@
           size="small"
           placeholder="请输入模块名或描述"
           style="width:200px"
-          @keyup.enter.native="listLogs"
+          @keyup.enter.native="searchLogs"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listLogs"
+          @click="searchLogs"
         >
           搜索
         </el-button>
@@ -201,6 +201,10 @@ export default {
       logList.forEach(item => {
         this.logIdList.push(item.id);
       });
+    },
+    searchLogs() {
+      this.current = 1;
+      this.listLogs();
     },
     sizeChange(size) {
       this.size = size;

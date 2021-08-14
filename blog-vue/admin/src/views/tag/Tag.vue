@@ -27,14 +27,14 @@
           size="small"
           placeholder="请输入标签名"
           style="width:200px"
-          @keyup.enter.native="listTags"
+          @keyup.enter.native="searchTags"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listTags"
+          @click="searchTags"
         >
           搜索
         </el-button>
@@ -155,6 +155,10 @@ export default {
       tagList.forEach(item => {
         this.tagIdList.push(item.id);
       });
+    },
+    searchTags() {
+      this.current = 1;
+      this.listTags();
     },
     sizeChange(size) {
       this.size = size;

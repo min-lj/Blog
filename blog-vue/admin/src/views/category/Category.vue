@@ -27,14 +27,14 @@
           size="small"
           placeholder="请输入分类名"
           style="width:200px"
-          @keyup.enter.native="listCategories"
+          @keyup.enter.native="searchCategories"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listCategories"
+          @click="searchCategories"
         >
           搜索
         </el-button>
@@ -149,6 +149,10 @@ export default {
       categoryList.forEach(item => {
         this.categoryIdList.push(item.id);
       });
+    },
+    searchCategories() {
+      this.current = 1;
+      this.listCategories();
     },
     sizeChange(size) {
       this.size = size;

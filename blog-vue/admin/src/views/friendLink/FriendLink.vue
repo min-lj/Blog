@@ -28,14 +28,14 @@
           size="small"
           placeholder="请输入友链名"
           style="width:200px"
-          @keyup.enter.native="listLinks"
+          @keyup.enter.native="searchLinks"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listLinks"
+          @click="searchLinks"
         >
           搜索
         </el-button>
@@ -175,6 +175,10 @@ export default {
       linkList.forEach(item => {
         this.linkIdList.push(item.id);
       });
+    },
+    searchLinks() {
+      this.current = 1;
+      this.listLinks();
     },
     sizeChange(size) {
       this.size = size;

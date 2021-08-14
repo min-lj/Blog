@@ -97,14 +97,14 @@
           size="small"
           placeholder="请输入文章名"
           style="width:200px"
-          @keyup.enter.native="listArticles"
+          @keyup.enter.native="searchArticles"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listArticles"
+          @click="searchArticles"
         >
           搜索
         </el-button>
@@ -370,6 +370,10 @@ export default {
         this.articleIdList.push(item.id);
       });
     },
+    searchArticles() {
+      this.current = 1;
+      this.listArticles();
+    },
     editArticle(id) {
       this.$router.push({ path: "/articles/" + id });
     },
@@ -507,18 +511,23 @@ export default {
   },
   watch: {
     type() {
+      this.current = 1;
       this.listArticles();
     },
     categoryId() {
+      this.current = 1;
       this.listArticles();
     },
     tagId() {
+      this.current = 1;
       this.listArticles();
     },
     status() {
+      this.current = 1;
       this.listArticles();
     },
     isDelete() {
+      this.current = 1;
       this.listArticles();
     }
   },

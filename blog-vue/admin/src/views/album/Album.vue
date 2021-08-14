@@ -27,14 +27,14 @@
           size="small"
           placeholder="请输入相册名"
           style="width:200px"
-          @keyup.enter.native="listAlbums"
+          @keyup.enter.native="searchAlbums"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listAlbums"
+          @click="searchAlbums"
         >
           搜索
         </el-button>
@@ -267,6 +267,10 @@ export default {
           }
           this.isdelete = false;
         });
+    },
+    searchAlbums() {
+      this.current = 1;
+      this.listAlbums();
     },
     sizeChange(size) {
       this.size = size;

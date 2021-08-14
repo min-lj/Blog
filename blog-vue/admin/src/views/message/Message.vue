@@ -50,14 +50,14 @@
           size="small"
           placeholder="请输入用户昵称"
           style="width:200px"
-          @keyup.enter.native="listMessages"
+          @keyup.enter.native="searchMessages"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listMessages"
+          @click="searchMessages"
         >
           搜索
         </el-button>
@@ -191,6 +191,10 @@ export default {
         this.messageIdList.push(item.id);
       });
     },
+    searchMessages() {
+      this.current = 1;
+      this.listMessages();
+    },
     sizeChange(size) {
       this.size = size;
       this.listMessages();
@@ -267,6 +271,7 @@ export default {
   },
   watch: {
     isReview() {
+      this.current = 1;
       this.listMessages();
     }
   }
