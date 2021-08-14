@@ -33,21 +33,23 @@ export default {
       });
     },
     updateAbout() {
-      let param = new URLSearchParams();
-      param.append("aboutContent", this.aboutContent);
-      this.axios.put("/api/admin/about", param).then(({ data }) => {
-        if (data.flag) {
-          this.$notify.success({
-            title: "成功",
-            message: data.message
-          });
-        } else {
-          this.$notify.error({
-            title: "失败",
-            message: data.message
-          });
-        }
-      });
+      this.axios
+        .put("/api/admin/about", {
+          aboutContent: this.aboutContent
+        })
+        .then(({ data }) => {
+          if (data.flag) {
+            this.$notify.success({
+              title: "成功",
+              message: data.message
+            });
+          } else {
+            this.$notify.error({
+              title: "失败",
+              message: data.message
+            });
+          }
+        });
     }
   }
 };

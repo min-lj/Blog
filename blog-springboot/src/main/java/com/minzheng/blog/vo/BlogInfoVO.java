@@ -24,5 +24,4 @@ public class BlogInfoVO {
      */
     private String aboutContent;
 
-
 }
