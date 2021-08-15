@@ -25,7 +25,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
+
+import static com.minzheng.blog.enums.ZoneEnum.SHANGHAI;
 
 
 /**
@@ -76,6 +79,7 @@ public abstract class AbstractSocialLoginStrategyImpl implements SocialLoginStra
                     .username(socialToken.getOpenId())
                     .password(socialToken.getAccessToken())
                     .loginType(socialToken.getLoginType())
+                    .lastLoginTime(LocalDateTime.now(ZoneId.of(SHANGHAI.getZone())))
                     .ipAddress(ipAddress)
                     .ipSource(ipSource)
                     .build();
