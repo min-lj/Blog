@@ -16,7 +16,7 @@
       <img src="https://img.shields.io/badge/JDK-1.8+-green.svg"/>
       <img src="https://img.shields.io/badge/springboot-2.4.2.RELEASE-green"/>
       <img src="https://img.shields.io/badge/vue-2.5.17-green"/>
-      <img src="https://img.shields.io/badge/mysql-8.0.25-green"/>
+      <img src="https://img.shields.io/badge/mysql-8.0.20-green"/>
       <img src="https://img.shields.io/badge/mybatis--plus-3.4.0-green"/>
       <img src="https://img.shields.io/badge/redis-6.0.5-green"/>
       <img src="https://img.shields.io/badge/elasticsearch-7.9.2-green"/>
@@ -114,7 +114,7 @@ blog-springboot
 |X-shell|Linux远程连接工具|
 |Xftp|Linux文件上传工具|
 
-|环境|版本|
+|开发环境|版本|
 |-|-|
 |JDK|1.8|
 |MySQL|8.0.20|
