@@ -1,3 +1,31 @@
+## 博客介绍
+
+<p align=center>
+  <a href="https://www.talkxj.com">
+    <img src="https://www.static.talkxj.com/avatar/blogger.jpg" alt="风丶宇的个人博客" style="width:200px;height:200px;border-radius: 50%">
+  </a>
+</p>
+
+<p align=center>
+   基于Springboot + Vue 开发的前后端分离博客
+</p>
+
+<p align="center">
+   <a target="_blank" href="https://github.com/X1192176811/blog">
+      <img src="https://img.shields.io/hexpm/l/plug.svg"/>
+      <img src="https://img.shields.io/badge/JDK-1.8+-green.svg"/>
+      <img src="https://img.shields.io/badge/springboot-2.4.2.RELEASE-green"/>
+      <img src="https://img.shields.io/badge/vue-2.5.17-green"/>
+      <img src="https://img.shields.io/badge/mysql-8.0.25-green"/>
+      <img src="https://img.shields.io/badge/mybatis--plus-3.1.2-green"/>
+      <img src="https://img.shields.io/badge/redis-6.0.5-green"/>
+      <img src="https://img.shields.io/badge/elasticsearch-7.9.2-green"/>
+      <img src="https://img.shields.io/badge/rabbitmq-3.8.5-green"/>
+   </a>
+</p>
+
+[博客介绍](#博客介绍) | [在线地址](#在线地址) | [目录结构](#目录结构) | [项目特点](#项目特点) | [技术介绍](#技术介绍) | [运行环境](#运行环境) | [开发工具](#开发工具) | [开发环境](#开发环境) | [项目截图](#项目截图) | [项目环境安装](#项目环境安装) | [项目配置](#项目配置) | [Docker部署项目](#Docker部署项目) | [注意事项](#注意事项) | [项目总结](#项目总结) | [关注&交流](#关注&交流)
+
 ## 在线地址
 
 **项目链接：** [www.talkxj.com](https://www.talkxj.com)
@@ -59,9 +87,9 @@ blog-springboot
 
 ## 技术介绍
 
-**前端：** "vue" + "vuex" + "vue-router" + "axios" + "vuetify" + "element" + "echarts"
+**前端：** vue + vuex + vue-router + axios + vuetify + element + echarts
 
-**后端：** "SpringBoot" + "nginx" + "docker" + "SpringSecurity" + "Swagger2" + "MyBatisPlus" + "Mysql" + "Redis" + "elasticsearch" + "rabbitMQ" + "MaxWell" + "websocket"
+**后端：** SpringBoot + nginx + docker + SpringSecurity + Swagger2 + MyBatisPlus + Mysql + Redis + elasticsearch + RabbitMQ + MaxWell + Websocket
 
 **其他：** 接入QQ，微博第三方登录，接入腾讯云人机验证、websocket
 
@@ -88,7 +116,7 @@ blog-springboot
 
 ## 开发环境
 
-|工具|版本|
+|环境|版本|
 |-|-|
 |JDK|1.8|
 |MySQL|8.0.20|
@@ -114,7 +142,7 @@ blog-springboot
 
 详见文章[项目配置教程](https://www.talkxj.com/articles/3)
 
-## docker部署项目
+## Docker部署项目
 
 详见文章[项目部署教程](https://www.talkxj.com/articles/13)
 
