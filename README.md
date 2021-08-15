@@ -18,6 +18,7 @@ SQL文件位于根目录下，需要MYSQL8以上版本。
 
 当你克隆项目到本地后可使用邮箱账号：admin@qq.com，密码：1234567进行登录，也可自行注册并将其修改为admin角色。
 
+```
 blog-springboot
 ├── annotation    --  自定义注解
 ├── aspect        --  aop模块
@@ -34,6 +35,7 @@ blog-springboot
 ├── strategy      --  策略模块（用于扩展第三方登录，搜索模式，上传文件模式等策略）
 ├── util          --  工具类模块
 └── vo            --  vo模块
+```
 
 ## 项目特点
 
