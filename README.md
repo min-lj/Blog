@@ -1,6 +1,12 @@
 ## 博客介绍
 
 <p align=center>
+  <a href="https://www.talkxj.com">
+    <img src="https://www.static.talkxj.com/articles/4a8ca439f6a4cce8316f9a885c632cee.jpg" alt="风丶宇的个人博客" style="border-radius: 50%">
+  </a>
+</p>
+
+<p align=center>
    基于Springboot + Vue 开发的前后端分离博客
 </p>
 
