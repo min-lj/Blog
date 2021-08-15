@@ -20,7 +20,7 @@ import static com.minzheng.blog.enums.UploadModeEnum.getStrategy;
 @Service
 public class UploadStrategyContext {
     /**
-     * 搜索模式
+     * 上传模式
      */
     @Value("${upload.mode}")
     private String uploadMode;
