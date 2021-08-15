@@ -17,7 +17,7 @@
       <img src="https://img.shields.io/badge/springboot-2.4.2.RELEASE-green"/>
       <img src="https://img.shields.io/badge/vue-2.5.17-green"/>
       <img src="https://img.shields.io/badge/mysql-8.0.25-green"/>
-      <img src="https://img.shields.io/badge/mybatis--plus-3.1.2-green"/>
+      <img src="https://img.shields.io/badge/mybatis--plus-3.4.0-green"/>
       <img src="https://img.shields.io/badge/redis-6.0.5-green"/>
       <img src="https://img.shields.io/badge/elasticsearch-7.9.2-green"/>
       <img src="https://img.shields.io/badge/rabbitmq-3.8.5-green"/>
