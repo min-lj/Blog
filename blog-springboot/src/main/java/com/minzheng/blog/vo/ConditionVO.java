@@ -24,6 +24,24 @@ import java.time.LocalDateTime;
 public class ConditionVO {
 
     /**
+     * 页码
+     */
+    @ApiModelProperty(name = "current", value = "页码", dataType = "Long")
+    private Long current;
+
+    /**
+     * 条数
+     */
+    @ApiModelProperty(name = "size", value = "条数", dataType = "Long")
+    private Long size;
+
+    /**
+     * 搜索内容
+     */
+    @ApiModelProperty(name = "keywords", value = "搜索内容", dataType = "String")
+    private String keywords;
+
+    /**
      * 分类id
      */
     @ApiModelProperty(name = "categoryId", value = "分类id", dataType = "Integer")
@@ -40,12 +58,6 @@ public class ConditionVO {
      */
     @ApiModelProperty(name = "albumId", value = "相册id", dataType = "Integer")
     private Integer albumId;
-
-    /**
-     * 搜索内容
-     */
-    @ApiModelProperty(name = "keywords", value = "搜索内容", dataType = "String")
-    private String keywords;
 
     /**
      * 登录类型
