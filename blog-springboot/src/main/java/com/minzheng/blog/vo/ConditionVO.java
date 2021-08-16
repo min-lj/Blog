@@ -44,25 +44,25 @@ public class ConditionVO {
     /**
      * 搜索内容
      */
-    @ApiModelProperty(name = "keywords", value = "搜索内容", required = true, dataType = "String")
+    @ApiModelProperty(name = "keywords", value = "搜索内容", dataType = "String")
     private String keywords;
 
     /**
      * 登录类型
      */
-    @ApiModelProperty(name = "type", value = "登录类型", required = true, dataType = "Integer")
+    @ApiModelProperty(name = "type", value = "登录类型", dataType = "Integer")
     private Integer loginType;
 
     /**
      * 类型
      */
-    @ApiModelProperty(name = "type", value = "类型", required = true, dataType = "Integer")
+    @ApiModelProperty(name = "type", value = "类型", dataType = "Integer")
     private Integer type;
 
     /**
      * 状态
      */
-    @ApiModelProperty(name = "status", value = "状态", required = true, dataType = "Integer")
+    @ApiModelProperty(name = "status", value = "状态", dataType = "Integer")
     private Integer status;
 
     /**
