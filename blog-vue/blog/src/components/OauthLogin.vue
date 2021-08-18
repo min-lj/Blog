@@ -49,7 +49,7 @@ export default {
       }
     } else {
       that.axios
-        .post("/api/users/oauth/weibo", { code: code })
+        .post("/api/users/oauth/weibo", { code: this.$route.query.code })
         .then(({ data }) => {
           if (data.flag) {
             //保存登录状态
