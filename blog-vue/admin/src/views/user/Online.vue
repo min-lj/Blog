@@ -11,14 +11,14 @@
           size="small"
           placeholder="请输入用户昵称"
           style="width:200px"
-          @keyup.enter.native="listResources"
+          @keyup.enter.native="listOnlineUsers"
         />
         <el-button
           type="primary"
           size="small"
           icon="el-icon-search"
           style="margin-left:1rem"
-          @click="listResources"
+          @click="listOnlineUsers"
         >
           搜索
         </el-button>

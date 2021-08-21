@@ -18,7 +18,6 @@
       :data="resourceList"
       row-key="id"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      @selection-change="selectionChange"
     >
       <el-table-column prop="resourceName" label="资源名" width="220" />
       <el-table-column prop="url" label="资源路径" width="300" />

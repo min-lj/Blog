@@ -134,7 +134,7 @@
         <i class="el-icon-more" />详细信息
       </div>
 
-      <el-form ref="form" :model="form" label-width="100px" size="mini">
+      <el-form ref="form" :model="optLog" label-width="100px" size="mini">
         <el-form-item label="操作模块：">
           {{ optLog.optModule }}
         </el-form-item>
