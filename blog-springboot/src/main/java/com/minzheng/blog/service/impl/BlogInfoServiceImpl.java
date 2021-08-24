@@ -75,7 +75,8 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询标签数量
         Integer tagCount = tagDao.selectCount(null);
         // 查询访问量
-        String viewsCount = redisService.get(BLOG_VIEWS_COUNT).toString();
+        Object count = redisService.get(BLOG_VIEWS_COUNT);
+        String viewsCount = Optional.ofNullable(count).orElse("0").toString();
         // 查询网站配置
         WebsiteConfigVO websiteConfig = this.getWebsiteConfig();
         // 查询页面图片
@@ -94,7 +95,8 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     @Override
     public BlogBackInfoDTO getBlogBackInfo() {
         // 查询访问量
-        Integer viewsCount = (Integer) redisService.get(BLOG_VIEWS_COUNT);
+        Object count = redisService.get(BLOG_VIEWS_COUNT);
+        Integer viewsCount = Integer.parseInt(Optional.ofNullable(count).orElse(0).toString());
         // 查询留言量
         Integer messageCount = messageDao.selectCount(null);
         // 查询用户量
