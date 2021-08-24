@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,9 @@ public class EsSearchStrategyImpl implements SearchStrategy {
 
     @Override
     public List<ArticleSearchDTO> searchArticle(String keywords) {
+        if (StringUtils.isBlank(keywords)) {
+            return new ArrayList<>();
+        }
         return search(buildQuery(keywords));
     }
 
@@ -49,12 +53,10 @@ public class EsSearchStrategyImpl implements SearchStrategy {
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         // 根据关键词搜索文章标题或内容
-        if (StringUtils.isNotBlank(keywords)) {
-            boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", keywords))
-                            .should(QueryBuilders.matchQuery("articleContent", keywords)))
-                    .must(QueryBuilders.termQuery("isDelete", FALSE))
-                    .must(QueryBuilders.termQuery("status", PUBLIC.getStatus()));
-        }
+        boolQueryBuilder.must(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("articleTitle", keywords))
+                        .should(QueryBuilders.matchQuery("articleContent", keywords)))
+                .must(QueryBuilders.termQuery("isDelete", FALSE))
+                .must(QueryBuilders.termQuery("status", PUBLIC.getStatus()));
         // 查询
         nativeSearchQueryBuilder.withQuery(boolQueryBuilder);
         return nativeSearchQueryBuilder;
