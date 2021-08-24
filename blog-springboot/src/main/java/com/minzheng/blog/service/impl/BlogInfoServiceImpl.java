@@ -76,7 +76,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         Integer tagCount = tagDao.selectCount(null);
         // 查询访问量
         Object count = redisService.get(BLOG_VIEWS_COUNT);
-        String viewsCount = Optional.ofNullable(count).orElse("0").toString();
+        String viewsCount = Optional.ofNullable(count).orElse(0).toString();
         // 查询网站配置
         WebsiteConfigVO websiteConfig = this.getWebsiteConfig();
         // 查询页面图片
