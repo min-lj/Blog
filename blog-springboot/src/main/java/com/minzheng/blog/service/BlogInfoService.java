@@ -55,5 +55,9 @@ public interface BlogInfoService {
      */
     void updateAbout(BlogInfoVO blogInfoVO);
 
+    /**
+     * 上传访客信息
+     */
+    void report();
 
 }

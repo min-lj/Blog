@@ -43,7 +43,10 @@ import Player from "./components/zw-player/player.vue";
 import ChatRoom from "./components/ChatRoom";
 export default {
   created() {
+    // 获取博客信息
     this.getBlogInfo();
+    // 上传访客信息
+    this.axios.post("/api/report");
   },
   components: {
     TopNavBar,

@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-
 import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
 
 /**
@@ -135,6 +134,17 @@ public class BlogInfoController {
     @PostMapping("/voice")
     public Result<String> sendVoice(VoiceVO voiceVO) {
         webSocketService.sendVoice(voiceVO);
+        return Result.ok();
+    }
+
+    /**
+     * 上传访客信息
+     *
+     * @return {@link Result}
+     */
+    @PostMapping("/report")
+    public Result<?> report() {
+        blogInfoService.report();
         return Result.ok();
     }
 

@@ -54,6 +54,16 @@ public class RedisPrefixConst {
     public static final String WEBSITE_CONFIG = "website_config";
 
     /**
+     * 用户地区
+     */
+    public static final String USER_AREA = "user_area";
+
+    /**
+     * 访客地区
+     */
+    public static final String VISITOR_AREA = "visitor_area";
+
+    /**
      * 页面封面
      */
     public static final String PAGE_COVER = "page_cover";

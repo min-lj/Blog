@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.minzheng.blog.dto.ArticleSearchDTO;
 import com.minzheng.blog.strategy.SearchStrategy;
+import lombok.extern.log4j.Log4j2;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -25,6 +26,7 @@ import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
  * @author yezhiqiu
  * @date 2021/07/27
  */
+@Log4j2
 @Service("esSearchStrategyImpl")
 public class EsSearchStrategyImpl implements SearchStrategy {
 
@@ -76,23 +78,28 @@ public class EsSearchStrategyImpl implements SearchStrategy {
         contentField.fragmentSize(200);
         nativeSearchQueryBuilder.withHighlightFields(titleField, contentField);
         // 搜索
-        SearchHits<ArticleSearchDTO> search = elasticsearchRestTemplate.search(nativeSearchQueryBuilder.build(), ArticleSearchDTO.class);
-        return search.getSearchHits().stream().map(hit -> {
-            ArticleSearchDTO article = hit.getContent();
-            // 获取文章标题高亮数据
-            List<String> titleHighLightList = hit.getHighlightFields().get("articleTitle");
-            if (CollectionUtils.isNotEmpty(titleHighLightList)) {
-                // 替换标题数据
-                article.setArticleTitle(titleHighLightList.get(0));
-            }
-            // 获取文章内容高亮数据
-            List<String> contentHighLightList = hit.getHighlightFields().get("articleContent");
-            if (CollectionUtils.isNotEmpty(contentHighLightList)) {
-                // 替换内容数据
-                article.setArticleContent(contentHighLightList.get(contentHighLightList.size() - 1));
-            }
-            return article;
-        }).collect(Collectors.toList());
+        try {
+            SearchHits<ArticleSearchDTO> search = elasticsearchRestTemplate.search(nativeSearchQueryBuilder.build(), ArticleSearchDTO.class);
+            return search.getSearchHits().stream().map(hit -> {
+                ArticleSearchDTO article = hit.getContent();
+                // 获取文章标题高亮数据
+                List<String> titleHighLightList = hit.getHighlightFields().get("articleTitle");
+                if (CollectionUtils.isNotEmpty(titleHighLightList)) {
+                    // 替换标题数据
+                    article.setArticleTitle(titleHighLightList.get(0));
+                }
+                // 获取文章内容高亮数据
+                List<String> contentHighLightList = hit.getHighlightFields().get("articleContent");
+                if (CollectionUtils.isNotEmpty(contentHighLightList)) {
+                    // 替换内容数据
+                    article.setArticleContent(contentHighLightList.get(contentHighLightList.size() - 1));
+                }
+                return article;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
 }

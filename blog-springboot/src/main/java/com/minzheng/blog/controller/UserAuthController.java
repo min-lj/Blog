@@ -1,6 +1,7 @@
 package com.minzheng.blog.controller;
 
 
+import com.minzheng.blog.dto.UserAreaDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.vo.PageResult;
 import com.minzheng.blog.dto.UserBackDTO;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 用户账号控制器
@@ -38,6 +40,18 @@ public class UserAuthController {
     public Result<?> sendCode(String username) {
         userAuthService.sendCode(username);
         return Result.ok();
+    }
+
+    /**
+     * 获取用户区域分布
+     *
+     * @param conditionVO 条件
+     * @return {@link Result<UserAreaDTO>} 用户区域分布
+     */
+    @ApiOperation(value = "获取用户区域分布")
+    @GetMapping("/admin/user/area")
+    public Result<List<UserAreaDTO>> listUserAreas(ConditionVO conditionVO) {
+        return Result.ok(userAuthService.listUserAreas(conditionVO));
     }
 
     /**

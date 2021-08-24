@@ -1,10 +1,13 @@
 package com.minzheng.blog.service;
 
+import com.minzheng.blog.dto.UserAreaDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.vo.*;
 import com.minzheng.blog.dto.UserBackDTO;
 import com.minzheng.blog.entity.UserAuth;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 
 /**
@@ -21,6 +24,14 @@ public interface UserAuthService extends IService<UserAuth> {
      * @param username 邮箱号
      */
     void sendCode(String username);
+
+    /**
+     * 获取用户区域分布
+     *
+     * @param conditionVO 条件签证官
+     * @return {@link List<UserAreaDTO>} 用户区域分布
+     */
+    List<UserAreaDTO> listUserAreas(ConditionVO conditionVO);
 
     /**
      * 用户注册

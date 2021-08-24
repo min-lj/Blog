@@ -45,6 +45,11 @@ public class BlogBackInfoDTO {
     private List<CategoryDTO> categoryDTOList;
 
     /**
+     * 标签列表
+     */
+    private List<TagDTO> tagDTOList;
+
+    /**
      * 文章统计列表
      */
     private List<ArticleStatisticsDTO> articleStatisticsList;
@@ -58,7 +63,5 @@ public class BlogBackInfoDTO {
      * 文章浏览量排行
      */
     private List<ArticleRankDTO> articleRankDTOList;
-
-
 
 }

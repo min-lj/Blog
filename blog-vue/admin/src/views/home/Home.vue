@@ -64,7 +64,7 @@
         />
       </div>
     </el-card>
-    <el-row :gutter="30" style="margin-top:1.25rem">
+    <el-row :gutter="20" style="margin-top:1.25rem">
       <!-- 文章浏览量排行 -->
       <el-col :span="16">
         <el-card>
@@ -84,22 +84,91 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-row :gutter="20" style="margin-top:1.25rem">
+      <!-- 用户地域分布 -->
+      <el-col :span="16">
+        <el-card>
+          <div class="e-title">用户地域分布</div>
+          <div style="height:350px" v-loading="loading">
+            <div class="area-wrapper">
+              <el-radio-group v-model="type">
+                <el-radio :label="1">用户</el-radio>
+                <el-radio :label="2">游客</el-radio>
+              </el-radio-group>
+            </div>
+            <v-chart :options="userAreaMap" />
+          </div>
+        </el-card>
+      </el-col>
+      <!-- 文章标签统计 -->
+      <el-col :span="8">
+        <el-card>
+          <div class="e-title">文章标签统计</div>
+          <div style="height:350px;" v-loading="loading">
+            <tag-cloud style="margin-top:1.5rem" :data="tagDTOList" />
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import "../../assets/js/china";
 export default {
   created() {
+    this.listUserArea();
     this.getData();
   },
   data: function() {
     return {
+      myColors: ["#1f77b4", "#629fc9", "#94bedb", "#c9e0ef"],
+      defaultWords: [
+        {
+          name: "内容1",
+          value: 26
+        },
+        {
+          name: "内容2",
+          value: 19
+        },
+        {
+          name: "内容3",
+          value: 18
+        },
+        {
+          name: "内容4",
+          value: 16
+        },
+        {
+          name: "内容5",
+          value: 15
+        },
+        {
+          name: "内容6",
+          value: 9
+        },
+        {
+          name: "内容7",
+          value: 9
+        },
+        {
+          name: "内容8",
+          value: 9
+        },
+        {
+          name: "内容9",
+          value: 6
+        }
+      ],
       loading: true,
+      type: 1,
       viewsCount: 0,
       messageCount: 0,
       userCount: 0,
       articleCount: 0,
       articleStatisticsList: [],
+      tagDTOList: [],
       viewCount: {
         tooltip: {
           trigger: "axis",
@@ -191,7 +260,81 @@ export default {
           {
             name: "文章分类",
             type: "pie",
+            roseType: "radius",
             data: []
+          }
+        ]
+      },
+      userAreaMap: {
+        tooltip: {
+          formatter: function(e) {
+            var value = e.value ? e.value : 0;
+            return e.seriesName + "<br />" + e.name + "：" + value;
+          }
+        },
+        visualMap: {
+          min: 0,
+          max: 1000,
+          right: 26,
+          bottom: 40,
+          showLabel: !0,
+          pieces: [
+            {
+              gt: 100,
+              label: "100人以上",
+              color: "#ED5351"
+            },
+            {
+              gte: 51,
+              lt: 100,
+              label: "51-100人",
+              color: "#59D9A5"
+            },
+            {
+              gt: 21,
+              lte: 50,
+              label: "21-50人",
+              color: "#F6C021"
+            },
+            {
+              label: "1-20人",
+              gt: 0,
+              lte: 20,
+              color: "#6DCAEC"
+            }
+          ],
+          show: !0
+        },
+        geo: {
+          map: "china",
+          zoom: 1.2,
+          layoutCenter: ["50%", "50%"], //地图中心在屏幕中的位置
+          //   label: {
+          //     normal: {
+          //       show: !0,
+          //       fontSize: "12",
+          //       color: "rgba(0,0,0,0.7)"
+          //     }
+          //   },
+          itemStyle: {
+            normal: {
+              borderColor: "rgba(0, 0, 0, 0.2)"
+            },
+            emphasis: {
+              areaColor: "#F5DEB3",
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              borderWidth: 0
+            }
+          }
+        },
+        series: [
+          {
+            name: "用户人数",
+            type: "map",
+            geoIndex: 0,
+            data: [],
+            areaColor: "#0FB8F0"
           }
         ]
       }
@@ -229,8 +372,33 @@ export default {
           });
         }
 
+        if (data.data.tagDTOList != null) {
+          data.data.tagDTOList.forEach(item => {
+            this.tagDTOList.push({
+              id: item.id,
+              name: item.tagName
+            });
+          });
+        }
+
         this.loading = false;
       });
+    },
+    listUserArea() {
+      this.axios
+        .get("/api/admin/user/area", {
+          params: {
+            type: this.type
+          }
+        })
+        .then(({ data }) => {
+          this.userAreaMap.series[0].data = data.data;
+        });
+    }
+  },
+  watch: {
+    type() {
+      this.listUserArea();
     }
   }
 };
@@ -240,6 +408,10 @@ export default {
 .card-icon-container {
   display: inline-block;
   font-size: 3rem;
+}
+.area-wrapper {
+  display: flex;
+  justify-content: center;
 }
 .card-desc {
   font-weight: bold;
