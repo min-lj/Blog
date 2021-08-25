@@ -127,18 +127,8 @@ public class BlogInfoServiceImpl implements BlogInfoService {
                     .uniqueViewDTOList(uniqueViewList)
                     .build();
         }
-        // 查询文章数据
-        List<Integer> articleIdList = new ArrayList<>();
-        articleMap.forEach((key, value) -> articleIdList.add((Integer) key));
-        List<ArticleRankDTO> articleRankDTOList = articleDao.selectList(new LambdaQueryWrapper<Article>()
-                        .select(Article::getId, Article::getArticleTitle)
-                        .in(Article::getId, articleIdList))
-                .stream().map(article -> ArticleRankDTO.builder()
-                        .articleTitle(article.getArticleTitle())
-                        .viewsCount(articleMap.get(article.getId()).intValue())
-                        .build())
-                .sorted(Comparator.comparingInt(ArticleRankDTO::getViewsCount).reversed())
-                .collect(Collectors.toList());
+        // 查询文章排行
+        List<ArticleRankDTO> articleRankDTOList = listArticleRank(articleMap);
         return BlogBackInfoDTO.builder()
                 .articleStatisticsList(articleStatisticsList)
                 .viewsCount(viewsCount)
@@ -218,6 +208,26 @@ public class BlogInfoServiceImpl implements BlogInfoService {
             redisService.incr(BLOG_VIEWS_COUNT, 1);
             redisService.sAdd(UNIQUE_VISITOR, md5);
         }
+    }
+
+    /**
+     * 查询文章排行
+     *
+     * @param articleMap 文章信息
+     * @return {@link List<ArticleRankDTO>} 文章排行
+     */
+    private List<ArticleRankDTO> listArticleRank(Map<Object, Double> articleMap) {
+        List<Integer> articleIdList = new ArrayList<>();
+        articleMap.forEach((key, value) -> articleIdList.add((Integer) key));
+        return articleDao.selectList(new LambdaQueryWrapper<Article>()
+                        .select(Article::getId, Article::getArticleTitle)
+                        .in(Article::getId, articleIdList))
+                .stream().map(article -> ArticleRankDTO.builder()
+                        .articleTitle(article.getArticleTitle())
+                        .viewsCount(articleMap.get(article.getId()).intValue())
+                        .build())
+                .sorted(Comparator.comparingInt(ArticleRankDTO::getViewsCount).reversed())
+                .collect(Collectors.toList());
     }
 
 }
