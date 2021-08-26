@@ -2,6 +2,7 @@ package com.minzheng.blog.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.minzheng.blog.strategy.context.UploadStrategyContext;
 import com.minzheng.blog.vo.*;
 import com.minzheng.blog.dto.UserDetailDTO;
@@ -133,6 +134,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> impl
         List<UserOnlineDTO> userOnlineDTOList = sessionRegistry.getAllPrincipals().stream()
                 .filter(item -> sessionRegistry.getAllSessions(item, false).size() > 0)
                 .map(item -> JSON.parseObject(JSON.toJSONString(item), UserOnlineDTO.class))
+                .filter(item -> StringUtils.isBlank(conditionVO.getKeywords()) || item.getNickname().contains(conditionVO.getKeywords()))
                 .sorted(Comparator.comparing(UserOnlineDTO::getLastLoginTime).reversed())
                 .collect(Collectors.toList());
         // 执行分页

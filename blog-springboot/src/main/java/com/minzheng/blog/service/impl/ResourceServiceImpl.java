@@ -1,6 +1,8 @@
 package com.minzheng.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.ResourceDao;
 import com.minzheng.blog.dao.RoleResourceDao;
@@ -12,6 +14,7 @@ import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.handler.FilterInvocationSecurityMetadataSourceImpl;
 import com.minzheng.blog.service.ResourceService;
 import com.minzheng.blog.util.BeanCopyUtils;
+import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.ResourceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +101,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         }
         // 删除子资源
         List<Integer> resourceIdList = resourceDao.selectList(new LambdaQueryWrapper<Resource>()
-                .select(Resource::getId).
+                        .select(Resource::getId).
                         eq(Resource::getParentId, resourceId))
                 .stream()
                 .map(Resource::getId)
@@ -108,20 +111,32 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
     }
 
     @Override
-    public List<ResourceDTO> listResources() {
+    public List<ResourceDTO> listResources(ConditionVO conditionVO) {
         // 查询资源列表
-        List<Resource> resourceList = resourceDao.selectList(null);
+        List<Resource> resourceList = resourceDao.selectList(new LambdaQueryWrapper<Resource>()
+                .like(StringUtils.isNotBlank(conditionVO.getKeywords()), Resource::getResourceName, conditionVO.getKeywords()));
         // 获取所有模块
         List<Resource> parentList = listResourceModule(resourceList);
         // 根据父id分组获取模块下的资源
         Map<Integer, List<Resource>> childrenMap = listResourceChildren(resourceList);
         // 绑定模块下的所有接口
-        return parentList.stream().map(item -> {
+        List<ResourceDTO> resourceDTOList = parentList.stream().map(item -> {
             ResourceDTO resourceDTO = BeanCopyUtils.copyObject(item, ResourceDTO.class);
             List<ResourceDTO> childrenList = BeanCopyUtils.copyList(childrenMap.get(item.getId()), ResourceDTO.class);
             resourceDTO.setChildren(childrenList);
+            childrenMap.remove(item.getId());
             return resourceDTO;
         }).collect(Collectors.toList());
+        // 若还有资源未取出则拼接
+        if (CollectionUtils.isNotEmpty(childrenMap)) {
+            List<Resource> childrenList = new ArrayList<>();
+            childrenMap.values().forEach(childrenList::addAll);
+            List<ResourceDTO> childrenDTOList = childrenList.stream()
+                    .map(item -> BeanCopyUtils.copyObject(item, ResourceDTO.class))
+                    .collect(Collectors.toList());
+            resourceDTOList.addAll(childrenDTOList);
+        }
+        return resourceDTOList;
     }
 
     @Override

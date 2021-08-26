@@ -110,7 +110,8 @@ export default {
         .get("/api/admin/users/online", {
           params: {
             current: this.current,
-            size: this.size
+            size: this.size,
+            keywords: this.keywords
           }
         })
         .then(({ data }) => {

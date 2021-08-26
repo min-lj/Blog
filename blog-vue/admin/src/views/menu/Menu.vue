@@ -12,7 +12,7 @@
         新增菜单
       </el-button>
       <!-- 数据筛选 -->
-      <!-- <div style="margin-left:auto">
+      <div style="margin-left:auto">
         <el-input
           v-model="keywords"
           prefix-icon="el-icon-search"
@@ -30,7 +30,7 @@
         >
           搜索
         </el-button>
-      </div> -->
+      </div>
     </div>
     <!-- 权限列表 -->
     <el-table
