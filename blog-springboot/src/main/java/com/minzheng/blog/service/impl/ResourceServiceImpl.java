@@ -153,7 +153,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         return parentList.stream().map(item -> {
             List<LabelOptionDTO> list = new ArrayList<>();
             List<Resource> children = childrenMap.get(item.getId());
-            if (Objects.nonNull(children)) {
+            if (CollectionUtils.isNotEmpty(children)) {
                 list = children.stream()
                         .map(resource -> LabelOptionDTO.builder()
                                 .id(resource.getId())
