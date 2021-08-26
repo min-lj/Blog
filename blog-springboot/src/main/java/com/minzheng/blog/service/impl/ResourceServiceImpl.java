@@ -96,7 +96,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> impl
         // 查询是否有角色关联
         Integer count = roleResourceDao.selectCount(new LambdaQueryWrapper<RoleResource>()
                 .eq(RoleResource::getResourceId, resourceId));
-        if (count > 1) {
+        if (count > 0) {
             throw new BizException("该资源下存在角色");
         }
         // 删除子资源
