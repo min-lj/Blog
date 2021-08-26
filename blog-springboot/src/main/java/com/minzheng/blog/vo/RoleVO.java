@@ -33,7 +33,7 @@ public class RoleVO {
      * 标签名
      */
     @NotBlank(message = "角色名不能为空")
-    @ApiModelProperty(name = "categoryName", value = "标签名", required = true, dataType = "String")
+    @ApiModelProperty(name = "roleName", value = "角色名", required = true, dataType = "String")
     private String roleName;
 
     /**
