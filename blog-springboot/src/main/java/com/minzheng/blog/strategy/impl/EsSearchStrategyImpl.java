@@ -101,7 +101,7 @@ public class EsSearchStrategyImpl implements SearchStrategy {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return null;
+        return new ArrayList<>();
     }
 
 }
