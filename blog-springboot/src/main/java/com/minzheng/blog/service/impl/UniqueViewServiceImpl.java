@@ -46,7 +46,7 @@ public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView
         return uniqueViewDao.listUniqueViews(startTime, endTime);
     }
 
-    @Scheduled(cron = " 0 0 0 * * ?")
+    @Scheduled(cron = " 0 0 0 * * ?", zone = "Asia/Shanghai")
     public void saveUniqueView() {
         // 获取每天用户量
         Long count = redisService.sSize(UNIQUE_VISITOR);
@@ -58,7 +58,7 @@ public class UniqueViewServiceImpl extends ServiceImpl<UniqueViewDao, UniqueView
         uniqueViewDao.insert(uniqueView);
     }
 
-    @Scheduled(cron = " 0 1 0 * * ?")
+    @Scheduled(cron = " 0 1 0 * * ?", zone = "Asia/Shanghai")
     public void clear() {
         // 清空redis访客记录
         redisService.del(UNIQUE_VISITOR);
