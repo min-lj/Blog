@@ -5,7 +5,6 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
-import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.List;
 import java.util.Map;
