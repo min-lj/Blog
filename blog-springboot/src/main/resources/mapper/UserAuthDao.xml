@@ -54,10 +54,8 @@
                   login_type =  #{condition.loginType}
                 )
             </if>
-        </where>
-        <where>
             <if test="condition.keywords != null">
-                nickname like concat('%',#{condition.keywords},'%')
+               and nickname like concat('%',#{condition.keywords},'%')
             </if>
         </where>
         LIMIT #{current},#{size}

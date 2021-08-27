@@ -187,6 +187,7 @@
 export default {
   created() {
     this.listUsers();
+    this.listRoles();
   },
   data: function() {
     return {
@@ -282,6 +283,8 @@ export default {
           this.count = data.data.count;
           this.loading = false;
         });
+    },
+    listRoles() {
       this.axios.get("/api/admin/users/role").then(({ data }) => {
         this.userRoleList = data.data;
       });
