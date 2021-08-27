@@ -122,45 +122,6 @@ export default {
   },
   data: function() {
     return {
-      myColors: ["#1f77b4", "#629fc9", "#94bedb", "#c9e0ef"],
-      defaultWords: [
-        {
-          name: "内容1",
-          value: 26
-        },
-        {
-          name: "内容2",
-          value: 19
-        },
-        {
-          name: "内容3",
-          value: 18
-        },
-        {
-          name: "内容4",
-          value: 16
-        },
-        {
-          name: "内容5",
-          value: 15
-        },
-        {
-          name: "内容6",
-          value: 9
-        },
-        {
-          name: "内容7",
-          value: 9
-        },
-        {
-          name: "内容8",
-          value: 9
-        },
-        {
-          name: "内容9",
-          value: 6
-        }
-      ],
       loading: true,
       type: 1,
       viewsCount: 0,
@@ -286,12 +247,12 @@ export default {
             },
             {
               gte: 51,
-              lt: 100,
+              lte: 100,
               label: "51-100人",
               color: "#59D9A5"
             },
             {
-              gt: 21,
+              gte: 21,
               lte: 50,
               label: "21-50人",
               color: "#F6C021"
