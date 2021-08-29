@@ -32,7 +32,13 @@
 
 **后台链接：** [www.admin.talkxj.com](https://www.admin.talkxj.com)
 
-测试账号：test@qq.com，密码：1234567，可登入后台查看
+测试账号：test@qq.com，密码：1234567，可登入后台查看。
+
+**Github地址：** [https://github.com/X1192176811/blog](https://github.com/X1192176811/blog)
+
+**Gitee地址：** [https://gitee.com/feng_meiyu/blog](https://gitee.com/feng_meiyu/blog)
+
+您的star是我坚持的动力，感谢大家的支持。
 
 ## 目录结构
 
@@ -69,7 +75,7 @@ blog-springboot
 
 ## 项目特点
 
-- 前台参考"Hexo"的"Butterfly"设计，美观简洁，响应式体验好
+- 前台参考"Hexo"的"Butterfly"设计，美观简洁，响应式体验好。
 - 后台参考"element-admin"设计，侧边栏，历史标签，面包屑自动生成。
 - 采用Markdown编辑器，写法简单。
 - 评论支持表情输入回复等，样式参考Valine。
