@@ -106,7 +106,6 @@ public class FileUtils {
         return inputStream;
     }
 
-
     /**
      * 自动调节精度(经验数值)
      *
