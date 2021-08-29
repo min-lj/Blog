@@ -38,7 +38,7 @@
 
 **Gitee地址：** [https://gitee.com/feng_meiyu/blog](https://gitee.com/feng_meiyu/blog)
 
-您的star是我坚持的动力，感谢大家的支持。
+您的star是我坚持的动力，感谢大家的支持，欢迎提交pr共同改进项目。
 
 ## 目录结构
 
