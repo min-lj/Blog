@@ -45,7 +45,7 @@ export default {
             });
         });
       } else {
-        that.$toast({ type: "error", message: "登录失败" });
+        that.$toast({ type: "error", message: data.message });
       }
     } else {
       that.axios
@@ -67,8 +67,13 @@ export default {
           }
         });
     }
-    //跳转回原页面
-    that.$router.push({ path: that.$store.state.loginUrl });
+    // 跳转回原页面
+    const loginUrl = that.$store.state.loginUrl;
+    if (loginUrl != null && loginUrl != "") {
+      that.$router.push({ path: loginUrl });
+    } else {
+      that.$router.push({ path: "/" });
+    }
   }
 };
 </script>
