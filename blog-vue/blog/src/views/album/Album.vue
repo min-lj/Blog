@@ -62,6 +62,7 @@ export default {
 }
 .album-cover {
   position: relative;
+  max-width: none;
   width: calc(100% + 1.25rem);
   height: 250px;
   opacity: 0.8;
