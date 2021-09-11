@@ -162,6 +162,7 @@
             drag
             action="/api/admin/articles/images"
             multiple
+            :before-upload="beforeUpload"
             :on-success="uploadCover"
           >
             <i class="el-icon-upload" v-if="article.articleCover == ''" />
@@ -203,6 +204,7 @@
 </template>
 
 <script>
+import * as imageConversion from "image-conversion";
 export default {
   created() {
     const path = this.$route.path;
@@ -286,14 +288,44 @@ export default {
     uploadCover(response) {
       this.article.articleCover = response.data;
     },
+    beforeUpload(file) {
+      return new Promise(resolve => {
+        if (file.size / 1024 < this.config.UPLOAD_SIZE) {
+          resolve(file);
+        }
+        // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+        imageConversion
+          .compressAccurately(file, this.config.UPLOAD_SIZE)
+          .then(res => {
+            resolve(res);
+          });
+      });
+    },
     uploadImg(pos, file) {
       var formdata = new FormData();
-      formdata.append("file", file);
-      this.axios
-        .post("/api/admin/articles/images", formdata)
-        .then(({ data }) => {
-          this.$refs.md.$img2Url(pos, data.data);
-        });
+      if (file.size / 1024 < this.config.UPLOAD_SIZE) {
+        formdata.append("file", file);
+        this.axios
+          .post("/api/admin/articles/images", formdata)
+          .then(({ data }) => {
+            this.$refs.md.$img2Url(pos, data.data);
+          });
+      } else {
+        // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+        imageConversion
+          .compressAccurately(file, this.config.UPLOAD_SIZE)
+          .then(res => {
+            formdata.append(
+              "file",
+              new window.File([res], file.name, { type: file.type })
+            );
+            this.axios
+              .post("/api/admin/articles/images", formdata)
+              .then(({ data }) => {
+                this.$refs.md.$img2Url(pos, data.data);
+              });
+          });
+      }
     },
     saveArticleDraft() {
       if (this.article.articleTitle.trim() == "") {

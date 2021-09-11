@@ -108,12 +108,6 @@
             <artifactId>hutool-all</artifactId>
             <version>5.7.5</version>
         </dependency>
-        <!-- 图片压缩 -->
-        <dependency>
-            <groupId>net.coobird</groupId>
-            <artifactId>thumbnailator</artifactId>
-            <version>0.4.8</version>
-        </dependency>
         <dependency>
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>

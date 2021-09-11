@@ -2,7 +2,6 @@ package com.minzheng.blog.util;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.log4j.Log4j2;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,30 +80,6 @@ public class FileUtils {
         return file;
     }
 
-    /**
-     * 根据指定大小压缩图片
-     *
-     * @param inputStream 输入流
-     * @param size        文件大小
-     * @return 压缩后图片
-     */
-    public static InputStream compressImage(InputStream inputStream, long size) throws IOException {
-        ByteArrayOutputStream outputStream = null;
-        double accuracy = getAccuracy(size / 1024);
-        while (size > 200 * 1024) {
-            outputStream = new ByteArrayOutputStream();
-            Thumbnails.of(inputStream)
-                    .scale(accuracy)
-                    .outputQuality(accuracy)
-                    .toOutputStream(outputStream);
-            size = outputStream.toByteArray().length;
-            inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        }
-        if (Objects.nonNull(outputStream)) {
-            outputStream.close();
-        }
-        return inputStream;
-    }
 
     /**
      * 自动调节精度(经验数值)

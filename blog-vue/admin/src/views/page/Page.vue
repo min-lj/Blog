@@ -54,6 +54,7 @@
             :show-file-list="false"
             action="/api/admin/config/images"
             multiple
+            :before-upload="beforeUpload"
             :on-success="uploadCover"
           >
             <i class="el-icon-upload" v-if="pageForum.pageCover == ''" />
@@ -93,6 +94,7 @@
 </template>
 
 <script>
+import * as imageConversion from "image-conversion";
 export default {
   created() {
     this.listPages();
@@ -169,6 +171,19 @@ export default {
     },
     uploadCover(response) {
       this.pageForum.pageCover = response.data;
+    },
+    beforeUpload(file) {
+      return new Promise(resolve => {
+        if (file.size / 1024 < this.config.UPLOAD_SIZE) {
+          resolve(file);
+        }
+        // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+        imageConversion
+          .compressAccurately(file, this.config.UPLOAD_SIZE)
+          .then(res => {
+            resolve(res);
+          });
+      });
     },
     handleCommand(command) {
       const type = command.substring(0, 6);

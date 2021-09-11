@@ -95,6 +95,7 @@
             class="upload-cover"
             drag
             :show-file-list="false"
+            :before-upload="beforeUpload"
             action="/api/admin/config/images"
             multiple
             :on-success="uploadCover"
@@ -142,6 +143,7 @@
 </template>
 
 <script>
+import * as imageConversion from "image-conversion";
 export default {
   created() {
     this.listAlbums();
@@ -237,6 +239,19 @@ export default {
     },
     uploadCover(response) {
       this.albumForum.albumCover = response.data;
+    },
+    beforeUpload(file) {
+      return new Promise(resolve => {
+        if (file.size / 1024 < this.config.UPLOAD_SIZE) {
+          resolve(file);
+        }
+        // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+        imageConversion
+          .compressAccurately(file, this.config.UPLOAD_SIZE)
+          .then(res => {
+            resolve(res);
+          });
+      });
     },
     handleCommand(command) {
       const type = command.substring(0, 6);

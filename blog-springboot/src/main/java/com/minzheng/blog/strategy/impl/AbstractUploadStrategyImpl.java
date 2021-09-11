@@ -1,6 +1,5 @@
 package com.minzheng.blog.strategy.impl;
 
-import com.minzheng.blog.enums.FileExtEnum;
 import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.strategy.UploadStrategy;
 import com.minzheng.blog.util.FileUtils;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Objects;
 
 /**
  * 抽象上传模板
@@ -30,20 +28,7 @@ public abstract class AbstractUploadStrategyImpl implements UploadStrategy {
             String fileName = md5 + extName;
             // 判断文件是否已经上传
             if (!exists(path + fileName)) {
-                InputStream inputStream;
-                // 判断上传文件类型（图片，音频）
-                switch (Objects.requireNonNull(FileExtEnum.getFileExt(extName))) {
-                    case JPG:
-                    case PNG:
-                    case JPEG:
-                        // 压缩图片
-                        inputStream = FileUtils.compressImage(file.getInputStream(), file.getSize());
-                        break;
-                    default:
-                        inputStream = file.getInputStream();
-                        break;
-                }
-                upload(path, fileName, inputStream);
+                upload(path, fileName, file.getInputStream());
             }
             return getFileAccessUrl(path + fileName);
         } catch (Exception e) {

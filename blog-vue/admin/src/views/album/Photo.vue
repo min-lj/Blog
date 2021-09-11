@@ -114,6 +114,7 @@
           list-type="picture-card"
           :file-list="uploadList"
           multiple
+          :before-upload="beforeUpload"
           :on-success="upload"
           :on-remove="handleRemove"
         >
@@ -125,6 +126,7 @@
             drag
             action="/api/admin/articles/images"
             multiple
+            :before-upload="beforeUpload"
             :on-success="upload"
             :show-file-list="false"
           >
@@ -231,6 +233,7 @@
 </template>
 
 <script>
+import * as imageConversion from "image-conversion";
 export default {
   created() {
     this.getAlbumInfo();
@@ -387,6 +390,19 @@ export default {
     },
     upload(response) {
       this.uploadList.push({ url: response.data });
+    },
+    beforeUpload(file) {
+      return new Promise(resolve => {
+        if (file.size / 1024 < this.config.UPLOAD_SIZE) {
+          resolve(file);
+        }
+        // 压缩到200KB,这里的200就是要压缩的大小,可自定义
+        imageConversion
+          .compressAccurately(file, this.config.UPLOAD_SIZE)
+          .then(res => {
+            resolve(res);
+          });
+      });
     },
     handleCheckAllChange(val) {
       this.selectPhotoIdList = val ? this.photoIdList : [];
