@@ -130,7 +130,6 @@ public abstract class AbstractSocialLoginStrategyImpl implements SocialLoginStra
      * @return {@link UserDetailDTO} 用户信息
      */
     private UserDetailDTO saveUserDetail(SocialTokenDTO socialToken, String ipAddress, String ipSource) {
-        UserDetailDTO userDetailDTO;
         // 获取第三方用户信息
         SocialUserInfoDTO socialUserInfo = getSocialUserInfo(socialToken);
         // 保存用户信息
@@ -156,9 +155,7 @@ public abstract class AbstractSocialLoginStrategyImpl implements SocialLoginStra
                 .roleId(RoleEnum.USER.getRoleId())
                 .build();
         userRoleDao.insert(userRole);
-        // 封装登录信息
-        userDetailDTO = userDetailsService.convertUserDetail(userAuth, request);
-        return userDetailDTO;
+        return userDetailsService.convertUserDetail(userAuth, request);
     }
 
 }
