@@ -49,7 +49,7 @@ public class UserAuthController {
      * @return {@link Result<UserAreaDTO>} 用户区域分布
      */
     @ApiOperation(value = "获取用户区域分布")
-    @GetMapping("/admin/user/area")
+    @GetMapping("/admin/users/area")
     public Result<List<UserAreaDTO>> listUserAreas(ConditionVO conditionVO) {
         return Result.ok(userAuthService.listUserAreas(conditionVO));
     }

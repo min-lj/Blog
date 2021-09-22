@@ -347,7 +347,7 @@ export default {
     },
     listUserArea() {
       this.axios
-        .get("/api/admin/user/area", {
+        .get("/api/admin/users/area", {
           params: {
             type: this.type
           }

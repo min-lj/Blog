@@ -102,7 +102,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     @Override
     public List<LabelOptionDTO> listMenuOptions() {
         // 查询菜单数据
-        List<Menu> menuList = this.list(new LambdaQueryWrapper<Menu>()
+        List<Menu> menuList = menuDao.selectList(new LambdaQueryWrapper<Menu>()
                 .select(Menu::getId, Menu::getName, Menu::getParentId, Menu::getOrderNum));
         // 获取目录列表
         List<Menu> catalogList = listCatalog(menuList);

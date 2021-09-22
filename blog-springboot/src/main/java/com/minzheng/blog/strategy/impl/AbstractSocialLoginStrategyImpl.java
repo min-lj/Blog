@@ -59,13 +59,13 @@ public abstract class AbstractSocialLoginStrategyImpl implements SocialLoginStra
         // 获取用户ip信息
         String ipAddress = IpUtils.getIpAddress(request);
         String ipSource = IpUtils.getIpSource(ipAddress);
-        // 判断是否注册
+        // 判断是否已注册
         UserAuth user = getUserAuth(socialToken);
         if (Objects.nonNull(user)) {
             // 返回数据库用户信息
             userDetailDTO = getUserDetail(user, ipAddress, ipSource);
         } else {
-            // 返回新增用户信息
+            // 获取第三方用户信息，保存到数据库返回
             userDetailDTO = saveUserDetail(socialToken, ipAddress, ipSource);
         }
         // 将登录信息放入springSecurity管理

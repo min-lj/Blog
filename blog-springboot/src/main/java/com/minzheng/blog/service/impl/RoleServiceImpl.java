@@ -86,7 +86,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
                 .isDisable(CommonConst.FALSE)
                 .build();
         this.saveOrUpdate(role);
-        // 更新资源列表
+        // 更新角色资源关系
         if (CollectionUtils.isNotEmpty(roleVO.getResourceIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleResourceService.remove(new LambdaQueryWrapper<RoleResource>()
@@ -102,7 +102,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
             // 重新加载角色资源信息
             filterInvocationSecurityMetadataSource.clearDataSource();
         }
-        // 更新菜单列表
+        // 更新角色菜单关系
         if (CollectionUtils.isNotEmpty(roleVO.getMenuIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleMenuService.remove(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleVO.getId()));

@@ -195,7 +195,9 @@ public class BlogInfoServiceImpl implements BlogInfoService {
             } else {
                 redisService.hIncr(VISITOR_AREA, UNKNOWN, 1L);
             }
+            // 访问量+1
             redisService.incr(BLOG_VIEWS_COUNT, 1);
+            // 保存唯一标识
             redisService.sAdd(UNIQUE_VISITOR, md5);
         }
     }
@@ -207,8 +209,10 @@ public class BlogInfoServiceImpl implements BlogInfoService {
      * @return {@link List<ArticleRankDTO>} 文章排行
      */
     private List<ArticleRankDTO> listArticleRank(Map<Object, Double> articleMap) {
+        // 提取文章id
         List<Integer> articleIdList = new ArrayList<>();
         articleMap.forEach((key, value) -> articleIdList.add((Integer) key));
+        // 查询文章信息
         return articleDao.selectList(new LambdaQueryWrapper<Article>()
                         .select(Article::getId, Article::getArticleTitle)
                         .in(Article::getId, articleIdList))

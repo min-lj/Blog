@@ -57,7 +57,6 @@ public class EsSearchStrategyImpl implements SearchStrategy {
                         .should(QueryBuilders.matchQuery("articleContent", keywords)))
                 .must(QueryBuilders.termQuery("isDelete", FALSE))
                 .must(QueryBuilders.termQuery("status", PUBLIC.getStatus()));
-        // 查询
         nativeSearchQueryBuilder.withQuery(boolQueryBuilder);
         return nativeSearchQueryBuilder;
     }
