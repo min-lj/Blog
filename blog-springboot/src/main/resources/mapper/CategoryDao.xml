@@ -11,6 +11,9 @@
 		FROM
 		tb_category c
 		LEFT JOIN tb_article a ON c.id = a.category_id
+		WHERE
+		  a.is_delete = 0
+		  AND a.status = 1
 		GROUP BY
 		c.id
     </select>

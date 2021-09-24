@@ -95,6 +95,10 @@ export default {
           }
         })
         .then(({ data }) => {
+          if (data.data.name) {
+            this.name = data.data.name;
+            document.title = this.title + " - " + this.name;
+          }
           if (data.data.articlePreviewDTOList.length) {
             this.current++;
             this.name = data.data.name;
