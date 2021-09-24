@@ -5,17 +5,14 @@
 
     <select id="listCategoryDTO" resultType="com.minzheng.blog.dto.CategoryDTO">
 		SELECT
-		c.id,
-		c.category_name,
-		COUNT( a.id ) AS article_count
+		  c.id,
+		  c.category_name,
+		  COUNT( a.id ) AS article_count
 		FROM
-		tb_category c
-		LEFT JOIN tb_article a ON c.id = a.category_id
-		WHERE
-		  a.is_delete = 0
-		  AND a.status = 1
+		  tb_category c
+		  LEFT JOIN ( SELECT id, category_id FROM tb_article WHERE is_delete = 0 AND `status` = 1 ) a ON c.id = a.category_id
 		GROUP BY
-		c.id
+		  c.id
     </select>
 
 	<select id="listCategoryBackDTO" resultType="com.minzheng.blog.dto.CategoryBackDTO">
