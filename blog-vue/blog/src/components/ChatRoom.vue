@@ -486,6 +486,7 @@ export default {
 @media (min-width: 760px) {
   .chat-container {
     position: fixed;
+    color: #4c4948 !important;
     bottom: 104px;
     right: 20px;
     height: calc(85% - 64px - 20px);
