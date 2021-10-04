@@ -77,7 +77,7 @@ search:
 upload:
   mode: local
   local:
-    # nginx映射本地文件路径
+    # nginx映射本地文件路径，无域名则为 ip +端口
     url: http://你的文件上传子域名/
     # 本地文件存储路径
     path: /usr/local/upload/
