@@ -75,7 +75,7 @@ search:
 
 # 上传模式 可选 oss或local  （/一定不能去！！！）
 upload:
-  mode: oss
+  mode: local
   local:
     # nginx映射本地文件路径
     url: http://你的文件上传子域名/
