@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : blog
+ Source Server         : tencent
  Source Server Type    : MySQL
- Source Server Version : 80022
- Source Host           : 139.196.6.14:3306
+ Source Server Version : 80026
+ Source Host           : 81.68.228.31:3306
  Source Schema         : test
 
  Target Server Type    : MySQL
- Target Server Version : 80022
+ Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 24/08/2021 11:26:32
+ Date: 04/10/2021 16:14:55
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `tb_article`  (
 -- ----------------------------
 -- Records of tb_article
 -- ----------------------------
-INSERT INTO `tb_article` VALUES (47, 1, 184, 'https://www.static.talkxj.com/articles/bd74062266c1fb04f3084968231c0580.jpg', '测试文章', '## 目录\n\n恭喜你已成功运行博客，开启你的文章之旅吧', 1, '', 0, 0, 1, '2021-08-12 15:50:57', '2021-08-12 15:52:19');
+INSERT INTO `tb_article` VALUES (47, 1, 184, 'https://www.static.talkxj.com/articles/bd74062266c1fb04f3084968231c0580.jpg', '测试文章', '## 目录\n\n恭喜你已成功运行博客，开启你的文章之旅吧', 1, '', 0, 0, 1, '2021-08-12 15:50:57', '2021-10-04 16:08:02');
 
 -- ----------------------------
 -- Table structure for tb_article_tag
@@ -55,12 +55,12 @@ CREATE TABLE `tb_article_tag`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_article_tag_1`(`article_id`) USING BTREE,
   INDEX `fk_article_tag_2`(`tag_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 495 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 496 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_article_tag
 -- ----------------------------
-INSERT INTO `tb_article_tag` VALUES (494, 47, 27);
+INSERT INTO `tb_article_tag` VALUES (495, 47, 27);
 
 -- ----------------------------
 -- Table structure for tb_category
@@ -95,7 +95,7 @@ CREATE TABLE `tb_chat_record`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1890 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_chat_record
@@ -215,7 +215,7 @@ CREATE TABLE `tb_message`  (
   `create_time` datetime NOT NULL COMMENT '发布时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3458 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_message
@@ -242,13 +242,14 @@ CREATE TABLE `tb_operation_log`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 688 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 691 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_operation_log
 -- ----------------------------
 INSERT INTO `tb_operation_log` VALUES (688, '角色模块', '新增或修改', '/admin/role', 'com.minzheng.blog.controller.RoleController.saveOrUpdateRole', '保存或更新角色', '[{\"id\":1,\"resourceIdList\":[165,192,193,194,195,166,183,184,246,247,167,199,200,201,168,185,186,187,188,189,190,191,254,169,208,209,170,234,235,236,237,171,213,214,215,216,217,224,172,240,241,244,245,267,269,270,173,239,242,276,174,205,206,207,175,218,219,220,221,222,223,176,202,203,204,230,238,177,229,232,233,243,178,196,197,198,257,258,179,225,226,227,228,231,180,210,211,212],\"roleLabel\":\"admin\",\"roleName\":\"管理员\"}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2021-08-24 11:25:33', NULL);
 INSERT INTO `tb_operation_log` VALUES (689, '角色模块', '新增或修改', '/admin/role', 'com.minzheng.blog.controller.RoleController.saveOrUpdateRole', '保存或更新角色', '[{\"id\":3,\"resourceIdList\":[192,195,183,246,199,185,191,254,208,234,237,213,241,239,276,205,218,223,202,230,238,232,243,196,257,258,225,231,210],\"roleLabel\":\"test\",\"roleName\":\"测试\"}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2021-08-24 11:25:40', NULL);
+INSERT INTO `tb_operation_log` VALUES (690, '文章模块', '新增或修改', '/admin/articles', 'com.minzheng.blog.controller.ArticleController.saveOrUpdateArticle', '添加或修改文章', '[{\"articleContent\":\"## 目录\\n\\n恭喜你已成功运行博客，开启你的文章之旅吧\",\"articleCover\":\"https://www.static.talkxj.com/articles/bd74062266c1fb04f3084968231c0580.jpg\",\"articleTitle\":\"测试文章\",\"categoryName\":\"测试分类\",\"id\":47,\"isTop\":0,\"originalUrl\":\"\",\"status\":1,\"tagNameList\":[],\"type\":1}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2021-10-04 16:08:02', NULL);
 
 -- ----------------------------
 -- Table structure for tb_page
@@ -267,16 +268,16 @@ CREATE TABLE `tb_page`  (
 -- ----------------------------
 -- Records of tb_page
 -- ----------------------------
-INSERT INTO `tb_page` VALUES (1, '首页', 'home', 'https://www.static.talkxj.com/ymwmek.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (2, '归档', 'archive', 'https://www.static.talkxj.com/wallroom-1920x1080-bg-338d7bc.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (3, '分类', 'category', 'https://www.static.talkxj.com/wallhaven-13mk9v.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (4, '标签', 'tag', 'https://www.static.talkxj.com/photos/a6f141372509365891081d755da963a1.png', '2021-08-07 10:32:36', '2021-08-07 11:21:54');
-INSERT INTO `tb_page` VALUES (5, '相册', 'album', 'https://www.static.talkxj.com/album.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (6, '友链', 'link', 'https://www.static.talkxj.com/fdl.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (7, '关于', 'about', 'https://www.static.talkxj.com/about.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (8, '留言', 'message', 'https://www.static.talkxj.com/d5ojdj.jpg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (9, '个人中心', 'user', 'https://www.static.talkxj.com/article/setting.jpeg', '2021-08-07 10:32:36', NULL);
-INSERT INTO `tb_page` VALUES (902, '文章列表', 'articleList', 'https://www.static.talkxj.com/photos/663a6e574a6845669fb417a3f02c7afb.jpg', '2021-08-10 15:36:19', NULL);
+INSERT INTO `tb_page` VALUES (1, '首页', 'home', 'https://www.static.talkxj.com/config/0bee7ba5ac70155766648e14ae2a821f.jpg', '2021-08-07 10:32:36', '2021-10-04 15:42:46');
+INSERT INTO `tb_page` VALUES (2, '归档', 'archive', 'https://www.static.talkxj.com/config/643f28683e1c59a80ccfc9cb19735a9c.jpg', '2021-08-07 10:32:36', '2021-10-04 15:43:14');
+INSERT INTO `tb_page` VALUES (3, '分类', 'category', 'https://www.static.talkxj.com/config/83be0017d7f1a29441e33083e7706936.jpg', '2021-08-07 10:32:36', '2021-10-04 15:43:31');
+INSERT INTO `tb_page` VALUES (4, '标签', 'tag', 'https://www.static.talkxj.com/config/a6f141372509365891081d755da963a1.png', '2021-08-07 10:32:36', '2021-10-04 15:43:38');
+INSERT INTO `tb_page` VALUES (5, '相册', 'album', 'https://www.static.talkxj.com/config/f8fb7e2de0780239048276e7840527e5.jpg', '2021-08-07 10:32:36', '2021-10-04 15:43:53');
+INSERT INTO `tb_page` VALUES (6, '友链', 'link', 'https://www.static.talkxj.com/config/9034edddec5b8e8542c2e61b0da1c1da.jpg', '2021-08-07 10:32:36', '2021-10-04 15:44:02');
+INSERT INTO `tb_page` VALUES (7, '关于', 'about', 'https://www.static.talkxj.com/config/2a56d15dd742ff8ac238a512d9a472a1.jpg', '2021-08-07 10:32:36', '2021-10-04 15:44:08');
+INSERT INTO `tb_page` VALUES (8, '留言', 'message', 'https://www.static.talkxj.com/config/acfeab8379508233fa7e4febf90c2f2e.png', '2021-08-07 10:32:36', '2021-10-04 15:44:17');
+INSERT INTO `tb_page` VALUES (9, '个人中心', 'user', 'https://www.static.talkxj.com/config/ebae4c93de1b286a8d50aa62612caa59.jpeg', '2021-08-07 10:32:36', '2021-10-04 15:45:17');
+INSERT INTO `tb_page` VALUES (10, '文章列表', 'articleList', 'https://www.static.talkxj.com/config/924d65cc8312e6cdad2160eb8fce6831.jpg', '2021-08-10 15:36:19', '2021-10-04 15:45:45');
 
 -- ----------------------------
 -- Table structure for tb_photo
@@ -292,7 +293,7 @@ CREATE TABLE `tb_photo`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_photo
@@ -312,7 +313,7 @@ CREATE TABLE `tb_photo_album`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '相册' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '相册' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_photo_album
@@ -332,7 +333,7 @@ CREATE TABLE `tb_resource`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 275 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 277 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_resource
@@ -447,7 +448,7 @@ INSERT INTO `tb_resource` VALUES (272, '微博登录', '/users/oauth/weibo', 'PO
 INSERT INTO `tb_resource` VALUES (273, '修改密码', '/users/password', 'PUT', 173, 1, '2021-08-11 21:04:22', '2021-08-11 21:07:09');
 INSERT INTO `tb_resource` VALUES (274, '上传语音', '/voice', 'POST', 166, 1, '2021-08-11 21:04:22', '2021-08-11 21:05:33');
 INSERT INTO `tb_resource` VALUES (275, '上传访客信息', '/report', 'POST', 166, 1, '2021-08-24 11:24:08', '2021-08-24 11:24:10');
-INSERT INTO `tb_resource` VALUES (276, '获取用户区域分布', '/admin/user/area', 'GET', 173, 0, '2021-08-24 11:24:33', NULL);
+INSERT INTO `tb_resource` VALUES (276, '获取用户区域分布', '/admin/users/area', 'GET', 173, 0, '2021-08-24 11:24:33', NULL);
 
 -- ----------------------------
 -- Table structure for tb_role
@@ -461,7 +462,7 @@ CREATE TABLE `tb_role`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_role
@@ -605,7 +606,7 @@ CREATE TABLE `tb_role_resource`  (
   `role_id` int NULL DEFAULT NULL COMMENT '角色id',
   `resource_id` int NULL DEFAULT NULL COMMENT '权限id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4076 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4193 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_role_resource
@@ -760,7 +761,7 @@ CREATE TABLE `tb_unique_view`  (
   `create_time` datetime NOT NULL COMMENT '时间',
   `views_count` int NOT NULL COMMENT '访问量',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 369 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_unique_view
@@ -783,12 +784,12 @@ CREATE TABLE `tb_user_auth`  (
   `last_login_time` datetime NULL DEFAULT NULL COMMENT '上次登录时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 553 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_auth
 -- ----------------------------
-INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2021-08-24 11:23:03', '2021-08-24 11:23:02');
+INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2021-10-04 16:07:44', '2021-10-04 16:07:44');
 
 -- ----------------------------
 -- Table structure for tb_user_info
@@ -805,7 +806,7 @@ CREATE TABLE `tb_user_info`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 563 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_info

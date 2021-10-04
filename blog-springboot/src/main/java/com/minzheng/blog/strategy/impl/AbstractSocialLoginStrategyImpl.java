@@ -13,6 +13,7 @@ import com.minzheng.blog.entity.UserAuth;
 import com.minzheng.blog.entity.UserInfo;
 import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.RoleEnum;
+import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.impl.UserDetailsServiceImpl;
 import com.minzheng.blog.strategy.SocialLoginStrategy;
 import com.minzheng.blog.util.BeanCopyUtils;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 
+import static com.minzheng.blog.constant.CommonConst.TRUE;
 import static com.minzheng.blog.enums.ZoneEnum.SHANGHAI;
 
 
@@ -67,6 +69,10 @@ public abstract class AbstractSocialLoginStrategyImpl implements SocialLoginStra
         } else {
             // 获取第三方用户信息，保存到数据库返回
             userDetailDTO = saveUserDetail(socialToken, ipAddress, ipSource);
+        }
+        // 判断账号是否禁用
+        if (userDetailDTO.getIsDisable().equals(TRUE)) {
+            throw new BizException("账号已被禁用");
         }
         // 将登录信息放入springSecurity管理
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetailDTO, null, userDetailDTO.getAuthorities());

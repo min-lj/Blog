@@ -96,7 +96,7 @@
             drag
             :show-file-list="false"
             :before-upload="beforeUpload"
-            action="/api/admin/config/images"
+            action="/api/admin/photos/albums/cover"
             multiple
             :on-success="uploadCover"
           >

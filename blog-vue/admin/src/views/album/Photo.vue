@@ -110,7 +110,7 @@
       <div class="upload-container">
         <el-upload
           v-show="uploadList.length > 0"
-          action="/api/admin/articles/images"
+          action="/api/admin/photos/albums/cover"
           list-type="picture-card"
           :file-list="uploadList"
           multiple
@@ -124,7 +124,7 @@
           <el-upload
             v-show="uploadList.length == 0"
             drag
-            action="/api/admin/articles/images"
+            action="/api/admin/photos/albums/cover"
             multiple
             :before-upload="beforeUpload"
             :on-success="upload"

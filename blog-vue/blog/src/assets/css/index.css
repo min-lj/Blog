@@ -313,7 +313,7 @@ p {
   resize: none;
   width: 100%;
   border-radius: 4px;
-  background: url(https://www.static.talkxj.com/commentBack.webp) 100% 100% no-repeat;
+  background: url(https://www.static.talkxj.com/config/commentBack.webp) 100% 100% no-repeat;
 }
 
 .upload-btn{
