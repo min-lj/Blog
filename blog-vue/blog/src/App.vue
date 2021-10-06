@@ -23,7 +23,7 @@
     <!-- 绑定邮箱模态框 -->
     <EmailModel></EmailModel>
     <!-- 音乐播放器 -->
-    <Player v-if="blogInfo.websiteConfig.isMusicPlayer == 1"></Player>
+    <Player v-if="blogInfo.websiteConfig.isMusicPlayer == 1 && !isMobile" />
     <!-- 聊天室 -->
     <ChatRoom v-if="blogInfo.websiteConfig.isChatRoom == 1"></ChatRoom>
   </v-app>
@@ -71,6 +71,12 @@ export default {
   computed: {
     blogInfo() {
       return this.$store.state.blogInfo;
+    },
+    isMobile() {
+      const flag = navigator.userAgent.match(
+        /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+      );
+      return flag;
     }
   }
 };
