@@ -26,7 +26,6 @@ public class PageVO {
     /**
      * 页面id
      */
-    @NotNull(message = "页面id不能为空")
     @ApiModelProperty(name = "id", value = "页面id", required = true, dataType = "Integer")
     private Integer id;
 
