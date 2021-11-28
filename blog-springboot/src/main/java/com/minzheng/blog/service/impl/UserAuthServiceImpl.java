@@ -16,6 +16,7 @@ import com.minzheng.blog.entity.UserRole;
 import com.minzheng.blog.enums.LoginTypeEnum;
 import com.minzheng.blog.enums.RoleEnum;
 import com.minzheng.blog.exception.BizException;
+import com.minzheng.blog.service.BlogInfoService;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserAuthService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -59,6 +60,8 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
     private UserRoleDao userRoleDao;
     @Autowired
     private UserInfoDao userInfoDao;
+    @Autowired
+    private BlogInfoService blogInfoService;
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
@@ -123,7 +126,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
         UserInfo userInfo = UserInfo.builder()
                 .email(user.getUsername())
                 .nickname(CommonConst.DEFAULT_NICKNAME + IdWorker.getId())
-                .avatar(CommonConst.DEFAULT_AVATAR)
+                .avatar(blogInfoService.getWebsiteConfig().getUserAvatar())
                 .build();
         userInfoDao.insert(userInfo);
         // 绑定用户角色

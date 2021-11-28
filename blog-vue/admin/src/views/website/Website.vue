@@ -131,21 +131,42 @@
           :model="websiteConfigForm"
           label-position="left"
         >
-          <el-form-item label="游客头像">
-            <el-upload
-              class="avatar-uploader"
-              action="/api/admin/config/images"
-              :show-file-list="false"
-              :on-success="handleTouristAvatarSuccess"
-            >
-              <img
-                v-if="websiteConfigForm.touristAvatar"
-                :src="websiteConfigForm.touristAvatar"
-                class="avatar"
-              />
-              <i v-else class="el-icon-plus avatar-uploader-icon" />
-            </el-upload>
-          </el-form-item>
+          <el-row style="width:600px">
+            <el-col :md="12">
+              <el-form-item label="用户头像">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/api/admin/config/images"
+                  :show-file-list="false"
+                  :on-success="handleUserAvatarSuccess"
+                >
+                  <img
+                    v-if="websiteConfigForm.userAvatar"
+                    :src="websiteConfigForm.userAvatar"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </el-upload>
+              </el-form-item>
+            </el-col>
+            <el-col :md="12">
+              <el-form-item label="游客头像">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/api/admin/config/images"
+                  :show-file-list="false"
+                  :on-success="handleTouristAvatarSuccess"
+                >
+                  <img
+                    v-if="websiteConfigForm.touristAvatar"
+                    :src="websiteConfigForm.touristAvatar"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </el-upload>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item label="邮箱通知">
             <el-radio-group v-model="websiteConfigForm.isEmailNotice">
               <el-radio :label="0">关闭</el-radio>
@@ -262,6 +283,7 @@ export default {
         qq: "",
         github: "",
         gitee: "",
+        userAvatar: "",
         touristAvatar: "",
         isReward: 1,
         weiXinQRCode: "",
@@ -287,6 +309,9 @@ export default {
     },
     handleWebsiteAvatarSuccess(response) {
       this.websiteConfigForm.websiteAvatar = response.data;
+    },
+    handleUserAvatarSuccess(response) {
+      this.websiteConfigForm.userAvatar = response.data;
     },
     handleTouristAvatarSuccess(response) {
       this.websiteConfigForm.touristAvatar = response.data;

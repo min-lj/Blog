@@ -101,6 +101,12 @@ public class WebsiteConfigVO {
     private String touristAvatar;
 
     /**
+     * 用户头像
+     */
+    @ApiModelProperty(name = "userAvatar", value = "用户头像", required = true, dataType = "String")
+    private String userAvatar;
+
+    /**
      * 是否评论审核
      */
     @ApiModelProperty(name = "isCommentReview", value = "是否评论审核", required = true, dataType = "Integer")

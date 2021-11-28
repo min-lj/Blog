@@ -11,7 +11,7 @@
  Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 04/10/2021 16:14:55
+ Date: 28/11/2021 21:41:13
 */
 
 SET NAMES utf8mb4;
@@ -72,7 +72,7 @@ CREATE TABLE `tb_category`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 185 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 332 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_category
@@ -95,7 +95,7 @@ CREATE TABLE `tb_chat_record`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_chat_record
@@ -293,7 +293,7 @@ CREATE TABLE `tb_photo`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_photo
@@ -789,7 +789,7 @@ CREATE TABLE `tb_user_auth`  (
 -- ----------------------------
 -- Records of tb_user_auth
 -- ----------------------------
-INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2021-10-04 16:07:44', '2021-10-04 16:07:44');
+INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2021-11-28 21:35:24', '2021-11-28 21:35:24');
 
 -- ----------------------------
 -- Table structure for tb_user_info
@@ -844,6 +844,6 @@ CREATE TABLE `tb_website_config`  (
 -- ----------------------------
 -- Records of tb_website_config
 -- ----------------------------
-INSERT INTO `tb_website_config` VALUES (1, '{\"alipayQRCode\":\"https://www.static.talkxj.com/photos/13d83d77cc1f7e4e0437d7feaf56879f.png\",\"gitee\":\"https://gitee.com/feng_meiyu\",\"github\":\"https://github.com/X1192176811\",\"isChatRoom\":1,\"isCommentReview\":0,\"isEmailNotice\":1,\"isMessageReview\":0,\"isMusicPlayer\":1,\"isReward\":1,\"qq\":\"1192176811\",\"socialLoginList\":[\"qq\",\"weibo\"],\"socialUrlList\":[\"qq\",\"github\",\"gitee\"],\"touristAvatar\":\"https://www.static.talkxj.com/photos/0bca52afdb2b9998132355d716390c9f.png\",\"websiteAuthor\":\"作者\",\"websiteAvatar\":\"https://www.static.talkxj.com/config/43a07ac1ca201143f7b938d0791124fc.png\",\"websiteCreateTime\":\"2019-12-09T16:00:00\",\"websiteIntro\":\"网站简介\",\"websiteName\":\"个人博客\",\"websiteNotice\":\"请前往后台管理修改博客信息\",\"websiteRecordNo\":\"备案号\",\"websocketUrl\":\"ws://127.0.0.1:8080/websocket\",\"weiXinQRCode\":\"https://www.static.talkxj.com/photos/4f767ef84e55ab9ad42b2d20e51deca1.png\"}', '2021-08-09 19:37:30', '2021-08-12 15:58:23');
+INSERT INTO `tb_website_config` VALUES (1, '{\"alipayQRCode\":\"https://www.static.talkxj.com/photos/13d83d77cc1f7e4e0437d7feaf56879f.png\",\"gitee\":\"https://gitee.com/feng_meiyu\",\"github\":\"https://github.com/X1192176811\",\"isChatRoom\":1,\"isCommentReview\":0,\"isEmailNotice\":1,\"isMessageReview\":0,\"isMusicPlayer\":1,\"isReward\":1,\"qq\":\"1192176811\",\"socialLoginList\":[\"qq\",\"weibo\"],\"socialUrlList\":[\"qq\",\"github\",\"gitee\"],\"touristAvatar\":\"https://www.static.talkxj.com/photos/0bca52afdb2b9998132355d716390c9f.png\",\"userAvatar\":\"https://www.static.talkxj.com/config/2cd793c8744199053323546875655f32.jpg\",\"websiteAuthor\":\"作者\",\"websiteAvatar\":\"https://www.static.talkxj.com/config/43a07ac1ca201143f7b938d0791124fc.png\",\"websiteCreateTime\":\"2019-12-09T16:00:00\",\"websiteIntro\":\"网站简介\",\"websiteName\":\"个人博客\",\"websiteNotice\":\"请前往后台管理修改博客信息\",\"websiteRecordNo\":\"备案号\",\"websocketUrl\":\"ws://127.0.0.1:8080/websocket\",\"weiXinQRCode\":\"https://www.static.talkxj.com/photos/4f767ef84e55ab9ad42b2d20e51deca1.png\"}', '2021-08-09 19:37:30', '2021-08-12 15:58:23');
 
 SET FOREIGN_KEY_CHECKS = 1;

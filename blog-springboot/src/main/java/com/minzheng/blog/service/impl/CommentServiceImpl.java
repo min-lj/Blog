@@ -187,9 +187,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Async
     public void notice(Comment comment) {
         // 查询回复用户邮箱号
-        Integer authorId = articleDao.selectById(comment.getArticleId()).getUserId();
-        Integer userId = Optional.ofNullable(comment.getReplyUserId())
-                .orElse(authorId);
+        Integer authorId;
+        if (Objects.isNull(comment.getArticleId())) {
+            authorId = BLOGGER_ID;
+        } else {
+            authorId = articleDao.selectById(comment.getArticleId()).getUserId();
+        }
+        Integer userId = Optional.ofNullable(comment.getReplyUserId()).orElse(authorId);
         String email = userInfoDao.selectById(userId).getEmail();
         if (StringUtils.isNotBlank(email)) {
             // 发送消息

@@ -43,7 +43,7 @@ public class MySqlSearchStrategyImpl implements SearchStrategy {
         // 高亮处理
         return articleList.stream().map(item -> {
             // 获取关键词第一次出现的位置
-            String articleContent;
+            String articleContent = item.getArticleContent();
             int index = item.getArticleContent().indexOf(keywords);
             if (index != -1) {
                 // 获取关键词前面的文字
@@ -56,8 +56,6 @@ public class MySqlSearchStrategyImpl implements SearchStrategy {
                 String postText = item.getArticleContent().substring(index, postIndex);
                 // 文章内容高亮
                 articleContent = (preText + postText).replaceAll(keywords, PRE_TAG + keywords + POST_TAG);
-            } else {
-                articleContent = item.getArticleContent();
             }
             // 文章标题高亮
             String articleTitle = item.getArticleTitle().replaceAll(keywords, PRE_TAG + keywords + POST_TAG);
