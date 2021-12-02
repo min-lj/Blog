@@ -3,8 +3,4 @@
 <mapper namespace="com.minzheng.blog.dao.UserRoleDao">
 
 
-    <insert id="insertUserRole">
-
-    </insert>
-
 </mapper>
