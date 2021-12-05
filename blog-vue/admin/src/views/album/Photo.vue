@@ -219,7 +219,7 @@
         </el-radio-group>
       </el-form>
       <div slot="footer">
-        <el-button @click="editPhoto = false">取 消</el-button>
+        <el-button @click="movePhoto = false">取 消</el-button>
         <el-button
           :disabled="albumId == null"
           type="primary"
