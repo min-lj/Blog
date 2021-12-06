@@ -54,6 +54,8 @@ SQL文件位于根目录下的blog-mysql8.sql，需要MYSQL8以上版本。
 
 当你克隆项目到本地后可使用邮箱账号：admin@qq.com，密码：1234567 进行登录，也可自行注册账号并将其修改为admin角色。
 
+**ps：** 请先运行后端项目，再启动前端项目，前端项目配置由后端动态加载。
+
 ```
 blog-springboot
 ├── annotation    --  自定义注解
