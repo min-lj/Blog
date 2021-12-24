@@ -38,6 +38,8 @@
 
 **Gitee地址：** [https://gitee.com/feng_meiyu/blog](https://gitee.com/feng_meiyu/blog)
 
+**接口文档地址：** [https://www.talkxj.com/api/swagger-ui.html](https://www.talkxj.com/api/swagger-ui.html)
+
 您的star是我坚持的动力，感谢大家的支持，欢迎提交pr共同改进项目。
 
 ## 目录结构
@@ -48,13 +50,11 @@
 
 SQL文件位于根目录下的blog-mysql8.sql，需要MYSQL8以上版本。
 
-接口文档地址：后端项目启动后，访问http://127.0.0.1:8080/swagger-ui.html
-
 可直接导入该项目于本地，修改后端配置文件中的数据库等连接信息，项目中使用到的关于阿里云功能和第三方授权登录等需要自行开通。
 
 当你克隆项目到本地后可使用邮箱账号：admin@qq.com，密码：1234567 进行登录，也可自行注册账号并将其修改为admin角色。
 
-**ps：** 请先运行后端项目，再启动前端项目，前端项目配置由后端动态加载。
+**ps：请先运行后端项目，再启动前端项目，前端项目配置由后端动态加载。** 
 
 ```
 blog-springboot
