@@ -420,6 +420,9 @@ export default {
             linesNum = linesNum + "<span></span>";
           }
           linesNum += "</span>";
+          if (lang == null) {
+            lang = "java";
+          }
           if (lang && hljs.getLanguage(lang)) {
             // highlight.js 高亮代码
             const preCode = hljs.highlight(lang, str, true).value;
