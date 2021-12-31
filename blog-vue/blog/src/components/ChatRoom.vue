@@ -618,6 +618,8 @@ export default {
   padding: 10px;
   border-radius: 5px 20px 20px 20px;
   width: fit-content;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .my-content {
   position: relative;
@@ -625,6 +627,8 @@ export default {
   padding: 12px;
   background: #12b7f5;
   color: #fff;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .submit-btn {
   color: rgb(31, 147, 255);

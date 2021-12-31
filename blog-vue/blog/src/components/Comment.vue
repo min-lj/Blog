@@ -455,6 +455,8 @@ p {
   font-size: 0.875rem;
   line-height: 1.75;
   padding-top: 0.625rem;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .comment-avatar {
   transition: all 0.5s;
