@@ -582,11 +582,6 @@ export default {
     vertical-align: bottom;
   }
 }
-.article-content {
-  word-break: break-word;
-  font-size: 14px;
-  line-height: 2;
-}
 .article-operation {
   display: flex;
   align-items: center;
