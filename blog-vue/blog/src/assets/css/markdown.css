@@ -100,7 +100,6 @@
     margin: 0;
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     word-break: break-word;
-    font-size: 14px;
     line-height: 2;
   }
   
@@ -382,6 +381,7 @@
   }
   
   .markdown-body p {
+    font-size: 0.875em;
     margin-top: 0;
     margin-bottom: 10px;
   }
