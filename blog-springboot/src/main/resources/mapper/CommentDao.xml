@@ -132,7 +132,7 @@
                c.article_id IS NULL
            </if>
            <if test="condition.isReview != null">
-               c.is_review = #{condition.isReview}
+              and c.is_review = #{condition.isReview}
            </if>
             <if test="condition.keywords != null">
               and u.nickname like concat('%',#{condition.keywords},'%')
@@ -157,7 +157,7 @@
                 c.article_id IS NULL
             </if>
             <if test="condition.isReview != null">
-                c.is_review = #{condition.isReview}
+                and c.is_review = #{condition.isReview}
             </if>
             <if test="condition.keywords != null">
                 and u.nickname like concat('%',#{condition.keywords},'%')
