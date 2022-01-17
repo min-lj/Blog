@@ -30,7 +30,7 @@
 
 **项目链接：** [www.talkxj.com](https://www.talkxj.com)
 
-**后台链接：** [www.admin.talkxj.com](https://www.admin.talkxj.com)
+**后台链接：** [admin.talkxj.com](https://admin.talkxj.com)
 
 测试账号：test@qq.com，密码：1234567，可登入后台查看。
 
@@ -41,6 +41,8 @@
 **接口文档地址：** [https://www.talkxj.com/api/swagger-ui.html](https://www.talkxj.com/api/swagger-ui.html)
 
 您的star是我坚持的动力，感谢大家的支持，欢迎提交pr共同改进项目。
+
+**近期遭遇DDOS攻击，可能造成访问速度变慢**
 
 ## 目录结构
 

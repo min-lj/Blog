@@ -139,7 +139,6 @@ export default {
 .about-content {
   word-break: break-word;
   line-height: 1.8;
-  font-size: 14px;
 }
 .my-wrapper {
   text-align: center;

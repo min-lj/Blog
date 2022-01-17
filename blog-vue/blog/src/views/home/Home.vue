@@ -123,7 +123,7 @@
                   :src="blogInfo.websiteConfig.websiteAvatar"
                 />
               </v-avatar>
-              <div style="font-size: 1.375rem">
+              <div style="font-size: 1.375rem;margin-top:0.625rem">
                 {{ blogInfo.websiteConfig.websiteAuthor }}
               </div>
               <div style="font-size: 0.875rem;">
