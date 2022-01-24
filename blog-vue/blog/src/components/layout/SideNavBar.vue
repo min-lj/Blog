@@ -59,6 +59,11 @@
         </router-link>
       </div>
       <div class="menus-item">
+        <router-link to="/talks">
+          <i class="iconfont iconpinglun" /> 说说
+        </router-link>
+      </div>
+      <div class="menus-item">
         <router-link to="/categories">
           <i class="iconfont iconfenlei" /> 分类
         </router-link>

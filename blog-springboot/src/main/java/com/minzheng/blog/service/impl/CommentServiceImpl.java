@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.minzheng.blog.dao.ArticleDao;
+import com.minzheng.blog.dao.TalkDao;
 import com.minzheng.blog.dao.UserInfoDao;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Comment;
@@ -33,6 +34,7 @@ import static com.minzheng.blog.constant.CommonConst.*;
 import static com.minzheng.blog.constant.MQPrefixConst.EMAIL_EXCHANGE;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_LIKE_COUNT;
 import static com.minzheng.blog.constant.RedisPrefixConst.COMMENT_USER_LIKE;
+import static com.minzheng.blog.enums.CommentTypeEnum.*;
 
 /**
  * 评论服务
@@ -47,6 +49,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private CommentDao commentDao;
     @Autowired
     private ArticleDao articleDao;
+    @Autowired
+    private TalkDao talkDao;
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -63,18 +67,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private String websiteUrl;
 
     @Override
-    public PageResult<CommentDTO> listComments(Integer articleId) {
-        // 查询文章评论量
+    public PageResult<CommentDTO> listComments(CommentVO commentVO) {
+        // 查询评论量
         Integer commentCount = commentDao.selectCount(new LambdaQueryWrapper<Comment>()
-                .eq(Objects.nonNull(articleId), Comment::getArticleId, articleId)
-                .isNull(Objects.isNull(articleId), Comment::getArticleId)
+                .eq(ARTICLE.getType().equals(commentVO.getType()), Comment::getArticleId, commentVO.getArticleId())
+                .eq(TALK.getType().equals(commentVO.getType()), Comment::getTalkId, commentVO.getTalkId())
+                .eq(LINK.getType().equals(commentVO.getType()), Comment::getType, commentVO.getType())
                 .isNull(Comment::getParentId)
                 .eq(Comment::getIsReview, TRUE));
         if (commentCount == 0) {
             return new PageResult<>();
         }
         // 分页查询评论集合
-        List<CommentDTO> commentDTOList = commentDao.listComments(PageUtils.getLimitCurrent(), PageUtils.getSize(), articleId);
+        List<CommentDTO> commentDTOList = commentDao.listComments(PageUtils.getLimitCurrent(), PageUtils.getSize(), commentVO);
         if (CollectionUtils.isEmpty(commentDTOList)) {
             return new PageResult<>();
         }
@@ -126,8 +131,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 .userId(UserUtils.getLoginUser().getUserInfoId())
                 .replyUserId(commentVO.getReplyUserId())
                 .articleId(commentVO.getArticleId())
+                .talkId(commentVO.getTalkId())
                 .commentContent(commentVO.getCommentContent())
                 .parentId(commentVO.getParentId())
+                .type(commentVO.getType())
                 .isReview(isReview == TRUE ? FALSE : TRUE)
                 .build();
         commentDao.insert(comment);
@@ -187,13 +194,24 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     @Async
     public void notice(Comment comment) {
         // 查询回复用户邮箱号
-        Integer authorId;
-        if (Objects.isNull(comment.getArticleId())) {
-            authorId = BLOGGER_ID;
+        Integer userId = BLOGGER_ID;
+        String id = "";
+        if (Objects.nonNull(comment.getReplyUserId())) {
+            userId = comment.getReplyUserId();
         } else {
-            authorId = articleDao.selectById(comment.getArticleId()).getUserId();
+            switch (Objects.requireNonNull(getCommentEnum(comment.getType()))) {
+                case ARTICLE:
+                    userId = articleDao.selectById(comment.getArticleId()).getUserId();
+                    id = comment.getArticleId().toString();
+                    break;
+                case TALK:
+                    userId = talkDao.selectById(comment.getTalkId()).getUserId();
+                    id = comment.getTalkId().toString();
+                    break;
+                default:
+                    break;
+            }
         }
-        Integer userId = Optional.ofNullable(comment.getReplyUserId()).orElse(authorId);
         String email = userInfoDao.selectById(userId).getEmail();
         if (StringUtils.isNotBlank(email)) {
             // 发送消息
@@ -202,12 +220,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 // 评论提醒
                 emailDTO.setEmail(email);
                 emailDTO.setSubject("评论提醒");
-                // 判断页面路径
-                String url = Objects.nonNull(comment.getArticleId()) ? websiteUrl + ARTICLE_PATH + comment.getArticleId() : websiteUrl + LINK_PATH;
+                // 获取评论路径
+                String url = websiteUrl + getCommentPath(comment.getType()) + id;
                 emailDTO.setContent("您收到了一条新的回复，请前往" + url + "\n页面查看");
             } else {
                 // 管理员审核提醒
-                String adminEmail = userInfoDao.selectById(authorId).getEmail();
+                String adminEmail = userInfoDao.selectById(BLOGGER_ID).getEmail();
                 emailDTO.setEmail(adminEmail);
                 emailDTO.setSubject("审核提醒");
                 emailDTO.setContent("您收到了一条新的回复，请前往后台管理页面审核");

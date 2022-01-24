@@ -66,6 +66,11 @@
                 <i class="iconfont iconxiangce1" /> 相册
               </router-link>
             </li>
+            <li>
+              <router-link to="/talks">
+                <i class="iconfont iconpinglun" /> 说说
+              </router-link>
+            </li>
           </ul>
         </div>
         <div class="menus-item">

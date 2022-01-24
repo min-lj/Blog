@@ -4,70 +4,56 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.time.LocalDateTime;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 /**
- * 评论
+ * 说说
  *
  * @author yezhiqiu
- * @date 2021/07/29
+ * @date 2022/01/23
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("tb_comment")
-public class Comment {
+@Builder
+@TableName("tb_talk")
+public class Talk {
 
     /**
-     * id
+     * 说说id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 评论用户Id
+     * 用户id
      */
     private Integer userId;
 
+    /**
+     * 说说内容
+     */
+    private String content;
 
     /**
-     * 回复用户id
+     * 图片
      */
-    private Integer replyUserId;
+    private String images;
 
     /**
-     * 评论说说id
+     * 是否置顶
      */
-    private Integer talkId;
+    private Integer isTop;
 
     /**
-     * 评论文章id
+     * 说说状态 1.公开 2.私密
      */
-    private Integer articleId;
-
-    /**
-     * 评论内容
-     */
-    private String commentContent;
-
-    /**
-     * 父评论id
-     */
-    private Integer parentId;
-
-    /**
-     * 评论类型 1.文章 2.友链 3.说说
-     */
-    private Integer type;
-
-    /**
-     * 是否审核
-     */
-    private Integer isReview;
+    private Integer status;
 
     /**
      * 创建时间
@@ -80,5 +66,6 @@ public class Comment {
      */
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
+
 
 }

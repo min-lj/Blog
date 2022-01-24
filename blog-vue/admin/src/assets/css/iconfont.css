@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 1531054 */
-  src: url('iconfont.eot?t=1628586646426'); /* IE9 */
-  src: url('iconfont.eot?t=1628586646426#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1628586646426') format('woff2'),
-       url('iconfont.woff?t=1628586646426') format('woff'),
-       url('iconfont.ttf?t=1628586646426') format('truetype'),
-       url('iconfont.svg?t=1628586646426#iconfont') format('svg');
+  src: url('iconfont.eot?t=1642953623912'); /* IE9 */
+  src: url('iconfont.eot?t=1642953623912#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1642953623912') format('woff2'),
+       url('iconfont.woff?t=1642953623912') format('woff'),
+       url('iconfont.ttf?t=1642953623912') format('truetype'),
+       url('iconfont.svg?t=1642953623912#iconfont') format('svg');
 }
 
 .iconfont {
@@ -13,6 +13,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.el-icon-myiconfontdongtaidianji:before {
+  content: "\e62f";
+}
+
+.el-icon-myzhiding:before {
+  content: "\e64a";
+}
+
+.el-icon-mypinglun:before {
+  content: "\e63a";
+}
+
+.el-icon-mybiaoqing:before {
+  content: "\e644";
+}
+
+.el-icon-mytupian:before {
+  content: "\e691";
+}
+
+.el-icon-myfabusekuai:before {
+  content: "\ec46";
 }
 
 .el-icon-mygongkai:before {

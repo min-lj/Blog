@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 122.51.126.130_3306
+ Source Server         : tencent
  Source Server Type    : MySQL
  Source Server Version : 80026
- Source Host           : 122.51.126.130:3306
+ Source Host           : 81.68.228.31:3306
  Source Schema         : test
 
  Target Server Type    : MySQL
  Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 18/01/2022 01:05:02
+ Date: 24/01/2022 23:37:37
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `tb_article`  (
 -- ----------------------------
 -- Records of tb_article
 -- ----------------------------
-INSERT INTO `tb_article` VALUES (54, 1, 187, 'https://static.talkxj.com/articles/3dffb2fcbd541886616ab54c92570de3.jpg', '测试文章', '恭喜你成功运行博客！', 1, '', 0, 0, 1, '2022-01-18 00:29:02', NULL);
+INSERT INTO `tb_article` VALUES (54, 1, 187, 'https://static.talkxj.com/articles/3dffb2fcbd541886616ab54c92570de3.jpg', '测试文章', '恭喜你成功运行博客，开启你的文章之旅吧。', 1, '', 0, 0, 1, '2022-01-24 23:33:56', NULL);
 
 -- ----------------------------
 -- Table structure for tb_article_tag
@@ -55,12 +55,12 @@ CREATE TABLE `tb_article_tag`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_article_tag_1`(`article_id`) USING BTREE,
   INDEX `fk_article_tag_2`(`tag_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 848 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 857 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_article_tag
 -- ----------------------------
-INSERT INTO `tb_article_tag` VALUES (848, 54, 29);
+INSERT INTO `tb_article_tag` VALUES (857, 54, 29);
 
 -- ----------------------------
 -- Table structure for tb_category
@@ -77,7 +77,7 @@ CREATE TABLE `tb_category`  (
 -- ----------------------------
 -- Records of tb_category
 -- ----------------------------
-INSERT INTO `tb_category` VALUES (187, '测试分类', '2022-01-18 00:29:02', NULL);
+INSERT INTO `tb_category` VALUES (187, '测试分类', '2022-01-24 23:33:56', NULL);
 
 -- ----------------------------
 -- Table structure for tb_chat_record
@@ -95,7 +95,7 @@ CREATE TABLE `tb_chat_record`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2892 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2991 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_chat_record
@@ -109,9 +109,11 @@ CREATE TABLE `tb_comment`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL COMMENT '评论用户Id',
   `article_id` int NULL DEFAULT NULL COMMENT '评论文章id',
+  `talk_id` int NULL DEFAULT NULL COMMENT '评论说说id',
   `comment_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
   `reply_user_id` int NULL DEFAULT NULL COMMENT '回复用户id',
   `parent_id` int NULL DEFAULT NULL COMMENT '父评论id',
+  `type` tinyint NOT NULL COMMENT '评论类型 1.文章 2.友链 3.说说',
   `is_delete` tinyint NOT NULL DEFAULT 0 COMMENT '是否删除  0否 1是',
   `is_review` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否审核',
   `create_time` datetime NOT NULL COMMENT '评论时间',
@@ -120,13 +122,14 @@ CREATE TABLE `tb_comment`  (
   INDEX `fk_comment_user`(`user_id`) USING BTREE,
   INDEX `fk_comment_article`(`article_id`) USING BTREE,
   INDEX `fk_comment_parent`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 642 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 722 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_comment
 -- ----------------------------
-INSERT INTO `tb_comment` VALUES (642, 1, 54, '测试评论', NULL, NULL, 0, 1, '2022-01-18 00:31:22', NULL);
-INSERT INTO `tb_comment` VALUES (643, 1, 54, '测试回复', 1, 642, 0, 1, '2022-01-18 00:31:40', NULL);
+INSERT INTO `tb_comment` VALUES (722, 1, 54, NULL, '测试评论', NULL, NULL, 1, 0, 1, '2022-01-24 23:34:25', NULL);
+INSERT INTO `tb_comment` VALUES (723, 1, 54, NULL, '测试回复', 1, 722, 1, 0, 1, '2022-01-24 23:34:30', NULL);
+INSERT INTO `tb_comment` VALUES (724, 1, NULL, 49, '测试评论', NULL, NULL, 3, 0, 1, '2022-01-24 23:35:25', NULL);
 
 -- ----------------------------
 -- Table structure for tb_friend_link
@@ -142,7 +145,7 @@ CREATE TABLE `tb_friend_link`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_friend_link_user`(`link_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_friend_link
@@ -165,7 +168,7 @@ CREATE TABLE `tb_menu`  (
   `parent_id` int NULL DEFAULT NULL COMMENT '父id',
   `is_hidden` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否隐藏  0否1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 215 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 219 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_menu
@@ -199,6 +202,10 @@ INSERT INTO `tb_menu` VALUES (209, '页面管理', '/pages', '/page/Page.vue', '
 INSERT INTO `tb_menu` VALUES (210, '照片回收站', '/photos/delete', '/album/Delete.vue', 'el-icon-myhuishouzhan', '2021-08-05 13:55:19', NULL, 3, 205, 1);
 INSERT INTO `tb_menu` VALUES (213, '权限管理', '/permission-submenu', 'Layout', 'el-icon-mydaohanglantubiao_quanxianguanli', '2021-08-07 19:56:55', '2021-08-07 19:59:40', 4, NULL, 0);
 INSERT INTO `tb_menu` VALUES (214, '网站管理', '/website', '/website/Website.vue', 'el-icon-myxitong', '2021-08-07 20:06:41', NULL, 1, 4, 0);
+INSERT INTO `tb_menu` VALUES (215, '说说管理', '/talk-submenu', 'Layout', 'el-icon-mypinglun', '2022-01-23 20:17:59', '2022-01-23 20:38:06', 5, NULL, 0);
+INSERT INTO `tb_menu` VALUES (216, '发布说说', '/talks', '/talk/Talk.vue', 'el-icon-myfabusekuai', '2022-01-23 20:18:43', '2022-01-23 20:38:19', 1, 215, 0);
+INSERT INTO `tb_menu` VALUES (217, '说说列表', '/talk-list', '/talk/TalkList.vue', 'el-icon-myiconfontdongtaidianji', '2022-01-23 23:28:24', '2022-01-24 00:02:48', 2, 215, 0);
+INSERT INTO `tb_menu` VALUES (218, '修改说说', '/talks/:talkId', '/talk/Talk.vue', 'el-icon-myshouye', '2022-01-24 00:10:44', NULL, 3, 215, 1);
 
 -- ----------------------------
 -- Table structure for tb_message
@@ -216,12 +223,12 @@ CREATE TABLE `tb_message`  (
   `create_time` datetime NOT NULL COMMENT '发布时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3906 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3938 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_message
 -- ----------------------------
-INSERT INTO `tb_message` VALUES (3906, '管理员', 'https://static.talkxj.com/avatar/user.png', '测试留言', '127.0.0.1', '', 7, 1, '2022-01-18 00:31:12', NULL);
+INSERT INTO `tb_message` VALUES (3938, '管理员', 'https://static.talkxj.com/avatar/user.png', '测试留言', '127.0.0.1', '', 9, 1, '2022-01-24 23:34:41', NULL);
 
 -- ----------------------------
 -- Table structure for tb_operation_log
@@ -244,13 +251,12 @@ CREATE TABLE `tb_operation_log`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1061 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1083 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_operation_log
 -- ----------------------------
-INSERT INTO `tb_operation_log` VALUES (1061, '友链模块', '新增或修改', '/admin/links', 'com.minzheng.blog.controller.FriendLinkController.saveOrUpdateFriendLink', '保存或修改友链', '[{\"linkAddress\":\"https://www.talkxj.com\",\"linkAvatar\":\"https://static.talkxj.com/photos/b553f564f81a80dc338695acb1b475d2.jpg\",\"linkIntro\":\"往事不随风\",\"linkName\":\"风丶宇的个人博客\"}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2022-01-18 00:26:46', NULL);
-INSERT INTO `tb_operation_log` VALUES (1062, '文章模块', '新增或修改', '/admin/articles', 'com.minzheng.blog.controller.ArticleController.saveOrUpdateArticle', '添加或修改文章', '[{\"articleContent\":\"恭喜你成功运行博客！\",\"articleCover\":\"https://static.talkxj.com/articles/74ddc4cd4b5abc76c6088a83bbd8c8a5.jpg\",\"articleTitle\":\"测试文章\",\"categoryName\":\"测试分类\",\"isTop\":0,\"originalUrl\":\"\",\"status\":1,\"tagNameList\":[\"测试标签\"],\"type\":1}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2022-01-18 00:29:02', NULL);
+INSERT INTO `tb_operation_log` VALUES (1083, '文章模块', '新增或修改', '/admin/articles', 'com.minzheng.blog.controller.ArticleController.saveOrUpdateArticle', '添加或修改文章', '[{\"articleContent\":\"恭喜你成功运行博客，开启你的文章之旅吧。\",\"articleCover\":\"https://static.talkxj.com/articles/3dffb2fcbd541886616ab54c92570de3.jpg\",\"articleTitle\":\"测试文章\",\"categoryName\":\"测试分类\",\"isTop\":0,\"originalUrl\":\"\",\"status\":1,\"tagNameList\":[\"测试标签\"],\"type\":1}]', 'POST', '{\"code\":20000,\"flag\":true,\"message\":\"操作成功\"}', 1, '管理员', '127.0.0.1', '', '2022-01-24 23:33:57', NULL);
 
 -- ----------------------------
 -- Table structure for tb_page
@@ -264,7 +270,7 @@ CREATE TABLE `tb_page`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 903 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '页面' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 905 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '页面' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_page
@@ -279,6 +285,7 @@ INSERT INTO `tb_page` VALUES (7, '关于', 'about', 'https://static.talkxj.com/c
 INSERT INTO `tb_page` VALUES (8, '留言', 'message', 'https://static.talkxj.com/config/acfeab8379508233fa7e4febf90c2f2e.png', '2021-08-07 10:32:36', '2021-10-04 16:11:45');
 INSERT INTO `tb_page` VALUES (9, '个人中心', 'user', 'https://static.talkxj.com/config/ebae4c93de1b286a8d50aa62612caa59.jpeg', '2021-08-07 10:32:36', '2021-10-04 15:45:17');
 INSERT INTO `tb_page` VALUES (10, '文章列表', 'articleList', 'https://static.talkxj.com/config/924d65cc8312e6cdad2160eb8fce6831.jpg', '2021-08-10 15:36:19', '2021-10-04 15:45:45');
+INSERT INTO `tb_page` VALUES (904, '说说', 'talk', 'https://static.talkxj.com/config/a741b0656a9a3db2e2ba5c2f4140eb6c.jpg', '2022-01-23 00:51:24', '2022-01-23 03:01:21');
 
 -- ----------------------------
 -- Table structure for tb_photo
@@ -294,7 +301,7 @@ CREATE TABLE `tb_photo`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '照片' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_photo
@@ -314,7 +321,7 @@ CREATE TABLE `tb_photo_album`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '相册' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '相册' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_photo_album
@@ -334,7 +341,7 @@ CREATE TABLE `tb_resource`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 278 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 288 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_resource
@@ -450,6 +457,16 @@ INSERT INTO `tb_resource` VALUES (273, '修改密码', '/users/password', 'PUT',
 INSERT INTO `tb_resource` VALUES (274, '上传语音', '/voice', 'POST', 166, 1, '2021-08-11 21:04:22', '2021-08-11 21:05:33');
 INSERT INTO `tb_resource` VALUES (275, '上传访客信息', '/report', 'POST', 166, 1, '2021-08-24 00:32:05', '2021-08-24 00:32:07');
 INSERT INTO `tb_resource` VALUES (276, '获取用户区域分布', '/admin/users/area', 'GET', 173, 0, '2021-08-24 00:32:35', '2021-09-24 16:25:34');
+INSERT INTO `tb_resource` VALUES (278, '说说模块', NULL, NULL, NULL, 0, '2022-01-24 01:29:13', NULL);
+INSERT INTO `tb_resource` VALUES (279, '查看首页说说', '/home/talks', 'GET', 278, 1, '2022-01-24 01:29:29', '2022-01-24 01:31:56');
+INSERT INTO `tb_resource` VALUES (280, '查看说说列表', '/talks', 'GET', 278, 1, '2022-01-24 01:29:52', '2022-01-24 01:31:56');
+INSERT INTO `tb_resource` VALUES (281, '根据id查看说说', '/talks/*', 'GET', 278, 1, '2022-01-24 01:30:10', '2022-01-24 01:31:57');
+INSERT INTO `tb_resource` VALUES (282, '点赞说说', '/talks/*/like', 'POST', 278, 0, '2022-01-24 01:30:30', NULL);
+INSERT INTO `tb_resource` VALUES (283, '上传说说图片', '/admin/talks/images', 'POST', 278, 0, '2022-01-24 01:30:46', NULL);
+INSERT INTO `tb_resource` VALUES (284, '保存或修改说说', '/admin/talks', 'POST', 278, 0, '2022-01-24 01:31:04', NULL);
+INSERT INTO `tb_resource` VALUES (285, '删除说说', '/admin/talks', 'DELETE', 278, 0, '2022-01-24 01:31:22', NULL);
+INSERT INTO `tb_resource` VALUES (286, '查看后台说说', '/admin/talks', 'GET', 278, 0, '2022-01-24 01:31:38', NULL);
+INSERT INTO `tb_resource` VALUES (287, '根据id查看后台说说', '/admin/talks/*', 'GET', 278, 0, '2022-01-24 01:31:53', '2022-01-24 01:33:14');
 
 -- ----------------------------
 -- Table structure for tb_role
@@ -468,9 +485,9 @@ CREATE TABLE `tb_role`  (
 -- ----------------------------
 -- Records of tb_role
 -- ----------------------------
-INSERT INTO `tb_role` VALUES (1, '管理员', 'admin', 0, '2021-03-22 14:10:21', '2021-10-05 15:55:58');
-INSERT INTO `tb_role` VALUES (2, '用户', 'user', 0, '2021-03-22 14:25:25', '2021-08-24 11:47:08');
-INSERT INTO `tb_role` VALUES (3, '测试', 'test', 0, '2021-03-22 14:42:23', '2021-08-24 16:01:19');
+INSERT INTO `tb_role` VALUES (1, '管理员', 'admin', 0, '2021-03-22 14:10:21', '2022-01-24 01:32:26');
+INSERT INTO `tb_role` VALUES (2, '用户', 'user', 0, '2021-03-22 14:25:25', '2022-01-24 01:32:21');
+INSERT INTO `tb_role` VALUES (3, '测试', 'test', 0, '2021-03-22 14:42:23', '2022-01-24 01:32:59');
 
 -- ----------------------------
 -- Table structure for tb_role_menu
@@ -481,7 +498,7 @@ CREATE TABLE `tb_role_menu`  (
   `role_id` int NULL DEFAULT NULL COMMENT '角色id',
   `menu_id` int NULL DEFAULT NULL COMMENT '菜单id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2368 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2527 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_role_menu
@@ -539,66 +556,74 @@ INSERT INTO `tb_role_menu` VALUES (1644, 13, 10);
 INSERT INTO `tb_role_menu` VALUES (1645, 13, 3);
 INSERT INTO `tb_role_menu` VALUES (1646, 13, 11);
 INSERT INTO `tb_role_menu` VALUES (1647, 13, 12);
-INSERT INTO `tb_role_menu` VALUES (2281, 3, 1);
-INSERT INTO `tb_role_menu` VALUES (2282, 3, 2);
-INSERT INTO `tb_role_menu` VALUES (2283, 3, 6);
-INSERT INTO `tb_role_menu` VALUES (2284, 3, 7);
-INSERT INTO `tb_role_menu` VALUES (2285, 3, 8);
-INSERT INTO `tb_role_menu` VALUES (2286, 3, 9);
-INSERT INTO `tb_role_menu` VALUES (2287, 3, 10);
-INSERT INTO `tb_role_menu` VALUES (2288, 3, 3);
-INSERT INTO `tb_role_menu` VALUES (2289, 3, 11);
-INSERT INTO `tb_role_menu` VALUES (2290, 3, 12);
-INSERT INTO `tb_role_menu` VALUES (2291, 3, 202);
-INSERT INTO `tb_role_menu` VALUES (2292, 3, 13);
-INSERT INTO `tb_role_menu` VALUES (2293, 3, 201);
-INSERT INTO `tb_role_menu` VALUES (2294, 3, 213);
-INSERT INTO `tb_role_menu` VALUES (2295, 3, 14);
-INSERT INTO `tb_role_menu` VALUES (2296, 3, 15);
-INSERT INTO `tb_role_menu` VALUES (2297, 3, 16);
-INSERT INTO `tb_role_menu` VALUES (2298, 3, 4);
-INSERT INTO `tb_role_menu` VALUES (2299, 3, 214);
-INSERT INTO `tb_role_menu` VALUES (2300, 3, 209);
-INSERT INTO `tb_role_menu` VALUES (2301, 3, 17);
-INSERT INTO `tb_role_menu` VALUES (2302, 3, 18);
-INSERT INTO `tb_role_menu` VALUES (2303, 3, 205);
-INSERT INTO `tb_role_menu` VALUES (2304, 3, 206);
-INSERT INTO `tb_role_menu` VALUES (2305, 3, 208);
-INSERT INTO `tb_role_menu` VALUES (2306, 3, 210);
-INSERT INTO `tb_role_menu` VALUES (2307, 3, 19);
-INSERT INTO `tb_role_menu` VALUES (2308, 3, 20);
-INSERT INTO `tb_role_menu` VALUES (2309, 3, 5);
-INSERT INTO `tb_role_menu` VALUES (2337, 1, 1);
-INSERT INTO `tb_role_menu` VALUES (2338, 1, 2);
-INSERT INTO `tb_role_menu` VALUES (2339, 1, 6);
-INSERT INTO `tb_role_menu` VALUES (2340, 1, 7);
-INSERT INTO `tb_role_menu` VALUES (2341, 1, 8);
-INSERT INTO `tb_role_menu` VALUES (2342, 1, 9);
-INSERT INTO `tb_role_menu` VALUES (2343, 1, 10);
-INSERT INTO `tb_role_menu` VALUES (2344, 1, 3);
-INSERT INTO `tb_role_menu` VALUES (2345, 1, 11);
-INSERT INTO `tb_role_menu` VALUES (2346, 1, 12);
-INSERT INTO `tb_role_menu` VALUES (2347, 1, 202);
-INSERT INTO `tb_role_menu` VALUES (2348, 1, 13);
-INSERT INTO `tb_role_menu` VALUES (2349, 1, 201);
-INSERT INTO `tb_role_menu` VALUES (2350, 1, 213);
-INSERT INTO `tb_role_menu` VALUES (2351, 1, 14);
-INSERT INTO `tb_role_menu` VALUES (2352, 1, 15);
-INSERT INTO `tb_role_menu` VALUES (2353, 1, 16);
-INSERT INTO `tb_role_menu` VALUES (2354, 1, 4);
-INSERT INTO `tb_role_menu` VALUES (2355, 1, 214);
-INSERT INTO `tb_role_menu` VALUES (2356, 1, 209);
-INSERT INTO `tb_role_menu` VALUES (2357, 1, 17);
-INSERT INTO `tb_role_menu` VALUES (2358, 1, 18);
-INSERT INTO `tb_role_menu` VALUES (2359, 1, 205);
-INSERT INTO `tb_role_menu` VALUES (2360, 1, 206);
-INSERT INTO `tb_role_menu` VALUES (2361, 1, 208);
-INSERT INTO `tb_role_menu` VALUES (2362, 1, 210);
-INSERT INTO `tb_role_menu` VALUES (2363, 1, 19);
-INSERT INTO `tb_role_menu` VALUES (2364, 1, 20);
-INSERT INTO `tb_role_menu` VALUES (2365, 1, 5);
 INSERT INTO `tb_role_menu` VALUES (2366, 14, 1);
 INSERT INTO `tb_role_menu` VALUES (2367, 14, 2);
+INSERT INTO `tb_role_menu` VALUES (2461, 1, 1);
+INSERT INTO `tb_role_menu` VALUES (2462, 1, 2);
+INSERT INTO `tb_role_menu` VALUES (2463, 1, 6);
+INSERT INTO `tb_role_menu` VALUES (2464, 1, 7);
+INSERT INTO `tb_role_menu` VALUES (2465, 1, 8);
+INSERT INTO `tb_role_menu` VALUES (2466, 1, 9);
+INSERT INTO `tb_role_menu` VALUES (2467, 1, 10);
+INSERT INTO `tb_role_menu` VALUES (2468, 1, 3);
+INSERT INTO `tb_role_menu` VALUES (2469, 1, 11);
+INSERT INTO `tb_role_menu` VALUES (2470, 1, 12);
+INSERT INTO `tb_role_menu` VALUES (2471, 1, 202);
+INSERT INTO `tb_role_menu` VALUES (2472, 1, 13);
+INSERT INTO `tb_role_menu` VALUES (2473, 1, 201);
+INSERT INTO `tb_role_menu` VALUES (2474, 1, 213);
+INSERT INTO `tb_role_menu` VALUES (2475, 1, 14);
+INSERT INTO `tb_role_menu` VALUES (2476, 1, 15);
+INSERT INTO `tb_role_menu` VALUES (2477, 1, 16);
+INSERT INTO `tb_role_menu` VALUES (2478, 1, 4);
+INSERT INTO `tb_role_menu` VALUES (2479, 1, 214);
+INSERT INTO `tb_role_menu` VALUES (2480, 1, 209);
+INSERT INTO `tb_role_menu` VALUES (2481, 1, 17);
+INSERT INTO `tb_role_menu` VALUES (2482, 1, 18);
+INSERT INTO `tb_role_menu` VALUES (2483, 1, 205);
+INSERT INTO `tb_role_menu` VALUES (2484, 1, 206);
+INSERT INTO `tb_role_menu` VALUES (2485, 1, 208);
+INSERT INTO `tb_role_menu` VALUES (2486, 1, 210);
+INSERT INTO `tb_role_menu` VALUES (2487, 1, 215);
+INSERT INTO `tb_role_menu` VALUES (2488, 1, 216);
+INSERT INTO `tb_role_menu` VALUES (2489, 1, 217);
+INSERT INTO `tb_role_menu` VALUES (2490, 1, 218);
+INSERT INTO `tb_role_menu` VALUES (2491, 1, 19);
+INSERT INTO `tb_role_menu` VALUES (2492, 1, 20);
+INSERT INTO `tb_role_menu` VALUES (2493, 1, 5);
+INSERT INTO `tb_role_menu` VALUES (2494, 3, 1);
+INSERT INTO `tb_role_menu` VALUES (2495, 3, 2);
+INSERT INTO `tb_role_menu` VALUES (2496, 3, 6);
+INSERT INTO `tb_role_menu` VALUES (2497, 3, 7);
+INSERT INTO `tb_role_menu` VALUES (2498, 3, 8);
+INSERT INTO `tb_role_menu` VALUES (2499, 3, 9);
+INSERT INTO `tb_role_menu` VALUES (2500, 3, 10);
+INSERT INTO `tb_role_menu` VALUES (2501, 3, 3);
+INSERT INTO `tb_role_menu` VALUES (2502, 3, 11);
+INSERT INTO `tb_role_menu` VALUES (2503, 3, 12);
+INSERT INTO `tb_role_menu` VALUES (2504, 3, 202);
+INSERT INTO `tb_role_menu` VALUES (2505, 3, 13);
+INSERT INTO `tb_role_menu` VALUES (2506, 3, 201);
+INSERT INTO `tb_role_menu` VALUES (2507, 3, 213);
+INSERT INTO `tb_role_menu` VALUES (2508, 3, 14);
+INSERT INTO `tb_role_menu` VALUES (2509, 3, 15);
+INSERT INTO `tb_role_menu` VALUES (2510, 3, 16);
+INSERT INTO `tb_role_menu` VALUES (2511, 3, 4);
+INSERT INTO `tb_role_menu` VALUES (2512, 3, 214);
+INSERT INTO `tb_role_menu` VALUES (2513, 3, 209);
+INSERT INTO `tb_role_menu` VALUES (2514, 3, 17);
+INSERT INTO `tb_role_menu` VALUES (2515, 3, 18);
+INSERT INTO `tb_role_menu` VALUES (2516, 3, 205);
+INSERT INTO `tb_role_menu` VALUES (2517, 3, 206);
+INSERT INTO `tb_role_menu` VALUES (2518, 3, 208);
+INSERT INTO `tb_role_menu` VALUES (2519, 3, 210);
+INSERT INTO `tb_role_menu` VALUES (2520, 3, 215);
+INSERT INTO `tb_role_menu` VALUES (2521, 3, 216);
+INSERT INTO `tb_role_menu` VALUES (2522, 3, 217);
+INSERT INTO `tb_role_menu` VALUES (2523, 3, 218);
+INSERT INTO `tb_role_menu` VALUES (2524, 3, 19);
+INSERT INTO `tb_role_menu` VALUES (2525, 3, 20);
+INSERT INTO `tb_role_menu` VALUES (2526, 3, 5);
 
 -- ----------------------------
 -- Table structure for tb_role_resource
@@ -609,136 +634,147 @@ CREATE TABLE `tb_role_resource`  (
   `role_id` int NULL DEFAULT NULL COMMENT '角色id',
   `resource_id` int NULL DEFAULT NULL COMMENT '权限id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4751 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4886 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_role_resource
 -- ----------------------------
-INSERT INTO `tb_role_resource` VALUES (4201, 2, 254);
-INSERT INTO `tb_role_resource` VALUES (4202, 2, 267);
-INSERT INTO `tb_role_resource` VALUES (4203, 2, 269);
-INSERT INTO `tb_role_resource` VALUES (4204, 2, 270);
-INSERT INTO `tb_role_resource` VALUES (4205, 2, 257);
-INSERT INTO `tb_role_resource` VALUES (4206, 2, 258);
-INSERT INTO `tb_role_resource` VALUES (4207, 3, 192);
-INSERT INTO `tb_role_resource` VALUES (4208, 3, 195);
-INSERT INTO `tb_role_resource` VALUES (4209, 3, 183);
-INSERT INTO `tb_role_resource` VALUES (4210, 3, 246);
-INSERT INTO `tb_role_resource` VALUES (4211, 3, 199);
-INSERT INTO `tb_role_resource` VALUES (4212, 3, 185);
-INSERT INTO `tb_role_resource` VALUES (4213, 3, 191);
-INSERT INTO `tb_role_resource` VALUES (4214, 3, 254);
-INSERT INTO `tb_role_resource` VALUES (4215, 3, 208);
-INSERT INTO `tb_role_resource` VALUES (4216, 3, 234);
-INSERT INTO `tb_role_resource` VALUES (4217, 3, 237);
-INSERT INTO `tb_role_resource` VALUES (4218, 3, 213);
-INSERT INTO `tb_role_resource` VALUES (4219, 3, 241);
-INSERT INTO `tb_role_resource` VALUES (4220, 3, 239);
-INSERT INTO `tb_role_resource` VALUES (4221, 3, 276);
-INSERT INTO `tb_role_resource` VALUES (4222, 3, 205);
-INSERT INTO `tb_role_resource` VALUES (4223, 3, 218);
-INSERT INTO `tb_role_resource` VALUES (4224, 3, 221);
-INSERT INTO `tb_role_resource` VALUES (4225, 3, 223);
-INSERT INTO `tb_role_resource` VALUES (4226, 3, 202);
-INSERT INTO `tb_role_resource` VALUES (4227, 3, 230);
-INSERT INTO `tb_role_resource` VALUES (4228, 3, 238);
-INSERT INTO `tb_role_resource` VALUES (4229, 3, 232);
-INSERT INTO `tb_role_resource` VALUES (4230, 3, 243);
-INSERT INTO `tb_role_resource` VALUES (4231, 3, 196);
-INSERT INTO `tb_role_resource` VALUES (4232, 3, 257);
-INSERT INTO `tb_role_resource` VALUES (4233, 3, 258);
-INSERT INTO `tb_role_resource` VALUES (4234, 3, 225);
-INSERT INTO `tb_role_resource` VALUES (4235, 3, 231);
-INSERT INTO `tb_role_resource` VALUES (4236, 3, 210);
-INSERT INTO `tb_role_resource` VALUES (4662, 1, 165);
-INSERT INTO `tb_role_resource` VALUES (4663, 1, 192);
-INSERT INTO `tb_role_resource` VALUES (4664, 1, 193);
-INSERT INTO `tb_role_resource` VALUES (4665, 1, 194);
-INSERT INTO `tb_role_resource` VALUES (4666, 1, 195);
-INSERT INTO `tb_role_resource` VALUES (4667, 1, 166);
-INSERT INTO `tb_role_resource` VALUES (4668, 1, 183);
-INSERT INTO `tb_role_resource` VALUES (4669, 1, 184);
-INSERT INTO `tb_role_resource` VALUES (4670, 1, 246);
-INSERT INTO `tb_role_resource` VALUES (4671, 1, 247);
-INSERT INTO `tb_role_resource` VALUES (4672, 1, 167);
-INSERT INTO `tb_role_resource` VALUES (4673, 1, 199);
-INSERT INTO `tb_role_resource` VALUES (4674, 1, 200);
-INSERT INTO `tb_role_resource` VALUES (4675, 1, 201);
-INSERT INTO `tb_role_resource` VALUES (4676, 1, 168);
-INSERT INTO `tb_role_resource` VALUES (4677, 1, 185);
-INSERT INTO `tb_role_resource` VALUES (4678, 1, 186);
-INSERT INTO `tb_role_resource` VALUES (4679, 1, 187);
-INSERT INTO `tb_role_resource` VALUES (4680, 1, 188);
-INSERT INTO `tb_role_resource` VALUES (4681, 1, 189);
-INSERT INTO `tb_role_resource` VALUES (4682, 1, 190);
-INSERT INTO `tb_role_resource` VALUES (4683, 1, 191);
-INSERT INTO `tb_role_resource` VALUES (4684, 1, 254);
-INSERT INTO `tb_role_resource` VALUES (4685, 1, 169);
-INSERT INTO `tb_role_resource` VALUES (4686, 1, 208);
-INSERT INTO `tb_role_resource` VALUES (4687, 1, 209);
-INSERT INTO `tb_role_resource` VALUES (4688, 1, 170);
-INSERT INTO `tb_role_resource` VALUES (4689, 1, 234);
-INSERT INTO `tb_role_resource` VALUES (4690, 1, 235);
-INSERT INTO `tb_role_resource` VALUES (4691, 1, 236);
-INSERT INTO `tb_role_resource` VALUES (4692, 1, 237);
-INSERT INTO `tb_role_resource` VALUES (4693, 1, 171);
-INSERT INTO `tb_role_resource` VALUES (4694, 1, 213);
-INSERT INTO `tb_role_resource` VALUES (4695, 1, 214);
-INSERT INTO `tb_role_resource` VALUES (4696, 1, 215);
-INSERT INTO `tb_role_resource` VALUES (4697, 1, 216);
-INSERT INTO `tb_role_resource` VALUES (4698, 1, 217);
-INSERT INTO `tb_role_resource` VALUES (4699, 1, 224);
-INSERT INTO `tb_role_resource` VALUES (4700, 1, 172);
-INSERT INTO `tb_role_resource` VALUES (4701, 1, 240);
-INSERT INTO `tb_role_resource` VALUES (4702, 1, 241);
-INSERT INTO `tb_role_resource` VALUES (4703, 1, 244);
-INSERT INTO `tb_role_resource` VALUES (4704, 1, 245);
-INSERT INTO `tb_role_resource` VALUES (4705, 1, 267);
-INSERT INTO `tb_role_resource` VALUES (4706, 1, 269);
-INSERT INTO `tb_role_resource` VALUES (4707, 1, 270);
-INSERT INTO `tb_role_resource` VALUES (4708, 1, 173);
-INSERT INTO `tb_role_resource` VALUES (4709, 1, 239);
-INSERT INTO `tb_role_resource` VALUES (4710, 1, 242);
-INSERT INTO `tb_role_resource` VALUES (4711, 1, 276);
-INSERT INTO `tb_role_resource` VALUES (4712, 1, 174);
-INSERT INTO `tb_role_resource` VALUES (4713, 1, 205);
-INSERT INTO `tb_role_resource` VALUES (4714, 1, 206);
-INSERT INTO `tb_role_resource` VALUES (4715, 1, 207);
-INSERT INTO `tb_role_resource` VALUES (4716, 1, 175);
-INSERT INTO `tb_role_resource` VALUES (4717, 1, 218);
-INSERT INTO `tb_role_resource` VALUES (4718, 1, 219);
-INSERT INTO `tb_role_resource` VALUES (4719, 1, 220);
-INSERT INTO `tb_role_resource` VALUES (4720, 1, 221);
-INSERT INTO `tb_role_resource` VALUES (4721, 1, 222);
-INSERT INTO `tb_role_resource` VALUES (4722, 1, 223);
-INSERT INTO `tb_role_resource` VALUES (4723, 1, 176);
-INSERT INTO `tb_role_resource` VALUES (4724, 1, 202);
-INSERT INTO `tb_role_resource` VALUES (4725, 1, 203);
-INSERT INTO `tb_role_resource` VALUES (4726, 1, 204);
-INSERT INTO `tb_role_resource` VALUES (4727, 1, 230);
-INSERT INTO `tb_role_resource` VALUES (4728, 1, 238);
-INSERT INTO `tb_role_resource` VALUES (4729, 1, 177);
-INSERT INTO `tb_role_resource` VALUES (4730, 1, 229);
-INSERT INTO `tb_role_resource` VALUES (4731, 1, 232);
-INSERT INTO `tb_role_resource` VALUES (4732, 1, 233);
-INSERT INTO `tb_role_resource` VALUES (4733, 1, 243);
-INSERT INTO `tb_role_resource` VALUES (4734, 1, 178);
-INSERT INTO `tb_role_resource` VALUES (4735, 1, 196);
-INSERT INTO `tb_role_resource` VALUES (4736, 1, 197);
-INSERT INTO `tb_role_resource` VALUES (4737, 1, 198);
-INSERT INTO `tb_role_resource` VALUES (4738, 1, 257);
-INSERT INTO `tb_role_resource` VALUES (4739, 1, 258);
-INSERT INTO `tb_role_resource` VALUES (4740, 1, 179);
-INSERT INTO `tb_role_resource` VALUES (4741, 1, 225);
-INSERT INTO `tb_role_resource` VALUES (4742, 1, 226);
-INSERT INTO `tb_role_resource` VALUES (4743, 1, 227);
-INSERT INTO `tb_role_resource` VALUES (4744, 1, 228);
-INSERT INTO `tb_role_resource` VALUES (4745, 1, 231);
-INSERT INTO `tb_role_resource` VALUES (4746, 1, 180);
-INSERT INTO `tb_role_resource` VALUES (4747, 1, 210);
-INSERT INTO `tb_role_resource` VALUES (4748, 1, 211);
-INSERT INTO `tb_role_resource` VALUES (4749, 1, 212);
 INSERT INTO `tb_role_resource` VALUES (4750, 14, 238);
+INSERT INTO `tb_role_resource` VALUES (4751, 2, 254);
+INSERT INTO `tb_role_resource` VALUES (4752, 2, 267);
+INSERT INTO `tb_role_resource` VALUES (4753, 2, 269);
+INSERT INTO `tb_role_resource` VALUES (4754, 2, 270);
+INSERT INTO `tb_role_resource` VALUES (4755, 2, 257);
+INSERT INTO `tb_role_resource` VALUES (4756, 2, 258);
+INSERT INTO `tb_role_resource` VALUES (4757, 2, 282);
+INSERT INTO `tb_role_resource` VALUES (4758, 1, 165);
+INSERT INTO `tb_role_resource` VALUES (4759, 1, 192);
+INSERT INTO `tb_role_resource` VALUES (4760, 1, 193);
+INSERT INTO `tb_role_resource` VALUES (4761, 1, 194);
+INSERT INTO `tb_role_resource` VALUES (4762, 1, 195);
+INSERT INTO `tb_role_resource` VALUES (4763, 1, 166);
+INSERT INTO `tb_role_resource` VALUES (4764, 1, 183);
+INSERT INTO `tb_role_resource` VALUES (4765, 1, 184);
+INSERT INTO `tb_role_resource` VALUES (4766, 1, 246);
+INSERT INTO `tb_role_resource` VALUES (4767, 1, 247);
+INSERT INTO `tb_role_resource` VALUES (4768, 1, 167);
+INSERT INTO `tb_role_resource` VALUES (4769, 1, 199);
+INSERT INTO `tb_role_resource` VALUES (4770, 1, 200);
+INSERT INTO `tb_role_resource` VALUES (4771, 1, 201);
+INSERT INTO `tb_role_resource` VALUES (4772, 1, 168);
+INSERT INTO `tb_role_resource` VALUES (4773, 1, 185);
+INSERT INTO `tb_role_resource` VALUES (4774, 1, 186);
+INSERT INTO `tb_role_resource` VALUES (4775, 1, 187);
+INSERT INTO `tb_role_resource` VALUES (4776, 1, 188);
+INSERT INTO `tb_role_resource` VALUES (4777, 1, 189);
+INSERT INTO `tb_role_resource` VALUES (4778, 1, 190);
+INSERT INTO `tb_role_resource` VALUES (4779, 1, 191);
+INSERT INTO `tb_role_resource` VALUES (4780, 1, 254);
+INSERT INTO `tb_role_resource` VALUES (4781, 1, 169);
+INSERT INTO `tb_role_resource` VALUES (4782, 1, 208);
+INSERT INTO `tb_role_resource` VALUES (4783, 1, 209);
+INSERT INTO `tb_role_resource` VALUES (4784, 1, 170);
+INSERT INTO `tb_role_resource` VALUES (4785, 1, 234);
+INSERT INTO `tb_role_resource` VALUES (4786, 1, 235);
+INSERT INTO `tb_role_resource` VALUES (4787, 1, 236);
+INSERT INTO `tb_role_resource` VALUES (4788, 1, 237);
+INSERT INTO `tb_role_resource` VALUES (4789, 1, 171);
+INSERT INTO `tb_role_resource` VALUES (4790, 1, 213);
+INSERT INTO `tb_role_resource` VALUES (4791, 1, 214);
+INSERT INTO `tb_role_resource` VALUES (4792, 1, 215);
+INSERT INTO `tb_role_resource` VALUES (4793, 1, 216);
+INSERT INTO `tb_role_resource` VALUES (4794, 1, 217);
+INSERT INTO `tb_role_resource` VALUES (4795, 1, 224);
+INSERT INTO `tb_role_resource` VALUES (4796, 1, 172);
+INSERT INTO `tb_role_resource` VALUES (4797, 1, 240);
+INSERT INTO `tb_role_resource` VALUES (4798, 1, 241);
+INSERT INTO `tb_role_resource` VALUES (4799, 1, 244);
+INSERT INTO `tb_role_resource` VALUES (4800, 1, 245);
+INSERT INTO `tb_role_resource` VALUES (4801, 1, 267);
+INSERT INTO `tb_role_resource` VALUES (4802, 1, 269);
+INSERT INTO `tb_role_resource` VALUES (4803, 1, 270);
+INSERT INTO `tb_role_resource` VALUES (4804, 1, 173);
+INSERT INTO `tb_role_resource` VALUES (4805, 1, 239);
+INSERT INTO `tb_role_resource` VALUES (4806, 1, 242);
+INSERT INTO `tb_role_resource` VALUES (4807, 1, 276);
+INSERT INTO `tb_role_resource` VALUES (4808, 1, 174);
+INSERT INTO `tb_role_resource` VALUES (4809, 1, 205);
+INSERT INTO `tb_role_resource` VALUES (4810, 1, 206);
+INSERT INTO `tb_role_resource` VALUES (4811, 1, 207);
+INSERT INTO `tb_role_resource` VALUES (4812, 1, 175);
+INSERT INTO `tb_role_resource` VALUES (4813, 1, 218);
+INSERT INTO `tb_role_resource` VALUES (4814, 1, 219);
+INSERT INTO `tb_role_resource` VALUES (4815, 1, 220);
+INSERT INTO `tb_role_resource` VALUES (4816, 1, 221);
+INSERT INTO `tb_role_resource` VALUES (4817, 1, 222);
+INSERT INTO `tb_role_resource` VALUES (4818, 1, 223);
+INSERT INTO `tb_role_resource` VALUES (4819, 1, 176);
+INSERT INTO `tb_role_resource` VALUES (4820, 1, 202);
+INSERT INTO `tb_role_resource` VALUES (4821, 1, 203);
+INSERT INTO `tb_role_resource` VALUES (4822, 1, 204);
+INSERT INTO `tb_role_resource` VALUES (4823, 1, 230);
+INSERT INTO `tb_role_resource` VALUES (4824, 1, 238);
+INSERT INTO `tb_role_resource` VALUES (4825, 1, 177);
+INSERT INTO `tb_role_resource` VALUES (4826, 1, 229);
+INSERT INTO `tb_role_resource` VALUES (4827, 1, 232);
+INSERT INTO `tb_role_resource` VALUES (4828, 1, 233);
+INSERT INTO `tb_role_resource` VALUES (4829, 1, 243);
+INSERT INTO `tb_role_resource` VALUES (4830, 1, 178);
+INSERT INTO `tb_role_resource` VALUES (4831, 1, 196);
+INSERT INTO `tb_role_resource` VALUES (4832, 1, 197);
+INSERT INTO `tb_role_resource` VALUES (4833, 1, 198);
+INSERT INTO `tb_role_resource` VALUES (4834, 1, 257);
+INSERT INTO `tb_role_resource` VALUES (4835, 1, 258);
+INSERT INTO `tb_role_resource` VALUES (4836, 1, 179);
+INSERT INTO `tb_role_resource` VALUES (4837, 1, 225);
+INSERT INTO `tb_role_resource` VALUES (4838, 1, 226);
+INSERT INTO `tb_role_resource` VALUES (4839, 1, 227);
+INSERT INTO `tb_role_resource` VALUES (4840, 1, 228);
+INSERT INTO `tb_role_resource` VALUES (4841, 1, 231);
+INSERT INTO `tb_role_resource` VALUES (4842, 1, 180);
+INSERT INTO `tb_role_resource` VALUES (4843, 1, 210);
+INSERT INTO `tb_role_resource` VALUES (4844, 1, 211);
+INSERT INTO `tb_role_resource` VALUES (4845, 1, 212);
+INSERT INTO `tb_role_resource` VALUES (4846, 1, 278);
+INSERT INTO `tb_role_resource` VALUES (4847, 1, 282);
+INSERT INTO `tb_role_resource` VALUES (4848, 1, 283);
+INSERT INTO `tb_role_resource` VALUES (4849, 1, 284);
+INSERT INTO `tb_role_resource` VALUES (4850, 1, 285);
+INSERT INTO `tb_role_resource` VALUES (4851, 1, 286);
+INSERT INTO `tb_role_resource` VALUES (4852, 1, 287);
+INSERT INTO `tb_role_resource` VALUES (4853, 3, 192);
+INSERT INTO `tb_role_resource` VALUES (4854, 3, 195);
+INSERT INTO `tb_role_resource` VALUES (4855, 3, 183);
+INSERT INTO `tb_role_resource` VALUES (4856, 3, 246);
+INSERT INTO `tb_role_resource` VALUES (4857, 3, 199);
+INSERT INTO `tb_role_resource` VALUES (4858, 3, 185);
+INSERT INTO `tb_role_resource` VALUES (4859, 3, 191);
+INSERT INTO `tb_role_resource` VALUES (4860, 3, 254);
+INSERT INTO `tb_role_resource` VALUES (4861, 3, 208);
+INSERT INTO `tb_role_resource` VALUES (4862, 3, 234);
+INSERT INTO `tb_role_resource` VALUES (4863, 3, 237);
+INSERT INTO `tb_role_resource` VALUES (4864, 3, 213);
+INSERT INTO `tb_role_resource` VALUES (4865, 3, 241);
+INSERT INTO `tb_role_resource` VALUES (4866, 3, 239);
+INSERT INTO `tb_role_resource` VALUES (4867, 3, 276);
+INSERT INTO `tb_role_resource` VALUES (4868, 3, 205);
+INSERT INTO `tb_role_resource` VALUES (4869, 3, 218);
+INSERT INTO `tb_role_resource` VALUES (4870, 3, 221);
+INSERT INTO `tb_role_resource` VALUES (4871, 3, 223);
+INSERT INTO `tb_role_resource` VALUES (4872, 3, 202);
+INSERT INTO `tb_role_resource` VALUES (4873, 3, 230);
+INSERT INTO `tb_role_resource` VALUES (4874, 3, 238);
+INSERT INTO `tb_role_resource` VALUES (4875, 3, 232);
+INSERT INTO `tb_role_resource` VALUES (4876, 3, 243);
+INSERT INTO `tb_role_resource` VALUES (4877, 3, 196);
+INSERT INTO `tb_role_resource` VALUES (4878, 3, 257);
+INSERT INTO `tb_role_resource` VALUES (4879, 3, 258);
+INSERT INTO `tb_role_resource` VALUES (4880, 3, 225);
+INSERT INTO `tb_role_resource` VALUES (4881, 3, 231);
+INSERT INTO `tb_role_resource` VALUES (4882, 3, 210);
+INSERT INTO `tb_role_resource` VALUES (4883, 3, 282);
+INSERT INTO `tb_role_resource` VALUES (4884, 3, 286);
+INSERT INTO `tb_role_resource` VALUES (4885, 3, 287);
 
 -- ----------------------------
 -- Table structure for tb_tag
@@ -755,7 +791,28 @@ CREATE TABLE `tb_tag`  (
 -- ----------------------------
 -- Records of tb_tag
 -- ----------------------------
-INSERT INTO `tb_tag` VALUES (29, '测试标签', '2022-01-18 00:29:02', NULL);
+INSERT INTO `tb_tag` VALUES (29, '测试标签', '2022-01-24 23:33:57', NULL);
+
+-- ----------------------------
+-- Table structure for tb_talk
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_talk`;
+CREATE TABLE `tb_talk`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '说说id',
+  `user_id` int NOT NULL COMMENT '用户id',
+  `content` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '说说内容',
+  `images` varchar(2500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图片',
+  `is_top` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1.公开 2.私密',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of tb_talk
+-- ----------------------------
+INSERT INTO `tb_talk` VALUES (49, 1, '测试说说<img src=\"https://static.talkxj.com/emoji/goutou.jpg\" width=\"24\" height=\"24\" alt=\"[狗头]\" style=\"margin: 0 1px;vertical-align: text-bottom\">', NULL, 0, 1, '2022-01-24 23:34:59', NULL);
 
 -- ----------------------------
 -- Table structure for tb_unique_view
@@ -766,7 +823,7 @@ CREATE TABLE `tb_unique_view`  (
   `create_time` datetime NOT NULL COMMENT '时间',
   `views_count` int NOT NULL COMMENT '访问量',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 528 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 535 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_unique_view
@@ -789,12 +846,12 @@ CREATE TABLE `tb_user_auth`  (
   `last_login_time` datetime NULL DEFAULT NULL COMMENT '上次登录时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 969 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 995 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_auth
 -- ----------------------------
-INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2022-01-18 01:03:24', '2022-01-18 01:03:24');
+INSERT INTO `tb_user_auth` VALUES (1, 1, 'admin@qq.com', '$2a$10$AkxkZaqcxEXdiNE1nrgW1.ms3aS9C5ImXMf8swkWUJuFGMqDl.TPW', 1, '127.0.0.1', '', '2021-08-12 15:43:18', '2022-01-24 23:34:18', '2022-01-24 23:34:17');
 
 -- ----------------------------
 -- Table structure for tb_user_info
@@ -811,7 +868,7 @@ CREATE TABLE `tb_user_info`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 979 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1005 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_info
@@ -827,12 +884,12 @@ CREATE TABLE `tb_user_role`  (
   `user_id` int NULL DEFAULT NULL COMMENT '用户id',
   `role_id` int NULL DEFAULT NULL COMMENT '角色id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 975 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1001 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_role
 -- ----------------------------
-INSERT INTO `tb_user_role` VALUES (975, 1, 1);
+INSERT INTO `tb_user_role` VALUES (1001, 1, 1);
 
 -- ----------------------------
 -- Table structure for tb_website_config

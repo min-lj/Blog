@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 评论
@@ -35,6 +36,12 @@ public class CommentVO {
     private Integer articleId;
 
     /**
+     * 评论说说id
+     */
+    @ApiModelProperty(name = "talkId", value = "说说id", dataType = "Integer")
+    private Integer talkId;
+
+    /**
      * 评论内容
      */
     @NotBlank(message = "评论内容不能为空")
@@ -46,5 +53,12 @@ public class CommentVO {
      */
     @ApiModelProperty(name = "parentId", value = "评论父id", dataType = "Integer")
     private Integer parentId;
+
+    /**
+     * 类型
+     */
+    @NotNull(message = "评论类型不能为空")
+    @ApiModelProperty(name = "type", value = "评论类型", dataType = "Integer")
+    private Integer type;
 
 }

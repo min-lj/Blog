@@ -1,69 +1,73 @@
 package com.minzheng.blog.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 /**
- * 后台评论
+ * 说说dto
  *
  * @author yezhiqiu
- * @date 2021/08/10
+ * @date 2022/01/23
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentBackDTO {
+@Builder
+public class TalkDTO {
+
     /**
-     * id
+     * 说说id
      */
     private Integer id;
 
     /**
-     * 用户头像
-     */
-    private String avatar;
-
-    /**
-     * 用户昵称
+     * 昵称
      */
     private String nickname;
 
     /**
-     * 被回复用户昵称
+     * 头像
      */
-    private String replyNickname;
+    private String avatar;
 
     /**
-     * 文章标题
+     * 说说内容
      */
-    private String articleTitle;
+    private String content;
 
     /**
-     * 评论内容
+     * 图片
      */
-    private String commentContent;
+    private String images;
 
     /**
-     * 评论类型
+     * 图片列表
      */
-    private Integer type;
+    private List<String> imgList;
 
     /**
-     * 是否审核
+     * 是否置顶
      */
-    private Integer isReview;
+    private Integer isTop;
 
     /**
-     * 发表时间
+     * 点赞量
+     */
+    private Integer likeCount;
+
+    /**
+     * 评论量
+     */
+    private Integer commentCount;
+
+    /**
+     * 创建时间
      */
     private LocalDateTime createTime;
-
 
 }

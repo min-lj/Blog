@@ -15,11 +15,14 @@
         tb_comment c
         JOIN tb_user_info u ON c.user_id = u.id
         WHERE
-        <if test="articleId != null">
-            article_id = #{articleId}
+        <if test="commentVO.type == 1">
+            article_id = #{commentVO.articleId}
         </if>
-        <if test="articleId == null">
-            article_id IS NULL
+        <if test="commentVO.type == 2">
+            type = 2
+        </if>
+        <if test="commentVO.type == 3">
+            talk_id = #{commentVO.talkId}
         </if>
         AND c.is_review = 1
         AND parent_id IS NULL
@@ -74,11 +77,9 @@
         is_review = 1
         AND
         parent_id IN
-        (
-        <foreach collection="commentIdList" item="commentId" separator=",">
+        <foreach open="(" collection="commentIdList" item="commentId" separator="," close=")">
             #{commentId}
         </foreach>
-        )
         GROUP BY
         parent_id
     </select>
@@ -117,6 +118,7 @@
          r.nickname AS reply_nickname,
          a.article_title,
          c.comment_content,
+         c.type,
          c.create_time,
          c.is_review
         FROM
@@ -125,11 +127,8 @@
          LEFT JOIN tb_user_info u ON c.user_id = u.id
          LEFT JOIN tb_user_info r ON c.reply_user_id = r.id
        <where>
-           <if test="condition.type != null and condition.type == 1">
-               c.article_id IS NOT NULL
-           </if>
-           <if test="condition.type != null and condition.type == 2">
-               c.article_id IS NULL
+           <if test="condition.type != null">
+               c.type = #{condition.type}
            </if>
            <if test="condition.isReview != null">
               and c.is_review = #{condition.isReview}
@@ -150,11 +149,8 @@
         tb_comment c
         LEFT JOIN tb_user_info u ON c.user_id = u.id
         <where>
-            <if test="condition.type != null and condition.type == 1">
-                c.article_id IS NOT NULL
-            </if>
-            <if test="condition.type != null and condition.type == 2">
-                c.article_id IS NULL
+            <if test="condition.type != null">
+                c.type = #{condition.type}
             </if>
             <if test="condition.isReview != null">
                 and c.is_review = #{condition.isReview}
@@ -163,6 +159,23 @@
                 and u.nickname like concat('%',#{condition.keywords},'%')
             </if>
         </where>
+    </select>
+
+    <select id="listCommentCountByTalkIds" resultType="com.minzheng.blog.dto.CommentCountDTO">
+        SELECT
+          talk_id as id,
+          COUNT( 1 ) AS comment_count
+        FROM
+          tb_comment
+        WHERE
+          talk_id IN
+          <foreach open="(" collection="talkIdList" item="talkId" separator="," close=")">
+            #{talkId}
+          </foreach>
+        AND
+          parent_id IS NULL
+        GROUP BY
+          talk_id
     </select>
 
 </mapper>

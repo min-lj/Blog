@@ -89,6 +89,11 @@ public class UserDetailDTO implements UserDetails {
     private Set<Object> commentLikeSet;
 
     /**
+     * 点赞说说集合
+     */
+    private Set<Object> talkLikeSet;
+
+    /**
      * 用户登录ip
      */
     private String ipAddress;

@@ -47,6 +47,10 @@
     <!-- 主页文章 -->
     <v-row class="home-container">
       <v-col md="9" cols="12">
+        <!-- 说说轮播 -->
+        <v-card class="animated zoomIn" v-if="talkList.length > 0">
+          <Swiper :list="talkList" />
+        </v-card>
         <v-card
           class="animated zoomIn article-card"
           style="border-radius: 12px 8px 8px 12px"
@@ -224,10 +228,15 @@
 </template>
 
 <script>
+import Swiper from "../../components/Swiper.vue";
 import EasyTyper from "easy-typer-js";
 export default {
+  components: {
+    Swiper
+  },
   created() {
     this.init();
+    this.listHomeTalks();
     this.timer = setInterval(this.runTime, 1000);
   },
   data: function() {
@@ -245,6 +254,7 @@ export default {
         sentencePause: true
       },
       articleList: [],
+      talkList: [],
       current: 1
     };
   },
@@ -260,6 +270,11 @@ export default {
         .then(({ hitokoto }) => {
           this.initTyped(hitokoto);
         });
+    },
+    listHomeTalks() {
+      this.axios.get("/api/home/talks").then(({ data }) => {
+        this.talkList = data.data;
+      });
     },
     initTyped(input, fn, hooks) {
       const obj = this.obj;

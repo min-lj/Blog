@@ -33,14 +33,13 @@ public class CommentController {
     /**
      * 查询评论
      *
-     * @param articleId 文章id
-     * @return {@link Result<CommentDTO>} 评论列表
+     * @param commentVO 评论信息
+     * @return {@link Result<CommentDTO>}
      */
     @ApiOperation(value = "查询评论")
-    @ApiImplicitParam(name = "articleId", value = "文章id", required = true, dataType = "Integer")
     @GetMapping("/comments")
-    public Result<PageResult<CommentDTO>> listComments(Integer articleId) {
-        return Result.ok(commentService.listComments(articleId));
+    public Result<PageResult<CommentDTO>> listComments(CommentVO commentVO) {
+        return Result.ok(commentService.listComments(commentVO));
     }
 
     /**

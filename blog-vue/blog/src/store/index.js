@@ -22,6 +22,7 @@ export default new Vuex.Store({
     email: null,
     articleLikeSet: [],
     commentLikeSet: [],
+    talkLikeSet: [],
     blogInfo: {}
   },
   mutations: {
@@ -33,6 +34,7 @@ export default new Vuex.Store({
       state.webSite = user.webSite;
       state.articleLikeSet = user.articleLikeSet ? user.articleLikeSet : [];
       state.commentLikeSet = user.commentLikeSet ? user.commentLikeSet : [];
+      state.talkLikeSet = user.talkLikeSet ? user.talkLikeSet : [];
       state.email = user.email;
       state.loginType = user.loginType;
     },
@@ -44,6 +46,7 @@ export default new Vuex.Store({
       state.webSite = null;
       state.articleLikeSet = [];
       state.commentLikeSet = [];
+      state.talkLikeSet = [];
       state.email = null;
       state.loginType = null;
     },
@@ -87,6 +90,14 @@ export default new Vuex.Store({
         commentLikeSet.splice(commentLikeSet.indexOf(commentId), 1);
       } else {
         commentLikeSet.push(commentId);
+      }
+    },
+    talkLike(state, talkId) {
+      var talkLikeSet = state.talkLikeSet;
+      if (talkLikeSet.indexOf(talkId) != -1) {
+        talkLikeSet.splice(talkLikeSet.indexOf(talkId), 1);
+      } else {
+        talkLikeSet.push(talkId);
       }
     }
   },

@@ -44,6 +44,10 @@ Vue.filter("hour", function(value) {
   return dayjs(value).format("HH:mm:ss");
 });
 
+Vue.filter("time", function(value) {
+  return dayjs(value).format("YYYY-MM-DD HH:mm:ss");
+});
+
 Vue.filter("num", function(value) {
   if (value >= 1000) {
     return (value / 1000).toFixed(1) + "k";

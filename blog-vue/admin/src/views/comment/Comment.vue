@@ -45,6 +45,7 @@
       <!-- 数据筛选 -->
       <div style="margin-left:auto">
         <el-select
+          clearable
           v-model="type"
           placeholder="请选择来源"
           size="small"
@@ -148,8 +149,9 @@
       <!-- 来源 -->
       <el-table-column label="来源" align="center" width="100">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.articleTitle">文章</el-tag>
-          <el-tag v-else type="warning">友链</el-tag>
+          <el-tag v-if="scope.row.type == 1">文章</el-tag>
+          <el-tag v-if="scope.row.type == 2" type="warning">友链</el-tag>
+          <el-tag v-if="scope.row.type == 3" type="danger">说说</el-tag>
         </template>
       </el-table-column>
       <!-- 列操作 -->
@@ -221,6 +223,10 @@ export default {
         {
           value: 2,
           label: "友链"
+        },
+        {
+          value: 3,
+          label: "说说"
         }
       ],
       commentList: [],
@@ -253,6 +259,7 @@ export default {
       this.listComments();
     },
     changeReview(review) {
+      this.current = 1;
       this.isReview = review;
     },
     updateCommentReview(id) {

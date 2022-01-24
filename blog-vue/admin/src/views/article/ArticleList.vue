@@ -4,17 +4,17 @@
     <!-- 文章状态 -->
     <div class="article-status-menu">
       <span>状态</span>
-      <span @click="changeStauts('all')" :class="isActive('all')">全部</span>
-      <span @click="changeStauts('public')" :class="isActive('public')">
+      <span @click="changeStatus('all')" :class="isActive('all')">全部</span>
+      <span @click="changeStatus('public')" :class="isActive('public')">
         公开
       </span>
-      <span @click="changeStauts('secret')" :class="isActive('secret')">
+      <span @click="changeStatus('secret')" :class="isActive('secret')">
         私密
       </span>
-      <span @click="changeStauts('draft')" :class="isActive('draft')">
+      <span @click="changeStatus('draft')" :class="isActive('draft')">
         草稿箱
       </span>
-      <span @click="changeStauts('delete')" :class="isActive('delete')">
+      <span @click="changeStatus('delete')" :class="isActive('delete')">
         回收站
       </span>
     </div>
@@ -432,7 +432,7 @@ export default {
       this.current = current;
       this.listArticles();
     },
-    changeStauts(status) {
+    changeStatus(status) {
       switch (status) {
         case "all":
           this.isDelete = 0;
@@ -455,6 +455,7 @@ export default {
           this.status = null;
           break;
       }
+      this.current = 1;
       this.activeStatus = status;
     },
     changeTop(article) {

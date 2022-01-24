@@ -2,9 +2,9 @@
   <div>
     <div class="comment-title"><i class="iconfont iconpinglunzu" />评论</div>
     <!-- 评论框 -->
-    <div class="comment-input-wrapper">
-      <div style="display:flex">
-        <v-avatar size="40">
+    <div class="comment-wrapper">
+      <div style="display:flex;width:100%">
+        <v-avatar size="36">
           <img
             v-if="this.$store.state.avatar"
             :src="this.$store.state.avatar"
@@ -47,12 +47,9 @@
     </div>
     <!-- 评论详情 -->
     <div v-if="count > 0 && reFresh">
-      <!-- 评论数量 -->
-      <div class="count">{{ count }} 评论</div>
       <!-- 评论列表 -->
       <div
-        style="display:flex"
-        class="pt-5"
+        class="comment-wrapper"
         v-for="(item, index) of commentList"
         :key="item.id"
       >
@@ -67,7 +64,9 @@
             <a v-else :href="item.webSite" target="_blank">
               {{ item.nickname }}
             </a>
-            <span class="blogger-tag" v-if="item.userId == 1">博主</span>
+            <v-icon size="20" color="#ffa51e" v-if="item.userId == 1">
+              mdi-check-decagram
+            </v-icon>
           </div>
           <!-- 信息 -->
           <div class="comment-info">
@@ -105,7 +104,9 @@
                 <a v-else :href="reply.webSite" target="_blank">
                   {{ reply.nickname }}
                 </a>
-                <span class="blogger-tag" v-if="reply.userId == 1">博主</span>
+                <v-icon size="20" color="#ffa51e" v-if="reply.userId == 1">
+                  mdi-check-decagram
+                </v-icon>
               </div>
               <!-- 信息 -->
               <div class="comment-info">
@@ -317,7 +318,7 @@ export default {
         return (
           "<img src= '" +
           EmojiList[str] +
-          "' width='24'height='24' style='margin: 0 1px;vertical-align: text-bottom'/>"
+          "' width='22'height='20' style='padding: 0 1px'/>"
         );
       });
       //发送请求
@@ -415,14 +416,18 @@ export default {
 </script>
 
 <style scoped>
-.blogger-tag {
-  background: #ffa51e;
-  font-size: 12px;
-  display: inline-block;
-  border-radius: 2px;
-  color: #fff;
-  padding: 0 5px;
-  margin-left: 6px;
+.comment-wrapper {
+  margin-top: 20px;
+  display: flex;
+  padding: 16px 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 3px 8px 6px rgb(7 17 27 / 6%);
+  transition: all 0.3s ease 0s;
+}
+.comment-wrapper:hover {
+  box-shadow: 0 5px 10px 8px rgb(7 17 27 / 16%);
+  transform: translateY(-3px);
 }
 .comment-title {
   display: flex;
@@ -430,17 +435,11 @@ export default {
   font-size: 1.25rem;
   font-weight: bold;
   line-height: 40px;
-  margin-bottom: 10px;
+  margin-top: 20px;
 }
 .comment-title i {
   font-size: 1.5rem;
   margin-right: 5px;
-}
-.comment-input-wrapper {
-  border: 1px solid #90939950;
-  border-radius: 4px;
-  padding: 10px;
-  margin: 0 0 10px;
 }
 .count {
   padding: 5px;
@@ -458,7 +457,7 @@ export default {
   width: 100%;
 }
 .comment-user {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.75;
 }
 .comment-user a {

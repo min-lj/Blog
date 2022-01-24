@@ -76,6 +76,11 @@ public class UserInfoDTO {
     private Set<Object> commentLikeSet;
 
     /**
+     * 点赞评论集合
+     */
+    private Set<Object> talkLikeSet;
+
+    /**
      * 用户登录ip
      */
     private String ipAddress;

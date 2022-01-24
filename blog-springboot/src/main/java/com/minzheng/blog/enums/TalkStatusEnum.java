@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 文章状态枚举
+ * 说说状态枚举
  *
  * @author yezhiqiu
  * @date 2021/08/10
  */
 @Getter
 @AllArgsConstructor
-public enum ArticleStatusEnum {
+public enum TalkStatusEnum {
     /**
      * 公开
      */
@@ -19,11 +19,7 @@ public enum ArticleStatusEnum {
     /**
      * 私密
      */
-    SECRET(2, "私密"),
-    /**
-     * 草稿
-     */
-    DRAFT(3, "草稿");
+    SECRET(2, "私密");
 
     /**
      * 状态

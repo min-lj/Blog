@@ -283,9 +283,9 @@ export default {
       var reg = /\[.+?\]/g;
       this.content = this.content.replace(reg, function(str) {
         return (
-          "<img style='vertical-align: middle' src= '" +
+          "<img src= '" +
           EmojiList[str] +
-          "' width='22'height='20' style='padding: 0 1px'/>"
+          "' width='24'height='24' style='margin: 0 1px;vertical-align: text-bottom'/>"
         );
       });
       var socketMsg = {
@@ -618,6 +618,7 @@ export default {
   padding: 10px;
   border-radius: 5px 20px 20px 20px;
   width: fit-content;
+  white-space: pre-line;
   word-wrap: break-word;
   word-break: break-all;
 }
@@ -627,6 +628,7 @@ export default {
   padding: 12px;
   background: #12b7f5;
   color: #fff;
+  white-space: pre-line;
   word-wrap: break-word;
   word-break: break-all;
 }

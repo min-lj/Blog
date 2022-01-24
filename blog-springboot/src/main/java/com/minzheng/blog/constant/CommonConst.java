@@ -65,16 +65,6 @@ public class CommonConst {
     public static String COMPONENT = "Layout";
 
     /**
-     * 文章页面路径
-     */
-    public static final String ARTICLE_PATH = "/articles/";
-
-    /**
-     * 友联页面路径
-     */
-    public static final String LINK_PATH = "/links";
-
-    /**
      * 省
      */
     public static final String PROVINCE = "省";

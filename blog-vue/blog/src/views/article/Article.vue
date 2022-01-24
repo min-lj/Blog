@@ -55,9 +55,7 @@
             <span class="separator">|</span>
             <!-- 评论量 -->
             <span>
-              <i class="iconfont iconpinglunzu1" />评论数:
-              <template v-if="count">{{ count }}</template>
-              <template v-else>0</template>
+              <i class="iconfont iconpinglunzu1" />评论数: {{ commentCount }}
             </span>
           </div>
         </div>
@@ -210,11 +208,7 @@
           <!-- 分割线 -->
           <hr />
           <!-- 评论 -->
-          <comment
-            :commentList="commentList"
-            :count="count"
-            @reloadComment="listComment"
-          />
+          <comment :type="commentType" @getCommentCount="getCommentCount" />
         </v-card>
       </v-col>
       <!-- 侧边功能 -->
@@ -270,7 +264,6 @@ export default {
   },
   created() {
     this.getArticle();
-    this.listComment();
   },
   destroyed() {
     this.clipboard.destroy();
@@ -294,12 +287,12 @@ export default {
         recommendArticleList: [],
         newestArticleList: []
       },
-      commentList: [],
-      count: 0,
       wordNum: "",
       readTime: "",
+      commentType: 1,
       articleHref: window.location.href,
-      clipboard: null
+      clipboard: null,
+      commentCount: 0
     };
   },
   methods: {
@@ -350,19 +343,6 @@ export default {
           }
         });
       });
-    },
-    listComment() {
-      const path = this.$route.path;
-      const arr = path.split("/");
-      const articleId = arr[arr.length - 1];
-      this.axios
-        .get("/api/comments", {
-          params: { current: 1, articleId: articleId }
-        })
-        .then(({ data }) => {
-          this.commentList = data.data.recordList;
-          this.count = data.data.count;
-        });
     },
     like() {
       // 判断登录
@@ -453,6 +433,9 @@ export default {
         .replace(/<\/?[^>]*>/g, "")
         .replace(/[|]*\n/, "")
         .replace(/&npsp;/gi, "");
+    },
+    getCommentCount(count) {
+      this.commentCount = count;
     }
   },
   computed: {

@@ -24,7 +24,7 @@
       </div>
     </div>
     <!-- 表情框 -->
-    <emoji @addEmoji="addEmoji" :chooseEmoji="chooseEmoji"></emoji>
+    <emoji @addEmoji="addEmoji" :chooseEmoji="chooseEmoji" />
   </div>
 </template>
 
@@ -34,6 +34,11 @@ import EmojiList from "../assets/js/emoji";
 export default {
   components: {
     Emoji
+  },
+  props: {
+    type: {
+      type: Number
+    }
   },
   data: function() {
     return {
@@ -65,17 +70,27 @@ export default {
         return (
           "<img src= '" +
           EmojiList[str] +
-          "' width='22'height='20' style='padding: 0 1px'/>"
+          "' width='24'height='24' style='margin: 0 1px;vertical-align: text-bottom'/>"
         );
       });
       const path = this.$route.path;
       const arr = path.split("/");
       var comment = {
-        articleId: arr[2],
+        type: this.type,
         replyUserId: this.replyUserId,
         parentId: this.parentId,
         commentContent: this.commentContent
       };
+      switch (this.type) {
+        case 1:
+          comment.articleId = arr[2];
+          break;
+        case 3:
+          comment.talkId = arr[2];
+          break;
+        default:
+          break;
+      }
       this.commentContent = "";
       this.axios.post("/api/comments", comment).then(({ data }) => {
         if (data.flag) {

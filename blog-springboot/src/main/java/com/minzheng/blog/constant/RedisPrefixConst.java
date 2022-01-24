@@ -39,6 +39,16 @@ public class RedisPrefixConst {
     public static final String ARTICLE_USER_LIKE = "article_user_like:";
 
     /**
+     * 说说点赞量
+     */
+    public static final String TALK_LIKE_COUNT = "talk_like_count";
+
+    /**
+     * 用户点赞说说
+     */
+    public static final String TALK_USER_LIKE = "talk_user_like:";
+
+    /**
      * 评论点赞量
      */
     public static final String COMMENT_LIKE_COUNT = "comment_like_count";
