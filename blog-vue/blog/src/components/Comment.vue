@@ -380,7 +380,8 @@ export default {
       this.axios
         .get("/api/comments/" + this.commentList[index].id + "/replies", {
           params: {
-            current: this.$refs.page[index].current
+            current: this.$refs.page[index].current,
+            size: 5
           }
         })
         .then(({ data }) => {
