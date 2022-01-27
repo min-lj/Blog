@@ -23,11 +23,11 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.minzheng.blog.constant.CommonConst.*;
@@ -139,9 +139,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 .build();
         commentDao.insert(comment);
         // 判断是否开启邮箱通知,通知用户
-        if (websiteConfig.getIsEmailNotice().equals(TRUE)) {
-            notice(comment);
-        }
+        CompletableFuture.runAsync(() -> {
+            if (websiteConfig.getIsEmailNotice().equals(TRUE)) {
+                notice(comment);
+            }
+        });
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -191,26 +193,24 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
      *
      * @param comment 评论信息
      */
-    @Async
     public void notice(Comment comment) {
         // 查询回复用户邮箱号
         Integer userId = BLOGGER_ID;
         String id = "";
+        switch (Objects.requireNonNull(getCommentEnum(comment.getType()))) {
+            case ARTICLE:
+                userId = articleDao.selectById(comment.getArticleId()).getUserId();
+                id = comment.getArticleId().toString();
+                break;
+            case TALK:
+                userId = talkDao.selectById(comment.getTalkId()).getUserId();
+                id = comment.getTalkId().toString();
+                break;
+            default:
+                break;
+        }
         if (Objects.nonNull(comment.getReplyUserId())) {
             userId = comment.getReplyUserId();
-        } else {
-            switch (Objects.requireNonNull(getCommentEnum(comment.getType()))) {
-                case ARTICLE:
-                    userId = articleDao.selectById(comment.getArticleId()).getUserId();
-                    id = comment.getArticleId().toString();
-                    break;
-                case TALK:
-                    userId = talkDao.selectById(comment.getTalkId()).getUserId();
-                    id = comment.getTalkId().toString();
-                    break;
-                default:
-                    break;
-            }
         }
         String email = userInfoDao.selectById(userId).getEmail();
         if (StringUtils.isNotBlank(email)) {
