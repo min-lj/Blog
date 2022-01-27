@@ -98,7 +98,7 @@ public class ConditionVO {
     /**
      * 是否审核
      */
-    @ApiModelProperty(name = "isReview", value = "是否删除", dataType = "Integer")
+    @ApiModelProperty(name = "isReview", value = "是否审核", dataType = "Integer")
     private Integer isReview;
 
 }

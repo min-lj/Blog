@@ -1,7 +1,7 @@
 package com.minzheng.blog.handler;
 
+import com.aliyun.oss.common.utils.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.base.Strings;
 import com.minzheng.blog.util.PageUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -24,7 +24,7 @@ public class PageableHandlerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String currentPage = request.getParameter(CURRENT);
         String pageSize = Optional.ofNullable(request.getParameter(SIZE)).orElse(DEFAULT_SIZE);
-        if (!Strings.isNullOrEmpty(currentPage)) {
+        if (!StringUtils.isNullOrEmpty(currentPage)) {
             PageUtils.setCurrentPage(new Page<>(Long.parseLong(currentPage), Long.parseLong(pageSize)));
         }
         return true;
