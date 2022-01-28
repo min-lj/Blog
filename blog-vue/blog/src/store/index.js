@@ -23,7 +23,37 @@ export default new Vuex.Store({
     articleLikeSet: [],
     commentLikeSet: [],
     talkLikeSet: [],
-    blogInfo: {}
+    blogInfo: {
+      articleCount: 0,
+      categoryCount: 0,
+      tagCount: 0,
+      viewsCount: "0",
+      websiteConfig: {
+        websiteAvatar: "",
+        websiteName: "",
+        websiteAuthor: "",
+        websiteIntro: "",
+        websiteNotice: "",
+        websiteCreateTime: "",
+        websiteRecordNo: "",
+        socialLoginList: [],
+        socialUrlList: [],
+        qq: "",
+        github: "",
+        gitee: "",
+        touristAvatar: "",
+        userAvatar: "",
+        isCommentReview: 0,
+        isMessageReview: 0,
+        isEmailNotice: 0,
+        isReward: 0,
+        weiXinQRCode: "",
+        alipayQRCode: "",
+        isChatRoom: 0,
+        websocketUrl: "",
+        isMusicPlayer: 0
+      }
+    }
   },
   mutations: {
     login(state, user) {
