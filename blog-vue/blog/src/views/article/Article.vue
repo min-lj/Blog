@@ -374,6 +374,7 @@ export default {
         html: true,
         linkify: true,
         typographer: true,
+        breaks: true,
         highlight: function(str, lang) {
           // 当前时间加随机数生成唯一的id标识
           var d = new Date().getTime();

@@ -62,8 +62,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Autowired
     private RedisService redisService;
     @Autowired
-    private ArticleService articleService;
-    @Autowired
     private ArticleTagService articleTagService;
 
     @Override
@@ -233,7 +231,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             article.setCategoryId(category.getId());
         }
         article.setUserId(UserUtils.getLoginUser().getUserInfoId());
-        articleService.saveOrUpdate(article);
+        this.saveOrUpdate(article);
         // 保存文章标签
         saveArticleTag(articleVO, article.getId());
     }
@@ -325,7 +323,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                         .isDelete(deleteVO.getIsDelete())
                         .build())
                 .collect(Collectors.toList());
-        articleService.updateBatchById(articleList);
+        this.updateBatchById(articleList);
     }
 
     @Transactional(rollbackFor = Exception.class)
