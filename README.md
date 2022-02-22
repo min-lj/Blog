@@ -38,11 +38,9 @@
 
 **Gitee地址：** [https://gitee.com/feng_meiyu/blog](https://gitee.com/feng_meiyu/blog)
 
-**接口文档地址：** [https://www.talkxj.com/api/doc.html](https://www.talkxj.com/api/doc.html)
+**在线接口文档地址：** [https://www.talkxj.com/api/doc.html](https://www.talkxj.com/api/doc.html)
 
 您的star是我坚持的动力，感谢大家的支持，欢迎提交pr共同改进项目。
-
-**近期遭遇DDOS攻击，可能造成访问速度变慢**
 
 ## 目录结构
 
@@ -110,7 +108,7 @@ blog-springboot
 
 ## 运行环境
 
-**服务器：** 阿里云2核4G CentOS7.2
+**服务器：** 腾讯云2核4G CentOS7.6
 
 **CDN：** 阿里云全站加速
 
@@ -165,7 +163,7 @@ blog-springboot
 
 ## 注意事项
 
-- 项目拉下来运行后，可到后台管理页面网站配置处修改博客配置信息.
+- 项目拉下来运行后，可到后台管理页面网站配置处修改博客相关信息.
 - 邮箱配置，第三方授权配置需要自己申请。
 - ElasticSearch需要自己先创建索引，项目运行环境教程中有介绍。
 
