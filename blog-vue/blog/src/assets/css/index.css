@@ -33,7 +33,7 @@ ul{
   background: #fff;
   color: #4c4948;
   border-radius: 8px;
-  box-shadow: 0 4px 8px 6px rgba(7, 17, 27, 0.06);
+  box-shadow: 0 4px 8px 6px rgba(7, 17, 27, 0.06) !important;
   transition: all 0.3s;
 }
 

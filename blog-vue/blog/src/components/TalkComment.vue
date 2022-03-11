@@ -278,10 +278,8 @@ export default {
       };
       switch (this.type) {
         case 1:
-          param.articleId = arr[2];
-          break;
         case 3:
-          param.talkId = arr[2];
+          param.topicId = arr[2];
           break;
         default:
           break;
@@ -330,10 +328,8 @@ export default {
       };
       switch (this.type) {
         case 1:
-          comment.articleId = arr[2];
-          break;
         case 3:
-          comment.talkId = arr[2];
+          comment.topicId = arr[2];
           break;
         default:
           break;

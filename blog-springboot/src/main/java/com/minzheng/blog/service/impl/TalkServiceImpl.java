@@ -72,7 +72,7 @@ public class TalkServiceImpl extends ServiceImpl<TalkDao, Talk> implements TalkS
         List<Integer> talkIdList = talkDTOList.stream()
                 .map(TalkDTO::getId)
                 .collect(Collectors.toList());
-        Map<Integer, Integer> commentCountMap = commentDao.listCommentCountByTalkIds(talkIdList)
+        Map<Integer, Integer> commentCountMap = commentDao.listCommentCountByTopicIds(talkIdList)
                 .stream()
                 .collect(Collectors.toMap(CommentCountDTO::getId, CommentCountDTO::getCommentCount));
         // 查询说说点赞量

@@ -57,12 +57,12 @@ public interface CommentDao extends BaseMapper<Comment> {
     List<ReplyCountDTO> listReplyCountByCommentId(@Param("commentIdList") List<Integer> commentIdList);
 
     /**
-     * 根据说说id获取评论量
+     * 根据评论主题id获取评论量
      *
-     * @param talkIdList 说说id列表
+     * @param topicIdList 说说id列表
      * @return {@link List<CommentCountDTO>}说说评论量
      */
-    List<CommentCountDTO> listCommentCountByTalkIds(List<Integer> talkIdList);
+    List<CommentCountDTO> listCommentCountByTopicIds(List<Integer> topicIdList);
 
     /**
      * 查询后台评论

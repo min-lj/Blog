@@ -21,7 +21,6 @@ import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -150,7 +149,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             throw new BizException("文章不存在");
         }
         // 更新文章浏览量
-        updateArticleViewsCount(articleId);
+        CompletableFuture.runAsync(() -> updateArticleViewsCount(articleId));
         // 查询上一篇下一篇文章
         Article lastArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
@@ -189,7 +188,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
      *
      * @param articleId 文章id
      */
-    @Async
     public void updateArticleViewsCount(Integer articleId) {
         // 判断是否第一次访问，增加浏览量
         Set<Integer> articleSet = (Set<Integer>) Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElse(new HashSet<>());

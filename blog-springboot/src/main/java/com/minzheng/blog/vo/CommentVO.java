@@ -30,16 +30,10 @@ public class CommentVO {
     private Integer replyUserId;
 
     /**
-     * 评论文章id
+     * 评论主题id
      */
-    @ApiModelProperty(name = "articleId", value = "文章id", dataType = "Integer")
-    private Integer articleId;
-
-    /**
-     * 评论说说id
-     */
-    @ApiModelProperty(name = "talkId", value = "说说id", dataType = "Integer")
-    private Integer talkId;
+    @ApiModelProperty(name = "topicId", value = "主题id", dataType = "Integer")
+    private Integer topicId;
 
     /**
      * 评论内容

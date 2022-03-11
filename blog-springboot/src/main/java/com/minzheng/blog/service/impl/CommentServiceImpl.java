@@ -70,15 +70,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public PageResult<CommentDTO> listComments(CommentVO commentVO) {
         // 查询评论量
         Integer commentCount = commentDao.selectCount(new LambdaQueryWrapper<Comment>()
-                .eq(ARTICLE.getType().equals(commentVO.getType()), Comment::getArticleId, commentVO.getArticleId())
-                .eq(TALK.getType().equals(commentVO.getType()), Comment::getTalkId, commentVO.getTalkId())
-                .eq(LINK.getType().equals(commentVO.getType()), Comment::getType, commentVO.getType())
+                .eq(Objects.nonNull(commentVO.getTopicId()), Comment::getTopicId, commentVO.getTopicId())
+                .eq(Comment::getType, commentVO.getType())
                 .isNull(Comment::getParentId)
                 .eq(Comment::getIsReview, TRUE));
         if (commentCount == 0) {
             return new PageResult<>();
         }
-        // 分页查询评论集合
+        // 分页查询评论数据
         List<CommentDTO> commentDTOList = commentDao.listComments(PageUtils.getLimitCurrent(), PageUtils.getSize(), commentVO);
         if (CollectionUtils.isEmpty(commentDTOList)) {
             return new PageResult<>();
@@ -130,8 +129,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         Comment comment = Comment.builder()
                 .userId(UserUtils.getLoginUser().getUserInfoId())
                 .replyUserId(commentVO.getReplyUserId())
-                .articleId(commentVO.getArticleId())
-                .talkId(commentVO.getTalkId())
+                .topicId(commentVO.getTopicId())
                 .commentContent(commentVO.getCommentContent())
                 .parentId(commentVO.getParentId())
                 .type(commentVO.getType())
@@ -139,11 +137,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 .build();
         commentDao.insert(comment);
         // 判断是否开启邮箱通知,通知用户
-        CompletableFuture.runAsync(() -> {
-            if (websiteConfig.getIsEmailNotice().equals(TRUE)) {
-                notice(comment);
-            }
-        });
+        if (websiteConfig.getIsEmailNotice().equals(TRUE)) {
+            CompletableFuture.runAsync(() -> notice(comment));
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -196,21 +192,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public void notice(Comment comment) {
         // 查询回复用户邮箱号
         Integer userId = BLOGGER_ID;
-        String id = "";
-        switch (Objects.requireNonNull(getCommentEnum(comment.getType()))) {
-            case ARTICLE:
-                userId = articleDao.selectById(comment.getArticleId()).getUserId();
-                id = comment.getArticleId().toString();
-                break;
-            case TALK:
-                userId = talkDao.selectById(comment.getTalkId()).getUserId();
-                id = comment.getTalkId().toString();
-                break;
-            default:
-                break;
-        }
+        String id = Objects.nonNull(comment.getTopicId()) ? comment.getTopicId().toString() : "";
         if (Objects.nonNull(comment.getReplyUserId())) {
             userId = comment.getReplyUserId();
+        } else {
+            switch (Objects.requireNonNull(getCommentEnum(comment.getType()))) {
+                case ARTICLE:
+                    userId = articleDao.selectById(comment.getTopicId()).getUserId();
+                    break;
+                case TALK:
+                    userId = talkDao.selectById(comment.getTopicId()).getUserId();
+                    break;
+                default:
+                    break;
+            }
         }
         String email = userInfoDao.selectById(userId).getEmail();
         if (StringUtils.isNotBlank(email)) {

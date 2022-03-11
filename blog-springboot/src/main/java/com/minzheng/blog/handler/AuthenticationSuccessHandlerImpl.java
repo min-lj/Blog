@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.minzheng.blog.constant.CommonConst.APPLICATION_JSON;
+
 
 /**
  * 登录成功处理
@@ -33,7 +35,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         // 返回登录信息
         UserInfoDTO userLoginDTO = BeanCopyUtils.copyObject(UserUtils.getLoginUser(), UserInfoDTO.class);
-        httpServletResponse.setContentType("application/json;charset=UTF-8");
+        httpServletResponse.setContentType(APPLICATION_JSON);
         httpServletResponse.getWriter().write(JSON.toJSONString(Result.ok(userLoginDTO)));
         // 更新用户ip，最近登录时间
         updateUserInfo();

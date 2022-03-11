@@ -153,7 +153,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
             websiteConfigVO = JSON.parseObject(websiteConfig.toString(), WebsiteConfigVO.class);
         } else {
             // 从数据库中加载
-            String config = websiteConfigDao.selectById(1).getConfig();
+            String config = websiteConfigDao.selectById(DEFAULT_CONFIG_ID).getConfig();
             websiteConfigVO = JSON.parseObject(config, WebsiteConfigVO.class);
             redisService.set(WEBSITE_CONFIG, config);
         }
