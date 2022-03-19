@@ -149,7 +149,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             throw new BizException("文章不存在");
         }
         // 更新文章浏览量
-        CompletableFuture.runAsync(() -> updateArticleViewsCount(articleId));
+        updateArticleViewsCount(articleId);
         // 查询上一篇下一篇文章
         Article lastArticle = articleDao.selectOne(new LambdaQueryWrapper<Article>()
                 .select(Article::getId, Article::getArticleTitle, Article::getArticleCover)
