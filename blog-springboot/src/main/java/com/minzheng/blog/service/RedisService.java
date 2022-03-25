@@ -95,6 +95,15 @@ public interface RedisService {
     Long incr(String key, long delta);
 
     /**
+     * 获取自增1后的 值
+     *
+     * @param key  key值
+     * @param time 过期时间
+     * @return 返回递增后结果
+     */
+    Long incrExpire(String key, long time);
+
+    /**
      * 按delta递减
      *
      * @param key   key值
