@@ -13,12 +13,16 @@ import java.lang.annotation.*;
 public @interface AccessLimit {
 
     /**
-     * @return 单位时间（秒）
+     * 单位时间（秒）
+     *
+     * @return int
      */
     int seconds();
 
     /**
-     * @return 单位时间最大请求次数
+     * 单位时间最大请求次数
+     *
+     * @return int
      */
     int maxCount();
 }
