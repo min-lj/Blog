@@ -1,6 +1,7 @@
 package com.minzheng.blog.controller;
 
 
+import com.minzheng.blog.annotation.AccessLimit;
 import com.minzheng.blog.dto.UserAreaDTO;
 import com.minzheng.blog.dto.UserInfoDTO;
 import com.minzheng.blog.vo.PageResult;
@@ -34,6 +35,7 @@ public class UserAuthController {
      * @param username 用户名
      * @return {@link Result<>}
      */
+    @AccessLimit(seconds = 60, maxCount = 1)
     @ApiOperation(value = "发送邮箱验证码")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String")
     @GetMapping("/users/code")

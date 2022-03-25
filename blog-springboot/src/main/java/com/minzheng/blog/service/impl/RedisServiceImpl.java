@@ -80,6 +80,15 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public Long incrExpire(String key, long time) {
+        Long count = redisTemplate.opsForValue().increment(key, 1);
+        if (count != null && count == 1) {
+            redisTemplate.expire(key, time, TimeUnit.SECONDS);
+        }
+        return count;
+    }
+
+    @Override
     public Long decr(String key, long delta) {
         return redisTemplate.opsForValue().increment(key, -delta);
     }
