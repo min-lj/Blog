@@ -52,11 +52,11 @@ public class WebSecurityHandler implements HandlerInterceptor {
                     return true;
                 } catch (RedisConnectionFailureException e) {
                     log.warn("redis错误: " + e.getMessage());
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void render(HttpServletResponse response, Result<?> result) throws Exception {
@@ -67,4 +67,5 @@ public class WebSecurityHandler implements HandlerInterceptor {
         out.flush();
         out.close();
     }
+
 }
