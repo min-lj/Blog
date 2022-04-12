@@ -65,7 +65,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         return BeanCopyUtils.copyList(categoryList, CategoryOptionDTO.class);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteCategory(List<Integer> categoryIdList) {
         // 查询分类id下是否有文章
@@ -77,7 +76,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         categoryDao.deleteBatchIds(categoryIdList);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveOrUpdateCategory(CategoryVO categoryVO) {
         // 判断分类名重复

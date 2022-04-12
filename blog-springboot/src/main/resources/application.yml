@@ -79,6 +79,7 @@ mybatis-plus:
 search:
   mode: mysql
 
+
 # 上传模式 可选 oss或local  （http://和最后的/一定不能去！！！）
 upload:
   mode: local
