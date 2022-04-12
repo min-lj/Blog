@@ -166,7 +166,6 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         return Objects.nonNull(value) ? value.toString() : "";
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateAbout(BlogInfoVO blogInfoVO) {
         redisService.set(ABOUT, blogInfoVO.getAboutContent());
@@ -210,7 +209,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
      */
     private List<ArticleRankDTO> listArticleRank(Map<Object, Double> articleMap) {
         // 提取文章id
-        List<Integer> articleIdList = new ArrayList<>();
+        List<Integer> articleIdList = new ArrayList<>(articleMap.size());
         articleMap.forEach((key, value) -> articleIdList.add((Integer) key));
         // 查询文章信息
         return articleDao.selectList(new LambdaQueryWrapper<Article>()

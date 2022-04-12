@@ -200,7 +200,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveArticleLike(Integer articleId) {
         // 判断是否点赞
@@ -299,7 +298,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateArticleTop(ArticleTopVO articleTopVO) {
         // 修改文章置顶状态
@@ -310,7 +308,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         articleDao.updateById(article);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateArticleDelete(DeleteVO deleteVO) {
         // 修改文章逻辑删除状态

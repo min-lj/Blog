@@ -118,7 +118,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         return replyDTOList;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveComment(CommentVO commentVO) {
         // 判断是否需要审核
@@ -142,7 +141,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveCommentLike(Integer commentId) {
         // 判断是否点赞
@@ -160,7 +158,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCommentsReview(ReviewVO reviewVO) {
         // 修改评论审核状态
