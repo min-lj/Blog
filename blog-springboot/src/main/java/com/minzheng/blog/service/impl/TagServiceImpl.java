@@ -69,7 +69,6 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
         return BeanCopyUtils.copyList(tagList, TagDTO.class);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteTag(List<Integer> tagIdList) {
         // 查询标签下是否有文章
