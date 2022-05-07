@@ -1,5 +1,7 @@
 package com.minzheng.blog.util;
 
+import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
+
 /**
  * HTML工具类
  *
@@ -7,6 +9,19 @@ package com.minzheng.blog.util;
  * @date 2021/07/27
  */
 public class HTMLUtils {
+
+    private static final SensitiveWordBs WORD_BS = SensitiveWordBs.newInstance()
+            .ignoreCase(true)
+            .ignoreWidth(true)
+            .ignoreNumStyle(true)
+            .ignoreChineseStyle(true)
+            .ignoreEnglishStyle(true)
+            .ignoreRepeat(true)
+            .enableNumCheck(false)
+            .enableEmailCheck(false)
+            .enableUrlCheck(false)
+            .init();
+
 
     /**
      * 删除标签
@@ -16,7 +31,7 @@ public class HTMLUtils {
      */
     public static String deleteTag(String source) {
         // 敏感词过滤
-        source = SensitiveUtils.filter(source);
+        source = WORD_BS.replace(source);
         // 保留图片标签
         source = source.replaceAll("(?!<(img).*?>)<.*?>", "")
                 .replaceAll("(onload(.*?)=)", "")

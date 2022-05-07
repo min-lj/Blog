@@ -18,8 +18,6 @@ import com.minzheng.blog.vo.ConditionVO;
 import com.minzheng.blog.vo.ResourceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,52 +33,12 @@ import static com.minzheng.blog.constant.CommonConst.FALSE;
 @Service
 public class ResourceServiceImpl extends ServiceImpl<ResourceDao, Resource> implements ResourceService {
     @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
     private ResourceDao resourceDao;
     @Autowired
     private RoleResourceDao roleResourceDao;
     @Autowired
     private FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource;
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void importSwagger() {
-        // 删除所有资源
-        this.remove(null);
-        roleResourceDao.delete(null);
-        List<Resource> resourceList = new ArrayList<>();
-        Map<String, Object> data = restTemplate.getForObject("http://localhost:8080/v2/api-docs", Map.class);
-        // 获取所有模块
-        List<Map<String, String>> tagList = (List<Map<String, String>>) data.get("tags");
-        tagList.forEach(item -> {
-            Resource resource = Resource.builder()
-                    .resourceName(item.get("name"))
-                    .isAnonymous(FALSE)
-                    .build();
-            resourceList.add(resource);
-        });
-        this.saveBatch(resourceList);
-        Map<String, Integer> permissionMap = resourceList.stream()
-                .collect(Collectors.toMap(Resource::getResourceName, Resource::getId));
-        resourceList.clear();
-        // 获取所有接口
-        Map<String, Map<String, Map<String, Object>>> path = (Map<String, Map<String, Map<String, Object>>>) data.get("paths");
-        path.forEach((url, value) -> value.forEach((requestMethod, info) -> {
-            String permissionName = info.get("summary").toString();
-            List<String> tag = (List<String>) info.get("tags");
-            Integer parentId = permissionMap.get(tag.get(0));
-            Resource resource = Resource.builder()
-                    .resourceName(permissionName)
-                    .url(url.replaceAll("\\{[^}]*\\}", "*"))
-                    .parentId(parentId)
-                    .requestMethod(requestMethod.toUpperCase())
-                    .isAnonymous(FALSE)
-                    .build();
-            resourceList.add(resource);
-        }));
-        this.saveBatch(resourceList);
-    }
 
     @Override
     public void saveOrUpdateResource(ResourceVO resourceVO) {

@@ -26,13 +26,6 @@ public class ResourceController {
     @Autowired
     private ResourceService resourceService;
 
-    @ApiOperation(value = "导入swagger接口")
-    @GetMapping("/admin/resources/import/swagger")
-    public Result<?> importSwagger() {
-        resourceService.importSwagger();
-        return Result.ok();
-    }
-
     /**
      * 查看资源列表
      *

@@ -17,6 +17,7 @@ import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.TagService;
 import com.minzheng.blog.strategy.context.SearchStrategyContext;
 import com.minzheng.blog.util.BeanCopyUtils;
+import com.minzheng.blog.util.CommonUtils;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
@@ -183,22 +184,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         return article;
     }
 
-    /**
-     * 更新文章浏览量
-     *
-     * @param articleId 文章id
-     */
-    public void updateArticleViewsCount(Integer articleId) {
-        // 判断是否第一次访问，增加浏览量
-        Set<Integer> articleSet = (Set<Integer>) Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElse(new HashSet<>());
-        if (!articleSet.contains(articleId)) {
-            articleSet.add(articleId);
-            session.setAttribute(ARTICLE_SET, articleSet);
-            // 浏览量+1
-            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
-        }
-    }
-
 
     @Override
     public void saveArticleLike(Integer articleId) {
@@ -250,52 +235,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             categoryDao.insert(category);
         }
         return category;
-    }
-
-    /**
-     * 保存文章标签
-     *
-     * @param articleVO 文章信息
-     */
-    private void saveArticleTag(ArticleVO articleVO, Integer articleId) {
-        // 编辑文章则删除文章所有标签
-        if (Objects.nonNull(articleVO.getId())) {
-            articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>()
-                    .eq(ArticleTag::getArticleId, articleVO.getId()));
-        }
-        // 添加文章标签
-        List<String> tagNameList = articleVO.getTagNameList();
-        if (CollectionUtils.isNotEmpty(tagNameList)) {
-            // 查询已存在的标签
-            List<Tag> existTagList = tagService.list(new LambdaQueryWrapper<Tag>()
-                    .in(Tag::getTagName, tagNameList));
-            List<String> existTagNameList = existTagList.stream()
-                    .map(Tag::getTagName)
-                    .collect(Collectors.toList());
-            List<Integer> existTagIdList = existTagList.stream()
-                    .map(Tag::getId)
-                    .collect(Collectors.toList());
-            // 对比新增不存在的标签
-            tagNameList.removeAll(existTagNameList);
-            if (CollectionUtils.isNotEmpty(tagNameList)) {
-                List<Tag> tagList = tagNameList.stream().map(item -> Tag.builder()
-                                .tagName(item)
-                                .build())
-                        .collect(Collectors.toList());
-                tagService.saveBatch(tagList);
-                List<Integer> tagIdList = tagList.stream()
-                        .map(Tag::getId)
-                        .collect(Collectors.toList());
-                existTagIdList.addAll(tagIdList);
-            }
-            // 提取标签id绑定文章
-            List<ArticleTag> articleTagList = existTagIdList.stream().map(item -> ArticleTag.builder()
-                            .articleId(articleId)
-                            .tagId(item)
-                            .build())
-                    .collect(Collectors.toList());
-            articleTagService.saveBatch(articleTagList);
-        }
     }
 
     @Override
@@ -353,6 +292,69 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         articleVO.setCategoryName(categoryName);
         articleVO.setTagNameList(tagNameList);
         return articleVO;
+    }
+
+
+    /**
+     * 更新文章浏览量
+     *
+     * @param articleId 文章id
+     */
+    public void updateArticleViewsCount(Integer articleId) {
+        // 判断是否第一次访问，增加浏览量
+        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElse(new HashSet<>()), Integer.class);
+        if (!articleSet.contains(articleId)) {
+            articleSet.add(articleId);
+            session.setAttribute(ARTICLE_SET, articleSet);
+            // 浏览量+1
+            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
+        }
+    }
+
+    /**
+     * 保存文章标签
+     *
+     * @param articleVO 文章信息
+     */
+    private void saveArticleTag(ArticleVO articleVO, Integer articleId) {
+        // 编辑文章则删除文章所有标签
+        if (Objects.nonNull(articleVO.getId())) {
+            articleTagDao.delete(new LambdaQueryWrapper<ArticleTag>()
+                    .eq(ArticleTag::getArticleId, articleVO.getId()));
+        }
+        // 添加文章标签
+        List<String> tagNameList = articleVO.getTagNameList();
+        if (CollectionUtils.isNotEmpty(tagNameList)) {
+            // 查询已存在的标签
+            List<Tag> existTagList = tagService.list(new LambdaQueryWrapper<Tag>()
+                    .in(Tag::getTagName, tagNameList));
+            List<String> existTagNameList = existTagList.stream()
+                    .map(Tag::getTagName)
+                    .collect(Collectors.toList());
+            List<Integer> existTagIdList = existTagList.stream()
+                    .map(Tag::getId)
+                    .collect(Collectors.toList());
+            // 对比新增不存在的标签
+            tagNameList.removeAll(existTagNameList);
+            if (CollectionUtils.isNotEmpty(tagNameList)) {
+                List<Tag> tagList = tagNameList.stream().map(item -> Tag.builder()
+                                .tagName(item)
+                                .build())
+                        .collect(Collectors.toList());
+                tagService.saveBatch(tagList);
+                List<Integer> tagIdList = tagList.stream()
+                        .map(Tag::getId)
+                        .collect(Collectors.toList());
+                existTagIdList.addAll(tagIdList);
+            }
+            // 提取标签id绑定文章
+            List<ArticleTag> articleTagList = existTagIdList.stream().map(item -> ArticleTag.builder()
+                            .articleId(articleId)
+                            .tagId(item)
+                            .build())
+                    .collect(Collectors.toList());
+            articleTagService.saveBatch(articleTagList);
+        }
     }
 
 }

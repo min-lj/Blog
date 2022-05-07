@@ -26,7 +26,6 @@ import com.minzheng.blog.vo.RoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,9 +49,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
     private UserRoleDao userRoleDao;
     @Autowired
     private FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource;
-
-    @Autowired
-    private TransactionTemplate transactionTemplate;
 
     @Override
     public List<UserRoleDTO> listUserRoles() {
@@ -82,50 +78,43 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
         if (Objects.nonNull(existRole) && !existRole.getId().equals(roleVO.getId())) {
             throw new BizException("角色名已存在");
         }
-
+        // 保存或更新角色信息
         Role role = Role.builder()
                 .id(roleVO.getId())
                 .roleName(roleVO.getRoleName())
                 .roleLabel(roleVO.getRoleLabel())
                 .isDisable(CommonConst.FALSE)
                 .build();
-
-        // 替换为编程式事务
-        transactionTemplate.execute((status)->{
-            // 保存或更新角色信息
-            this.saveOrUpdate(role);
-            // 更新角色资源关系
-            if (CollectionUtils.isNotEmpty(roleVO.getResourceIdList())) {
-                if (Objects.nonNull(roleVO.getId())) {
-                    roleResourceService.remove(new LambdaQueryWrapper<RoleResource>()
-                            .eq(RoleResource::getRoleId, roleVO.getId()));
-                }
-                List<RoleResource> roleResourceList = roleVO.getResourceIdList().stream()
-                        .map(resourceId -> RoleResource.builder()
-                                .roleId(role.getId())
-                                .resourceId(resourceId)
-                                .build())
-                        .collect(Collectors.toList());
-                roleResourceService.saveBatch(roleResourceList);
-                // 重新加载角色资源信息
-                filterInvocationSecurityMetadataSource.clearDataSource();
+        this.saveOrUpdate(role);
+        // 更新角色资源关系
+        if (CollectionUtils.isNotEmpty(roleVO.getResourceIdList())) {
+            if (Objects.nonNull(roleVO.getId())) {
+                roleResourceService.remove(new LambdaQueryWrapper<RoleResource>()
+                        .eq(RoleResource::getRoleId, roleVO.getId()));
             }
-            // 更新角色菜单关系
-            if (CollectionUtils.isNotEmpty(roleVO.getMenuIdList())) {
-                if (Objects.nonNull(roleVO.getId())) {
-                    roleMenuService.remove(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleVO.getId()));
-                }
-                List<RoleMenu> roleMenuList = roleVO.getMenuIdList().stream()
-                        .map(menuId -> RoleMenu.builder()
-                                .roleId(role.getId())
-                                .menuId(menuId)
-                                .build())
-                        .collect(Collectors.toList());
-                roleMenuService.saveBatch(roleMenuList);
+            List<RoleResource> roleResourceList = roleVO.getResourceIdList().stream()
+                    .map(resourceId -> RoleResource.builder()
+                            .roleId(role.getId())
+                            .resourceId(resourceId)
+                            .build())
+                    .collect(Collectors.toList());
+            roleResourceService.saveBatch(roleResourceList);
+            // 重新加载角色资源信息
+            filterInvocationSecurityMetadataSource.clearDataSource();
+        }
+        // 更新角色菜单关系
+        if (CollectionUtils.isNotEmpty(roleVO.getMenuIdList())) {
+            if (Objects.nonNull(roleVO.getId())) {
+                roleMenuService.remove(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleVO.getId()));
             }
-            return Boolean.TRUE;
-        });
-
+            List<RoleMenu> roleMenuList = roleVO.getMenuIdList().stream()
+                    .map(menuId -> RoleMenu.builder()
+                            .roleId(role.getId())
+                            .menuId(menuId)
+                            .build())
+                    .collect(Collectors.toList());
+            roleMenuService.saveBatch(roleMenuList);
+        }
     }
 
     @Override
