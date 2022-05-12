@@ -72,9 +72,15 @@ export default {
         messageContent: this.messageContent,
         time: Math.floor(Math.random() * (10 - 7)) + 7
       };
-      this.barrageList.push(message);
       this.messageContent = "";
-      this.axios.post("/api/messages", message);
+      this.axios.post("/api/messages", message).then(({ data }) => {
+        if (data.flag) {
+          this.barrageList.push(message);
+          this.$toast({ type: "success", message: "留言成功" });
+        } else {
+          this.$toast({ type: "error", message: data.message });
+        }
+      });
     },
     listMessage() {
       this.axios.get("/api/messages").then(({ data }) => {
