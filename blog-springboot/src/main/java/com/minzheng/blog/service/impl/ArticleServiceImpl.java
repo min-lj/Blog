@@ -302,7 +302,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
      */
     public void updateArticleViewsCount(Integer articleId) {
         // 判断是否第一次访问，增加浏览量
-        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElse(new HashSet<>()), Integer.class);
+        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
         if (!articleSet.contains(articleId)) {
             articleSet.add(articleId);
             session.setAttribute(ARTICLE_SET, articleSet);

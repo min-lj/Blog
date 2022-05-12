@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Files;
 
 /**
  * 本地上传策略
@@ -45,7 +46,7 @@ public class LocalUploadStrategyImpl extends AbstractUploadStrategyImpl {
         File file = new File(localPath + path + fileName);
         if (file.createNewFile()) {
             BufferedInputStream bis = new BufferedInputStream(inputStream);
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(file.toPath()));
             byte[] bytes = new byte[1024];
             int length;
             while ((length = bis.read(bytes)) != -1) {

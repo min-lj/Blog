@@ -79,8 +79,8 @@ public class CommonUtils {
      */
     public static <T> Set<T> castSet(Object obj, Class<T> clazz) {
         Set<T> result = new HashSet<>();
-        if (obj instanceof List<?>) {
-            for (Object o : (List<?>) obj) {
+        if (obj instanceof Set<?>) {
+            for (Object o : (Set<?>) obj) {
                 result.add(clazz.cast(o));
             }
             return result;
