@@ -123,7 +123,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         WebsiteConfigVO websiteConfig = blogInfoService.getWebsiteConfig();
         Integer isReview = websiteConfig.getIsCommentReview();
         // 过滤标签
-        commentVO.setCommentContent(HTMLUtils.deleteTag(commentVO.getCommentContent()));
+        commentVO.setCommentContent(HTMLUtils.filter(commentVO.getCommentContent()));
         Comment comment = Comment.builder()
                 .userId(UserUtils.getLoginUser().getUserInfoId())
                 .replyUserId(commentVO.getReplyUserId())

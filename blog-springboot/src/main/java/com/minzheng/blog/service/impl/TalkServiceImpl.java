@@ -51,7 +51,7 @@ public class TalkServiceImpl extends ServiceImpl<TalkDao, Talk> implements TalkS
                         .orderByDesc(Talk::getId)
                         .last("limit 10"))
                 .stream()
-                .map(item -> item.getContent().length() > 200 ? HTMLUtils.deleteTag(item.getContent().substring(0, 200)) : HTMLUtils.deleteTag(item.getContent()))
+                .map(item -> item.getContent().length() > 200 ? HTMLUtils.deleteHMTLTag(item.getContent().substring(0, 200)) : HTMLUtils.deleteHMTLTag(item.getContent()))
                 .collect(Collectors.toList());
     }
 

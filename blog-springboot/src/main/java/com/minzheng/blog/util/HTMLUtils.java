@@ -29,7 +29,7 @@ public class HTMLUtils {
      * @param source 需要进行剔除HTML的文本
      * @return 过滤后的内容
      */
-    public static String deleteTag(String source) {
+    public static String filter(String source) {
         // 敏感词过滤
         source = WORD_BS.replace(source);
         // 保留图片标签
@@ -45,7 +45,7 @@ public class HTMLUtils {
      * @param source 文本
      * @return 过滤后的文本
      */
-    private static String deleteHMTLTag(String source) {
+    public static String deleteHMTLTag(String source) {
         // 删除转义字符
         source = source.replaceAll("&.{2,6}?;", "");
         // 删除script标签

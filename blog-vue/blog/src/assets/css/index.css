@@ -1,9 +1,9 @@
 
 body {
-  cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/default.cur),default;
+  cursor: url(https://static.talkxj.com/css/default.cur),default;
 }
 a, button, img {
-  cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/pointer.cur),default;
+  cursor: url(https://static.talkxj.com/css/pointer.cur),default;
 }
 ul{
   padding:0 !important; 

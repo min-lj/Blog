@@ -117,7 +117,7 @@ public class WebSocketServiceImpl {
                 // 发送消息
                 ChatRecord chatRecord = JSON.parseObject(JSON.toJSONString(messageDTO.getData()), ChatRecord.class);
                 // 过滤html标签
-                chatRecord.setContent(HTMLUtils.deleteTag(chatRecord.getContent()));
+                chatRecord.setContent(HTMLUtils.filter(chatRecord.getContent()));
                 chatRecordDao.insert(chatRecord);
                 messageDTO.setData(chatRecord);
                 // 广播消息

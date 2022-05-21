@@ -56,7 +56,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
         String ipAddress = IpUtils.getIpAddress(request);
         String ipSource = IpUtils.getIpSource(ipAddress);
         Message message = BeanCopyUtils.copyObject(messageVO, Message.class);
-        message.setMessageContent(HTMLUtils.deleteTag(message.getMessageContent()));
+        message.setMessageContent(HTMLUtils.filter(message.getMessageContent()));
         message.setIpAddress(ipAddress);
         message.setIsReview(isReview == TRUE ? FALSE : TRUE);
         message.setIpSource(ipSource);
