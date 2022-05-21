@@ -1,7 +1,6 @@
 package com.minzheng.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.constant.CommonConst;
@@ -87,7 +86,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
                 .build();
         this.saveOrUpdate(role);
         // 更新角色资源关系
-        if (CollectionUtils.isNotEmpty(roleVO.getResourceIdList())) {
+        if (Objects.nonNull(roleVO.getResourceIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleResourceService.remove(new LambdaQueryWrapper<RoleResource>()
                         .eq(RoleResource::getRoleId, roleVO.getId()));
@@ -103,7 +102,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
             filterInvocationSecurityMetadataSource.clearDataSource();
         }
         // 更新角色菜单关系
-        if (CollectionUtils.isNotEmpty(roleVO.getMenuIdList())) {
+        if (Objects.nonNull(roleVO.getMenuIdList())) {
             if (Objects.nonNull(roleVO.getId())) {
                 roleMenuService.remove(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleVO.getId()));
             }
