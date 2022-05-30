@@ -19,7 +19,12 @@ public enum UploadModeEnum {
     /**
      * 本地
      */
-    LOCAL("local", "localUploadStrategyImpl");
+    LOCAL("local", "localUploadStrategyImpl"),
+
+    /**
+     * cos
+     */
+    COS("cos", "cosUploadStrategyImpl");
 
     /**
      * 模式

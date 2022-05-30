@@ -94,6 +94,12 @@ upload:
     accessKeyId: OSS配置accessKeyId
     accessKeySecret: OSS配置accessKeySecret
     bucketName: OSS配置bucketName
+  cos:
+    url: http://Bucket域名/
+    secretId: cos的secretId
+    secretKey: cos的secretKey
+    region: cos的region
+    bucketName: cos的bucketName
 
 # 网站前台域名（邮件通知用）
 website:
