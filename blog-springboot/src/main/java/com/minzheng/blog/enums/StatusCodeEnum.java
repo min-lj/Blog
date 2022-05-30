@@ -17,6 +17,10 @@ public enum StatusCodeEnum {
      */
     SUCCESS(20000, "操作成功"),
     /**
+     * 未登录
+     */
+    NO_LOGIN(40001, "用户未登录"),
+    /**
      * 没有操作权限
      */
     AUTHORIZED(40300, "没有操作权限"),

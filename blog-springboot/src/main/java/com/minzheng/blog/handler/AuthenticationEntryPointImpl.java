@@ -1,6 +1,7 @@
 package com.minzheng.blog.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.minzheng.blog.enums.StatusCodeEnum;
 import com.minzheng.blog.vo.Result;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -24,7 +25,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         httpServletResponse.setContentType(APPLICATION_JSON);
-        httpServletResponse.getWriter().write(JSON.toJSONString(Result.fail("用户未登录")));
+        httpServletResponse.getWriter().write(JSON.toJSONString(Result.fail(StatusCodeEnum.NO_LOGIN)));
     }
 
 }
