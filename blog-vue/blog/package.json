@@ -17,6 +17,7 @@
     "highlight.js": "^10.7.3",
     "jquery": "^3.6.0",
     "markdown-it": "^11.0.1",
+    "markdown-it-mark": "^3.0.1",
     "nprogress": "^0.2.0",
     "recorderx": "^2.0.2",
     "stylus": "^0.54.7",

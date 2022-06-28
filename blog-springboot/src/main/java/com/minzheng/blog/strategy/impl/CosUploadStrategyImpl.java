@@ -49,10 +49,12 @@ public class CosUploadStrategyImpl extends AbstractUploadStrategyImpl {
 
         } catch (IOException e) {
             log.error(e.getMessage());
+        } finally {
+            // 关闭客户端
+            cosclient.shutdown();
         }
 
-        // 关闭客户端
-        cosclient.shutdown();
+
     }
 
     @Override

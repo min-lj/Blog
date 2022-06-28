@@ -418,7 +418,7 @@ export default {
             )}</textarea>`;
           }
         }
-      });
+      }).use(require("markdown-it-mark"));
       // 将markdown替换为html标签
       article.articleContent = md.render(article.articleContent);
       this.article = article;
