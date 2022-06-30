@@ -344,6 +344,7 @@ export default {
           } else {
             this.$store.commit("removeTab", "修改文章");
           }
+          sessionStorage.removeItem("article");
           this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
@@ -388,6 +389,7 @@ export default {
           } else {
             this.$store.commit("removeTab", "修改文章");
           }
+          sessionStorage.removeItem("article");
           this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
