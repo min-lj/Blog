@@ -339,6 +339,13 @@ export default {
       this.article.status = 3;
       this.axios.post("/api/admin/articles", this.article).then(({ data }) => {
         if (data.flag) {
+          if (this.article.id === null) {
+            this.$store.commit("removeTab", "发布文章");
+          } else {
+            this.$store.commit("removeTab", "修改文章");
+          }
+          sessionStorage.removeItem("article");
+          this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
             message: "保存草稿成功"
@@ -350,6 +357,7 @@ export default {
           });
         }
       });
+
       //关闭自动保存功能
       this.autoSave = false;
     },
@@ -376,6 +384,13 @@ export default {
       }
       this.axios.post("/api/admin/articles", this.article).then(({ data }) => {
         if (data.flag) {
+          if (this.article.id === null) {
+            this.$store.commit("removeTab", "发布文章");
+          } else {
+            this.$store.commit("removeTab", "修改文章");
+          }
+          sessionStorage.removeItem("article");
+          this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
             message: data.message
