@@ -201,5 +201,31 @@ public class ArticleController {
         return Result.ok();
     }
 
+    /**
+     * 导出文章
+     *
+     * @param articleIdList 文章id列表
+     * @return {@link List<String>} 文件url列表
+     */
+    @ApiOperation(value = "导出文章")
+    @ApiImplicitParam(name = "articleIdList", value = "文章id", required = true, dataType = "List<Integer>")
+    @PostMapping("/admin/articles/export")
+    public Result<List<String>> exportArticles(@RequestBody List<Integer> articleIdList) {
+        return Result.ok(articleService.exportArticles(articleIdList));
+    }
+
+    /**
+     * 导入文章
+     *
+     * @param file 文件
+     * @return {@link Result<>}
+     */
+    @ApiOperation(value = "导入文章")
+    @PostMapping("/admin/articles/import")
+    public Result<?> importArticles(MultipartFile file) {
+        articleService.importArticles(file);
+        return Result.ok();
+    }
+
 }
 

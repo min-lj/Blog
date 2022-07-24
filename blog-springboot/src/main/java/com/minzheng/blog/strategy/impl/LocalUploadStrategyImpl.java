@@ -1,11 +1,13 @@
 package com.minzheng.blog.strategy.impl;
 
+import com.minzheng.blog.enums.FileExtEnum;
 import com.minzheng.blog.exception.BizException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Objects;
 
 /**
  * 本地上传策略
@@ -44,20 +46,35 @@ public class LocalUploadStrategyImpl extends AbstractUploadStrategyImpl {
         }
         // 写入文件
         File file = new File(localPath + path + fileName);
-        if (file.createNewFile()) {
-            BufferedInputStream bis = new BufferedInputStream(inputStream);
-            BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(file.toPath()));
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = bis.read(bytes)) != -1) {
-                bos.write(bytes, 0, length);
-            }
-            bos.flush();
-            inputStream.close();
-            bis.close();
-            bos.close();
+        String ext = "." + fileName.split("\\.")[1];
+        switch (Objects.requireNonNull(FileExtEnum.getFileExt(ext))) {
+            case MD:
+            case TXT:
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                while (reader.ready()) {
+                    writer.write((char) reader.read());
+                }
+                writer.flush();
+                writer.close();
+                reader.close();
+                break;
+            default:
+                BufferedInputStream bis = new BufferedInputStream(inputStream);
+                BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(file.toPath()));
+                byte[] bytes = new byte[1024];
+                int length;
+                while ((length = bis.read(bytes)) != -1) {
+                    bos.write(bytes, 0, length);
+                }
+                bos.flush();
+                bos.close();
+                bis.close();
+                break;
         }
+        inputStream.close();
     }
+
 
     @Override
     public String getFileAccessUrl(String filePath) {

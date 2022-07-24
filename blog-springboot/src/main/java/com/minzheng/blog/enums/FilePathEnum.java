@@ -27,15 +27,19 @@ public enum FilePathEnum {
     /**
      * 照片路径
      */
-    PHOTO("photos/","相册路径"),
+    PHOTO("photos/", "相册路径"),
     /**
      * 配置图片路径
      */
-    CONFIG("config/","配置图片路径"),
+    CONFIG("config/", "配置图片路径"),
     /**
      * 说说图片路径
      */
-    TALK("talks/","配置图片路径");
+    TALK("talks/", "说说图片路径"),
+    /**
+     * md文件路径
+     */
+    MD("markdown/", "md文件路径");
 
     /**
      * 路径

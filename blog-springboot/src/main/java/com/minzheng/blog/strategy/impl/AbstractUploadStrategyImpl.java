@@ -39,6 +39,19 @@ public abstract class AbstractUploadStrategyImpl implements UploadStrategy {
         }
     }
 
+    @Override
+    public String uploadFile(String fileName, InputStream inputStream, String path) {
+        try {
+            // 上传文件
+            upload(path, fileName, inputStream);
+            // 返回文件访问路径
+            return getFileAccessUrl(path + fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BizException("文件上传失败");
+        }
+    }
+
     /**
      * 判断文件是否存在
      *

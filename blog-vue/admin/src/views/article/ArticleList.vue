@@ -40,6 +40,27 @@
       >
         批量删除
       </el-button>
+      <el-button
+        type="success"
+        size="small"
+        icon="el-icon-download"
+        :disabled="articleIdList.length == 0"
+        style="margin-right:1rem"
+        @click="isExport = true"
+      >
+        批量导出
+      </el-button>
+      <el-upload
+        action="/api/admin/articles/import"
+        multiple
+        :limit="9"
+        :show-file-list="false"
+        :on-success="uploadArticle"
+      >
+        <el-button type="primary" size="small" icon="el-icon-upload">
+          批量导入
+        </el-button>
+      </el-upload>
       <!-- 条件筛选 -->
       <div style="margin-left:auto">
         <!-- 文章类型 -->
@@ -48,7 +69,7 @@
           v-model="type"
           placeholder="请选择文章类型"
           size="small"
-          style="margin-right:1rem"
+          style="margin-right:1rem;width: 180px;"
         >
           <el-option
             v-for="item in typeList"
@@ -64,7 +85,7 @@
           v-model="categoryId"
           filterable
           placeholder="请选择分类"
-          style="margin-right:1rem"
+          style="margin-right:1rem;width: 180px;"
         >
           <el-option
             v-for="item in categoryList"
@@ -80,7 +101,7 @@
           v-model="tagId"
           filterable
           placeholder="请选择标签"
-          style="margin-right:1rem"
+          style="margin-right:1rem;width: 180px;"
         >
           <el-option
             v-for="item in tagList"
@@ -318,6 +339,19 @@
         </el-button>
       </div>
     </el-dialog>
+    <!-- 批量导出对话框 -->
+    <el-dialog :visible.sync="isExport" width="30%">
+      <div class="dialog-title-container" slot="title">
+        <i class="el-icon-warning" style="color:#ff9900" />提示
+      </div>
+      <div style="font-size:1rem">是否导出选中文章？</div>
+      <div slot="footer">
+        <el-button @click="isExport = false">取 消</el-button>
+        <el-button type="primary" @click="exportArticles(null)">
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -357,6 +391,7 @@ export default {
       categoryId: null,
       tagId: null,
       isDelete: 0,
+      isExport: false,
       status: null,
       current: 1,
       size: 10,
@@ -423,6 +458,57 @@ export default {
         }
         this.remove = false;
       });
+    },
+    exportArticles(id) {
+      var param = {};
+      if (id == null) {
+        param = this.articleIdList;
+      } else {
+        param = [id];
+      }
+      console.log(param);
+      this.axios.post("/api/admin/articles/export", param).then(({ data }) => {
+        if (data.flag) {
+          this.$notify.success({
+            title: "成功",
+            message: data.message
+          });
+          data.data.forEach(item => {
+            this.downloadFile(item);
+          });
+          this.listArticles();
+        } else {
+          this.$notify.error({
+            title: "失败",
+            message: data.message
+          });
+        }
+        this.isExport = false;
+      });
+    },
+    downloadFile(url) {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none"; // 防止影响页面
+      iframe.style.height = 0; // 防止影响页面
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        iframe.remove();
+      }, 5 * 60 * 1000);
+    },
+    uploadArticle(data) {
+      if (data.flag) {
+        this.$notify.success({
+          title: "成功",
+          message: "导入成功"
+        });
+        this.listArticles();
+      } else {
+        this.$notify.error({
+          title: "失败",
+          message: data.message
+        });
+      }
     },
     sizeChange(size) {
       this.size = size;
