@@ -47,7 +47,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
     @Autowired
     private BlogInfoService blogInfoService;
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveMessage(MessageVO messageVO) {
         // 判断是否需要审核

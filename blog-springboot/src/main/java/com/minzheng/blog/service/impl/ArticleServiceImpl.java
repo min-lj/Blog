@@ -1,5 +1,7 @@
 package com.minzheng.blog.service.impl;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,6 +26,7 @@ import com.minzheng.blog.util.CommonUtils;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,7 @@ import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
  * @date 2021/08/10
  */
 @Service
+@Slf4j
 public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> implements ArticleService {
     @Autowired
     private ArticleDao articleDao;
@@ -169,7 +173,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             article.setRecommendArticleList(recommendArticleList.get());
             article.setNewestArticleList(newestArticleList.get());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(StrUtil.format("堆栈信息:{}", ExceptionUtil.stacktraceToString(e)));
         }
         return article;
     }
@@ -235,10 +239,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     public void updateArticleDelete(DeleteVO deleteVO) {
         // 修改文章逻辑删除状态
         List<Article> articleList = deleteVO.getIdList().stream().map(id -> Article.builder()
-                .id(id)
-                .isTop(FALSE)
-                .isDelete(deleteVO.getIsDelete())
-                .build())
+                        .id(id)
+                        .isTop(FALSE)
+                        .isDelete(deleteVO.getIsDelete())
+                        .build())
                 .collect(Collectors.toList());
         this.updateBatchById(articleList);
     }
@@ -265,14 +269,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 String url = uploadStrategyContext.executeUploadStrategy(article.getArticleTitle() + FileExtEnum.MD.getExtName(), inputStream, FilePathEnum.MD.getPath());
                 urlList.add(url);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(StrUtil.format("导入文章失败,堆栈:{}", ExceptionUtil.stacktraceToString(e)));
                 throw new BizException("导出文章失败");
             }
         }
         return urlList;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void importArticles(MultipartFile file) {
         // 获取文件名作为文章标题
@@ -284,7 +287,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 articleContent.append((char) reader.read());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(StrUtil.format("导入文章失败,堆栈:{}", ExceptionUtil.stacktraceToString(e)));
             throw new BizException("导入文章失败");
         }
         articleDao.insert(Article.builder()
@@ -363,9 +366,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             }
             // 提取标签id绑定文章
             List<ArticleTag> articleTagList = existTagIdList.stream().map(item -> ArticleTag.builder()
-                    .articleId(articleId)
-                    .tagId(item)
-                    .build())
+                            .articleId(articleId)
+                            .tagId(item)
+                            .build())
                     .collect(Collectors.toList());
             articleTagService.saveBatch(articleTagList);
         }
