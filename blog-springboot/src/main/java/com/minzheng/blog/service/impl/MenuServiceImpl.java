@@ -40,6 +40,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     @Autowired
     private RoleMenuDao roleMenuDao;
 
+    /**
+     * 查看菜单列表
+     *
+     * @param conditionVO 条件
+     * @return 菜单列表
+     */
     @Override
     public List<MenuDTO> listMenus(ConditionVO conditionVO) {
         // 查询菜单数据
