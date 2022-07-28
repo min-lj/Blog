@@ -6,6 +6,7 @@ import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.ArticleService;
 import com.minzheng.blog.strategy.ArticleImportStrategy;
 import com.minzheng.blog.vo.HexoArticleVO;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,7 +101,7 @@ public class HexoArticleImportStrategyImpl implements ArticleImportStrategy {
 
             // 如果分类或标签为空则设为草稿
             if (CollectionUtils.isEmpty(hexoArticleVO.getTagNameList()) || StrUtil.isBlank(hexoArticleVO.getCategoryName())) {
-                  hexoArticleVO.setStatus(DRAFT.getStatus());
+                hexoArticleVO.setStatus(DRAFT.getStatus());
             }
 
             articleService.saveOrUpdateArticle(hexoArticleVO);

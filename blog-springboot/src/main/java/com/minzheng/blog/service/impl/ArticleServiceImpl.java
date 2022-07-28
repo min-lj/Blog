@@ -18,10 +18,7 @@ import com.minzheng.blog.entity.Tag;
 import com.minzheng.blog.enums.FileExtEnum;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.exception.BizException;
-import com.minzheng.blog.service.ArticleService;
-import com.minzheng.blog.service.ArticleTagService;
-import com.minzheng.blog.service.RedisService;
-import com.minzheng.blog.service.TagService;
+import com.minzheng.blog.service.*;
 import com.minzheng.blog.strategy.context.SearchStrategyContext;
 import com.minzheng.blog.strategy.context.UploadStrategyContext;
 import com.minzheng.blog.util.BeanCopyUtils;
@@ -74,6 +71,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     private RedisService redisService;
     @Autowired
     private ArticleTagService articleTagService;
+    @Autowired
+    private BlogInfoService blogInfoService;
     @Autowired
     private UploadStrategyContext uploadStrategyContext;
 
@@ -201,12 +200,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveOrUpdateArticle(ArticleVO articleVO) {
+        // 查询博客配置信息
+        CompletableFuture<WebsiteConfigVO> webConfig = CompletableFuture.supplyAsync(() -> blogInfoService.getWebsiteConfig());
+
         // 保存文章分类
         Category category = saveArticleCategory(articleVO);
         // 保存或修改文章
         Article article = BeanCopyUtils.copyObject(articleVO, Article.class);
         if (Objects.nonNull(category)) {
             article.setCategoryId(category.getId());
+        }
+        // 设定默认文章封面
+        if (StrUtil.isBlank(article.getArticleCover())){
+            try {
+                article.setArticleCover(webConfig.get().getArticleCover());
+            } catch (Exception e) {
+                throw new BizException("设定默认文章封面失败");
+            }
         }
         article.setUserId(UserUtils.getLoginUser().getUserInfoId());
         this.saveOrUpdate(article);

@@ -143,6 +143,12 @@ public class WebsiteConfigVO {
     private String alipayQRCode;
 
     /**
+     * 文章封面
+     */
+    @ApiModelProperty(name = "articleCover", value = "文章封面", required = true, dataType = "String")
+    private String articleCover;
+
+    /**
      * 是否开启聊天室
      */
     @ApiModelProperty(name = "isReward", value = "是否打赏", required = true, dataType = "Integer")

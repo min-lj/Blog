@@ -2,11 +2,11 @@ package com.minzheng.blog.strategy.impl;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.minzheng.blog.dao.ArticleDao;
-import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.exception.BizException;
+import com.minzheng.blog.service.ArticleService;
 import com.minzheng.blog.strategy.ArticleImportStrategy;
-import com.minzheng.blog.util.UserUtils;
+
+import com.minzheng.blog.vo.ArticleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import static com.minzheng.blog.enums.ArticleStatusEnum.DRAFT;
 @Service("normalArticleImportStrategyImpl")
 public class NormalArticleImportStrategyImpl implements ArticleImportStrategy {
     @Autowired
-    private ArticleDao articleDao;
+    private ArticleService articleService;
 
     @Override
     public void importArticles(MultipartFile file) {
@@ -45,11 +45,12 @@ public class NormalArticleImportStrategyImpl implements ArticleImportStrategy {
             log.error(StrUtil.format("导入文章失败, 堆栈:{}", ExceptionUtil.stacktraceToString(e)));
             throw new BizException("导入文章失败");
         }
-        articleDao.insert(Article.builder()
-                .userId(UserUtils.getLoginUser().getUserInfoId())
+        // 保存文章
+        ArticleVO articleVO = ArticleVO.builder()
                 .articleTitle(articleTitle)
                 .articleContent(articleContent.toString())
                 .status(DRAFT.getStatus())
-                .build());
+                .build();
+        articleService.saveOrUpdateArticle(articleVO);
     }
 }
