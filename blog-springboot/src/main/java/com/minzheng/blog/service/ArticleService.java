@@ -1,10 +1,9 @@
 package com.minzheng.blog.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Article;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.minzheng.blog.vo.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -112,12 +111,4 @@ public interface ArticleService extends IService<Article> {
      * @return {@link List}<{@link String}> 文件地址
      */
     List<String> exportArticles(List<Integer> articleIdList);
-
-    /**
-     * 导入文章
-     *
-     * @param file 文件
-     */
-    void importArticles(MultipartFile file);
-
 }

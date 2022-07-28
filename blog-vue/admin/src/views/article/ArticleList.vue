@@ -50,17 +50,40 @@
       >
         批量导出
       </el-button>
-      <el-upload
-        action="/api/admin/articles/import"
-        multiple
-        :limit="9"
-        :show-file-list="false"
-        :on-success="uploadArticle"
-      >
-        <el-button type="primary" size="small" icon="el-icon-upload">
+      <el-dropdown>
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-upload"
+          style="margin-right:1rem"
+        >
           批量导入
         </el-button>
-      </el-upload>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <el-upload
+              action="/api/admin/articles/import"
+              multiple
+              :limit="9"
+              :show-file-list="false"
+              :on-success="uploadArticle"
+            >
+              普通文章
+            </el-upload>
+          </el-dropdown-item>
+          <el-dropdown-item
+            ><el-upload
+              action="/api/admin/articles/import?type=hexo"
+              multiple
+              :limit="9"
+              :show-file-list="false"
+              :on-success="uploadArticle"
+            >
+              Hexo文章
+            </el-upload></el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </el-dropdown>
       <!-- 条件筛选 -->
       <div style="margin-left:auto">
         <!-- 文章类型 -->
