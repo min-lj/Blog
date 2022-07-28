@@ -5,7 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.minzheng.blog.dao.*;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzheng.blog.dao.ArticleDao;
+import com.minzheng.blog.dao.ArticleTagDao;
+import com.minzheng.blog.dao.CategoryDao;
+import com.minzheng.blog.dao.TagDao;
 import com.minzheng.blog.dto.*;
 import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.entity.ArticleTag;
@@ -15,7 +19,6 @@ import com.minzheng.blog.enums.FileExtEnum;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.exception.BizException;
 import com.minzheng.blog.service.ArticleService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.service.ArticleTagService;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.TagService;
@@ -30,10 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -274,28 +276,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             }
         }
         return urlList;
-    }
-
-    @Override
-    public void importArticles(MultipartFile file) {
-        // 获取文件名作为文章标题
-        String articleTitle = Objects.requireNonNull(file.getOriginalFilename()).split("\\.")[0];
-        // 获取文章内容
-        StringBuilder articleContent = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            while (reader.ready()) {
-                articleContent.append((char) reader.read());
-            }
-        } catch (IOException e) {
-            log.error(StrUtil.format("导入文章失败,堆栈:{}", ExceptionUtil.stacktraceToString(e)));
-            throw new BizException("导入文章失败");
-        }
-        articleDao.insert(Article.builder()
-                .userId(UserUtils.getLoginUser().getUserInfoId())
-                .articleTitle(articleTitle)
-                .articleContent(articleContent.toString())
-                .status(DRAFT.getStatus())
-                .build());
     }
 
     @Override
