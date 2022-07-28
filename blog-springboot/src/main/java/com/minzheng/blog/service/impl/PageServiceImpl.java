@@ -3,10 +3,12 @@ package com.minzheng.blog.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.PageDao;
+import com.minzheng.blog.dto.UserAreaDTO;
 import com.minzheng.blog.entity.Page;
 import com.minzheng.blog.service.PageService;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.util.BeanCopyUtils;
+import com.minzheng.blog.util.CommonUtils;
 import com.minzheng.blog.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,7 @@ public class PageServiceImpl extends ServiceImpl<PageDao, Page> implements PageS
         // 查找缓存信息，不存在则从mysql读取，更新缓存
         Object pageList = redisService.get(PAGE_COVER);
         if (Objects.nonNull(pageList)) {
-            pageVOList = JSON.parseObject(pageList.toString(), List.class);
+            pageVOList = CommonUtils.castList(JSON.parseObject(pageList.toString(), List.class), PageVO.class);
         } else {
             pageVOList = BeanCopyUtils.copyList(pageDao.selectList(null), PageVO.class);
             redisService.set(PAGE_COVER, JSON.toJSONString(pageVOList));
