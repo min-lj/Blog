@@ -21,7 +21,6 @@ import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.service.UserAuthService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.strategy.context.SocialLoginStrategyContext;
-import com.minzheng.blog.util.CommonUtils;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
 import com.minzheng.blog.vo.*;
@@ -95,7 +94,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthDao, UserAuth> impl
                 // 查询注册用户区域分布
                 Object userArea = redisService.get(USER_AREA);
                 if (Objects.nonNull(userArea)) {
-                    userAreaDTOList = CommonUtils.castList(JSON.parseObject(userArea.toString(), List.class),UserAreaDTO.class);
+                    userAreaDTOList = JSON.parseObject(userArea.toString(), List.class);
                 }
                 return userAreaDTOList;
             case VISITOR:
